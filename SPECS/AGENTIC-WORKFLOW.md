@@ -10,7 +10,7 @@ Le principe retenu pendant le développement a été :
 
 **intention → spécifications → proposition technique → implémentation → exécution → observation → correction → validation**
 
-Les décisions concernant le concept, les règles du jeu, les seuils, le périmètre du POC et les ajustements après test restent définies et validées par le développeur.
+Les décisions concernant le concept, les règles du jeu, les seuils, le périmètre du POC et les ajustements issus de l'observation du prototype restent définies et validées par le développeur.
 
 ## 2. Principe de travail
 
@@ -28,7 +28,7 @@ Les demandes adressées à l'IA ont ensuite été limitées à des problèmes ou
 - évolution progressive du niveau d'eau ;
 - traduction des seuils en conditions ;
 - réinitialisation d'une tentative ;
-- correction de problèmes observés pendant les tests ;
+- correction de problèmes observés pendant l'exécution et la vérification du prototype ;
 - amélioration de la lisibilité du code ;
 - structuration et mise à jour de la documentation.
 
@@ -95,7 +95,7 @@ Cette approche évite de régénérer inutilement l'ensemble du projet et rédui
 
 ### Étape 7 — Mettre à jour les specs
 
-Lorsqu'un test conduit à une véritable décision de conception, les spécifications sont également mises à jour.
+Lorsqu'une observation du prototype conduit à une véritable décision de conception, les spécifications sont également mises à jour.
 
 Le code n'est donc pas considéré comme l'unique source décrivant le fonctionnement du jeu.
 
@@ -227,7 +227,7 @@ La documentation permet ainsi de retrouver :
 - les règles retenues ;
 - les choix graphiques ;
 - l'implémentation technique ;
-- les ajustements issus des tests ;
+- les ajustements issus de l'observation et de la vérification du prototype ;
 - les évolutions envisagées.
 
 Cette organisation permet de distinguer clairement :
@@ -249,7 +249,7 @@ Une proposition peut être :
 - trop complexe par rapport au besoin réel ;
 - basée sur une interprétation différente de l'intention initiale.
 
-Pour cette raison, le développement reste piloté par les spécifications et par les résultats observés lors des tests.
+Pour cette raison, le développement reste piloté par les spécifications et par les résultats observés lors de l'exécution et de la vérification du prototype.
 
 L'IA constitue une aide à la conception, à l'implémentation et à l'itération, et non une source automatique de vérité.
 

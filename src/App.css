@@ -1,6 +1,6 @@
 /* =========================================
    DON'T OVERFLOW — POC
-   12.1 Structure visuelle du jeu
+   Structure visuelle du jeu
    ========================================= */
 
 * {
@@ -67,8 +67,7 @@ body {
   background: #eef8ff;
 }
 
-/* Eau — sa hauteur sera contrôlée plus tard
-   par la variable waterLevel. */
+/* Eau — hauteur contrôlée par la variable waterLevel */
 
 .water {
   position: absolute;
@@ -82,7 +81,7 @@ body {
   transition: height 0.08s linear;
 }
 
-/* Zone que le joueur doit viser */
+/* Zone cible du POC : 70 % à 80 % */
 
 .target-zone {
   position: absolute;
@@ -144,7 +143,7 @@ body {
   font-size: 14px;
 }
 
-/* ---------- ETAT DU POC ---------- */
+/* ---------- ÉTAT DU POC ---------- */
 
 .debug-state {
   margin-top: 30px;
@@ -186,6 +185,8 @@ body {
     height: 220px;
   }
 }
+
+/* ---------- INFORMATIONS ---------- */
 
 .eyebrow {
   margin: 0 0 8px;

@@ -105,7 +105,7 @@ Le POC revient ainsi dans son état initial sans rechargement de la page.
 
 La première version des spécifications plaçait la zone cible entre **90 % et 100 %**.
 
-Lors de l'implémentation et des premiers tests visuels du prototype, cette position s'est révélée trop proche du bord supérieur du récipient. Elle rendait la cible moins lisible et la mécanique moins intéressante à observer.
+Lors de l'implémentation et de l'observation visuelle du prototype, cette position s'est révélée trop proche du bord supérieur du récipient. Elle rendait la cible moins lisible et la mécanique moins intéressante à observer.
 
 La zone cible a donc été repositionnée entre **70 % et 80 %**.
 

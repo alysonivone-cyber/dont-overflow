@@ -27,7 +27,7 @@ Le POC a permis de confirmer que la mécanique de maintien et de relâchement fo
 
 Il a également montré l'intérêt de confronter rapidement les spécifications au prototype réel.
 
-La zone cible avait initialement été définie entre 90 % et 100 %. Lors des tests du prototype, cette position a été jugée trop proche du bord supérieur du récipient et moins intéressante visuellement.
+La zone cible avait initialement été définie entre 90 % et 100 %. Lors de l'observation du prototype, cette position s'est révélée trop proche du bord supérieur du récipient et moins intéressante visuellement.
 
 Elle a donc été repositionnée entre 70 % et 80 %.
 
@@ -292,7 +292,7 @@ Une fois le MVP validé, plusieurs extensions pourront être étudiées :
 
 Ces fonctionnalités ne constituent pas des exigences du MVP initial.
 
-Elles représentent des possibilités d'évolution si la boucle enrichie est validée par les tests.
+Elles représentent des possibilités d'évolution si la boucle enrichie est validée lors de futurs tests utilisateurs.
 
 ## 15. Ordre de développement envisagé
 
@@ -359,4 +359,4 @@ Le principe retenu reste :
 
 **valider d'abord → enrichir ensuite**
 
-Chaque nouvelle fonctionnalité devra soit résoudre un problème identifié lors des tests, soit augmenter directement la profondeur, la lisibilité ou la satisfaction de la boucle principale.
+Chaque nouvelle fonctionnalité devra soit répondre à un problème identifié lors de l'observation du prototype ou de futurs tests utilisateurs, soit augmenter directement la profondeur, la lisibilité ou la satisfaction de la boucle principale.
