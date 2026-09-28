@@ -2,17 +2,19 @@
 
 ## 1. Objectif visuel
 
-L'interface du POC doit permettre de comprendre immédiatement la mécanique principale du jeu sans nécessiter d'explication supplémentaire.
+L'interface du POC doit permettre de comprendre immédiatement la mécanique principale du jeu sans nécessiter d'explication complexe.
 
-La direction graphique repose donc sur trois principes :
+La direction graphique repose sur trois principes :
 
 - simplicité ;
 - lisibilité ;
 - feedback visuel immédiat.
 
-Le design reste volontairement minimal afin que l'attention du joueur soit concentrée sur le récipient, la zone cible et le niveau d'eau.
+Le design du POC reste volontairement minimal afin que l'attention du joueur soit concentrée sur le récipient, la zone cible et le niveau d'eau.
 
-## 2. Hiérarchie visuelle
+Cette simplicité constitue une base fonctionnelle. Le MVP pourra développer une identité visuelle plus riche sans compromettre la compréhension de la mécanique.
+
+## 2. Hiérarchie visuelle du POC
 
 L'interface est organisée autour d'une carte centrale contenant les éléments dans l'ordre suivant :
 
@@ -27,11 +29,13 @@ L'interface est organisée autour d'une carte centrale contenant les éléments 
 
 Cette hiérarchie doit permettre au joueur de comprendre rapidement :
 
-**objectif → action → niveau → résultat.**
+**objectif → action → niveau → résultat**
+
+L'élément visuel principal reste le récipient.
 
 ## 3. Palette de couleurs
 
-La palette repose principalement sur des tons bleus et turquoise.
+La palette actuelle repose principalement sur des tons bleus et turquoise.
 
 | Élément | Couleur | Rôle |
 |---|---|---|
@@ -44,20 +48,22 @@ La palette repose principalement sur des tons bleus et turquoise.
 
 Le bleu marine donne une structure visuelle forte tandis que le turquoise permet d'identifier immédiatement la zone cible.
 
-## 4. Représentation du récipient
+Cette palette pourra être enrichie dans le MVP, notamment pour différencier certains états, niveaux ou événements, tout en conservant une cohérence générale.
 
-Le récipient constitue l'élément central du POC.
+## 4. Représentation du récipient dans le POC
 
-Il est représenté par une forme simple avec :
+Le récipient constitue l'élément central de l'interface.
+
+Dans le POC, il est représenté par une forme simple avec :
 
 - un contour bleu marine ;
 - un fond bleu très clair ;
 - des angles inférieurs arrondis ;
 - un niveau d'eau visible qui évolue verticalement.
 
-La hauteur de l'eau constitue la traduction graphique directe de la variable `waterLevel`.
+La hauteur de l'eau constitue actuellement la traduction graphique directe de la variable `waterLevel`.
 
-L'objectif n'est pas de reproduire un récipient réaliste, mais de rendre l'évolution du niveau immédiatement perceptible.
+L'objectif du POC n'est pas de reproduire un récipient réaliste, mais de rendre l'évolution du niveau immédiatement perceptible.
 
 ## 5. Zone cible
 
@@ -123,9 +129,9 @@ Elles ne constituent pas des éléments destinés à l'interface finale du jeu.
 
 Elles servent à vérifier visuellement que l'état interne de l'application correspond bien au comportement observé pendant les tests.
 
-Elles pourront être supprimées ou masquées dans une version MVP destinée aux utilisateurs.
+Elles seront supprimées ou masquées dans une version destinée aux utilisateurs.
 
-## 9. Choix de simplicité
+## 9. Choix de simplicité du POC
 
 Aucun élément graphique complexe n'a été ajouté à cette étape.
 
@@ -134,12 +140,158 @@ Le POC ne comporte volontairement pas encore :
 - d'animations avancées ;
 - d'effets de particules ;
 - d'effets sonores ;
-- de décors ;
-- de système de progression ;
+- de décors complexes ;
+- de système visuel de progression ;
+- de variations importantes de récipients ;
 - de changements graphiques complexes selon le résultat.
-
-Ces éléments sont considérés comme des améliorations possibles du MVP.
 
 La priorité de cette version reste la validation de la mécanique :
 
-**observer → maintenir → relâcher → obtenir un résultat → recommencer.**
+**observer → maintenir → relâcher → obtenir un résultat → recommencer**
+
+## 10. Direction graphique du MVP
+
+Le MVP conservera la lisibilité du POC tout en développant une identité visuelle plus riche.
+
+L'objectif ne sera pas d'ajouter des éléments graphiques uniquement décoratifs, mais d'utiliser le visuel pour soutenir le gameplay.
+
+Les principales évolutions envisagées sont :
+
+- différents types de récipients ;
+- silhouettes et proportions variées ;
+- représentation plus naturelle du liquide ;
+- animations de remplissage ;
+- animations de réussite et d'échec ;
+- véritable effet visuel de débordement ;
+- transitions entre les niveaux ;
+- feedback de précision ;
+- affichage du score ;
+- représentation des tentatives restantes ;
+- représentation de la réserve d'eau ;
+- représentation du temps restant ;
+- micro-animations de l'interface ;
+- effets visuels associés aux niveaux plus difficiles.
+
+## 11. Les récipients comme mécanique visuelle
+
+Une évolution majeure du MVP concernera la forme des récipients.
+
+Le jeu pourra utiliser différentes géométries :
+
+- verre droit ;
+- récipient large ;
+- récipient étroit ;
+- forme conique ;
+- bouteille ;
+- fiole ;
+- récipient asymétrique ;
+- forme volontairement trompeuse.
+
+Ces formes ne seront pas uniquement des variations esthétiques.
+
+Dans le POC, le pourcentage de remplissage correspond directement à une hauteur visuelle.
+
+Dans une version plus avancée, la géométrie du récipient pourra modifier la relation entre la hauteur de l'eau et le volume réellement contenu.
+
+Ainsi, deux récipients remplis au même pourcentage de leur volume total pourront présenter des hauteurs d'eau différentes.
+
+Cette différence permettra de créer un effet de trompe-l'œil et fera de la forme du récipient une partie intégrante du challenge.
+
+## 12. Évolution des aides visuelles
+
+Les aides visuelles pourront également évoluer avec la difficulté.
+
+### Niveaux accessibles
+
+Le joueur pourra disposer de :
+
+- la zone cible visible ;
+- son pourcentage actuel ;
+- une indication claire de l'objectif ;
+- un feedback immédiat.
+
+### Niveaux intermédiaires
+
+Certaines informations pourront être réduites :
+
+- pourcentage masqué pendant le remplissage ;
+- cible moins visible ;
+- objectif plus précis ;
+- interface plus discrète.
+
+### Niveaux avancés
+
+Certaines aides pourront disparaître temporairement :
+
+- cible affichée avant la tentative puis masquée ;
+- pourcentage révélé uniquement après le relâchement ;
+- objectif à mémoriser ;
+- estimation principalement basée sur la perception du récipient.
+
+La réduction des aides visuelles devient ainsi elle-même un élément de progression.
+
+## 13. Représentation des nouvelles contraintes
+
+Les nouvelles mécaniques du MVP devront rester immédiatement lisibles.
+
+L'interface pourra notamment afficher :
+
+- `TARGET` pour l'objectif ;
+- `ATTEMPTS` pour le nombre de tentatives restantes ;
+- `WATER LEFT` pour la réserve d'eau ;
+- `TIME` pour le temps restant ;
+- `SCORE` pour la performance ;
+- une indication de précision après chaque tentative.
+
+Ces informations devront être hiérarchisées afin de ne pas détourner l'attention du récipient.
+
+Le joueur doit toujours pouvoir identifier immédiatement :
+
+**ce qu'il doit atteindre → ce qu'il lui reste → ce qu'il doit faire**
+
+## 14. Feedback enrichi du MVP
+
+Le feedback pourra devenir progressivement plus expressif.
+
+Une réussite particulièrement précise pourra par exemple produire :
+
+- une animation spécifique ;
+- un effet visuel autour du récipient ;
+- une augmentation animée du score ;
+- des particules ;
+- un feedback sonore ;
+- l'affichage de l'écart exact avec la cible.
+
+À l'inverse, un dépassement pourra provoquer :
+
+- une animation de débordement ;
+- un mouvement ou une réaction du récipient ;
+- un feedback visuel immédiatement identifiable ;
+- une indication de la quantité dépassée.
+
+Le feedback devra rester compréhensible même sans son.
+
+## 15. Cohérence entre graphisme et gameplay
+
+La direction graphique doit rester directement liée aux règles du jeu.
+
+Les éléments visuels ne sont donc pas uniquement décoratifs :
+
+- la forme du récipient influence la perception ;
+- la zone cible représente l'objectif ;
+- le niveau d'eau représente l'état de la tentative ;
+- les aides visibles dépendent de la difficulté ;
+- les ressources affichées influencent les décisions ;
+- le feedback traduit immédiatement le résultat.
+
+Le graphisme devient ainsi progressivement un élément du gameplay lui-même.
+
+## 16. Principe graphique
+
+L'évolution visuelle de DON'T OVERFLOW! suivra le même principe que son évolution fonctionnelle :
+
+**lisibilité d'abord → enrichissement ensuite**
+
+Le POC utilise une représentation minimale afin de valider la mécanique.
+
+Le MVP pourra ensuite enrichir cette représentation tout en conservant une règle essentielle : chaque élément graphique doit soit faciliter la compréhension, soit renforcer le challenge, soit améliorer le feedback donné au joueur.

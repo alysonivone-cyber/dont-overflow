@@ -2,7 +2,7 @@
 
 ## 1. Rôle de l'IA dans le projet
 
-L'intelligence artificielle a été utilisée comme assistant de conception, de structuration et de développement du POC.
+L'intelligence artificielle a été utilisée comme assistant de conception, de structuration, de développement et de documentation du POC.
 
 Elle n'a pas été utilisée pour définir seule le jeu ou générer un projet complet sans contrôle humain.
 
@@ -29,9 +29,10 @@ Les demandes adressées à l'IA ont ensuite été limitées à des problèmes ou
 - traduction des seuils en conditions ;
 - réinitialisation d'une tentative ;
 - correction de problèmes observés pendant les tests ;
-- amélioration de la lisibilité du code et de la documentation.
+- amélioration de la lisibilité du code ;
+- structuration et mise à jour de la documentation.
 
-Cette méthode permet de conserver le contrôle du projet tout en utilisant l'IA pour accélérer certaines étapes d'implémentation.
+Cette méthode permet de conserver le contrôle du projet tout en utilisant l'IA pour accélérer certaines étapes d'implémentation et d'itération.
 
 ## 3. Workflow appliqué
 
@@ -52,7 +53,7 @@ Les règles sont ensuite exprimées sous une forme vérifiable.
 Exemple :
 
 - niveau initial : 0 % ;
-- vitesse : 30 % / seconde ;
+- vitesse : environ 30 % par seconde ;
 - maintien : le niveau augmente ;
 - relâchement : le niveau se fige ;
 - zone cible : intervalle défini dans les specs ;
@@ -64,7 +65,7 @@ L'IA est sollicitée pour proposer ou corriger une partie précise de l'impléme
 
 Le code proposé n'est pas considéré comme automatiquement valide.
 
-Il doit être exécuté dans l'environnement réel du projet.
+Il doit être intégré puis exécuté dans l'environnement réel du projet.
 
 ### Étape 4 — Exécuter
 
@@ -88,7 +89,7 @@ Les éléments contrôlés incluent notamment :
 
 ### Étape 6 — Corriger
 
-Lorsqu'un problème est observé, la demande suivante adressée à l'IA concerne uniquement ce problème.
+Lorsqu'un problème est observé, la demande suivante adressée à l'IA concerne prioritairement ce problème.
 
 Cette approche évite de régénérer inutilement l'ensemble du projet et réduit le risque d'introduire de nouvelles erreurs dans des parties déjà fonctionnelles.
 
@@ -98,7 +99,19 @@ Lorsqu'un test conduit à une véritable décision de conception, les spécifica
 
 Le code n'est donc pas considéré comme l'unique source décrivant le fonctionnement du jeu.
 
-## 4. Exemple concret — position de la zone cible
+### Étape 8 — Valider la version
+
+Avant de considérer une version comme terminée :
+
+- le comportement du jeu est vérifié ;
+- les spécifications sont comparées au résultat réel ;
+- le projet est compilé ;
+- les fichiers concernés sont versionnés avec Git ;
+- la version destinée au rendu est identifiée précisément.
+
+Cette étape permet de conserver une correspondance entre le code, la documentation et la version remise.
+
+## 4. Exemple concret — Position de la zone cible
 
 La première version des spécifications définissait la zone de réussite entre **90 % et 100 %**.
 
@@ -121,12 +134,12 @@ Cette décision a ensuite été répercutée dans :
 - `RULES.md` ;
 - la logique `evaluateResult()` ;
 - la position graphique de la zone cible ;
-- les tests du POC ;
+- les vérifications du POC ;
 - la documentation du projet.
 
-Cet exemple montre que l'IA n'est pas utilisée uniquement pour produire du code : le prototype généré permet également de confronter les spécifications à une expérience réelle et d'identifier les ajustements nécessaires.
+Cet exemple montre que l'IA n'est pas utilisée uniquement pour produire du code : le prototype permet également de confronter les spécifications à une expérience réelle et d'identifier les ajustements nécessaires.
 
-## 5. Exemple concret — correction d'un comportement
+## 5. Exemple concret — Correction d'un comportement
 
 Pendant le développement, certains comportements observés dans le navigateur ne correspondaient pas exactement au résultat recherché.
 
@@ -144,7 +157,32 @@ Le joueur doit volontairement cliquer sur `TRY AGAIN` avant que :
 
 Cette correction permet de conserver le feedback suffisamment longtemps pour que le joueur puisse observer son résultat.
 
-## 6. Vérification humaine
+## 6. Exemple concret — Évolution du concept vers le MVP
+
+Une fois la mécanique fondamentale du POC validée, l'IA a également été utilisée comme outil de réflexion pour explorer les évolutions possibles du MVP.
+
+Plusieurs pistes ont été envisagées, notamment :
+
+- objectifs de précision variables ;
+- pourcentages précis à atteindre ;
+- nombre limité de tentatives ;
+- réserve d'eau limitée ;
+- chronomètre ;
+- variations du débit ;
+- différentes formes de récipients ;
+- relation entre volume réel et hauteur visible ;
+- disparition progressive des aides ;
+- score et feedback enrichi.
+
+Ces propositions ne sont pas considérées comme automatiquement retenues ou implémentées.
+
+Elles sont documentées comme pistes de conception puis organisées selon leur intérêt, leur cohérence avec la mécanique centrale et leur priorité de développement.
+
+Cette distinction permet de séparer :
+
+**idée proposée → décision de conception → spécification → implémentation réelle**
+
+## 7. Vérification humaine
 
 Chaque proposition technique importante est vérifiée directement dans le POC.
 
@@ -163,7 +201,23 @@ Cette vérification permet notamment de détecter des problèmes qui ne sont pas
 - feedback trop rapide ;
 - incohérence entre une valeur logique et sa représentation graphique.
 
-## 7. Traçabilité des décisions
+## 8. Validation technique
+
+La vérification visuelle est complétée par une validation technique.
+
+Avant la préparation du Rendu 1, le projet a notamment été compilé avec la commande de build afin de vérifier que TypeScript et Vite pouvaient produire correctement la version destinée à la production.
+
+Le versionnement Git permet ensuite de figer une version précise du projet.
+
+Le tag :
+
+`rendu-1`
+
+permet d'identifier le commit correspondant au Rendu 1.
+
+Cette étape garantit que le rendu correspond à une version précise du code et de la documentation plutôt qu'à un ensemble de fichiers non versionnés.
+
+## 9. Traçabilité des décisions
 
 Les décisions importantes sont conservées dans les fichiers de spécifications.
 
@@ -178,9 +232,11 @@ La documentation permet ainsi de retrouver :
 
 Cette organisation permet de distinguer clairement :
 
-**ce qui était prévu → ce qui a été implémenté → ce qui a été observé → ce qui a été modifié.**
+**ce qui était prévu → ce qui a été implémenté → ce qui a été observé → ce qui a été modifié**
 
-## 8. Limites de l'utilisation de l'IA
+Git complète cette traçabilité en conservant les différentes versions du projet.
+
+## 10. Limites de l'utilisation de l'IA
 
 L'utilisation de l'IA nécessite une vérification systématique.
 
@@ -189,67 +245,81 @@ Une proposition peut être :
 - techniquement incorrecte ;
 - incompatible avec le code existant ;
 - cohérente en apparence mais différente des specs ;
-- fonctionnelle mais peu adaptée à l'expérience utilisateur.
+- fonctionnelle mais peu adaptée à l'expérience utilisateur ;
+- trop complexe par rapport au besoin réel ;
+- basée sur une interprétation différente de l'intention initiale.
 
 Pour cette raison, le développement reste piloté par les spécifications et par les résultats observés lors des tests.
 
-L'IA constitue une aide à l'implémentation et à l'itération, et non une source automatique de vérité.
+L'IA constitue une aide à la conception, à l'implémentation et à l'itération, et non une source automatique de vérité.
 
-## 9. Workflow retenu pour la suite
+## 11. Workflow retenu pour le MVP
 
 Le même processus sera conservé pour le développement du MVP :
 
 1. définir la fonctionnalité ;
 2. écrire ou mettre à jour les specs ;
-3. demander une implémentation ciblée ;
-4. intégrer le code ;
-5. exécuter ;
-6. tester ;
-7. identifier les écarts ;
-8. corriger ;
-9. mettre à jour la documentation ;
-10. valider avant de passer à la fonctionnalité suivante.
+3. déterminer les critères permettant de vérifier son fonctionnement ;
+4. demander une implémentation ciblée ;
+5. intégrer le code ;
+6. exécuter ;
+7. tester ;
+8. identifier les écarts ;
+9. corriger ;
+10. mettre à jour la documentation ;
+11. compiler et vérifier la version ;
+12. versionner la modification avant de passer à l'étape suivante.
 
-Cette méthode permet d'utiliser l'IA comme accélérateur de développement tout en conservant une démarche contrôlée, traçable et guidée par les objectifs du projet.
+Cette méthode permettra d'introduire progressivement les nouvelles mécaniques sans perdre la stabilité de la boucle déjà validée.
 
-## 10. Synthèse
+## 12. Synthèse
 
 Le workflow d'utilisation de l'IA peut être résumé ainsi :
 
-**HUMAIN**
+**HUMAIN**  
 Définir l'intention et les contraintes
 
 ↓
 
-**SPECS**
+**SPECS**  
 Formaliser le comportement attendu
 
 ↓
 
-**IA**
-Proposer une solution technique ciblée
+**IA**  
+Proposer une solution ou une piste ciblée
 
 ↓
 
-**CODE**
-Intégrer la proposition dans le projet
+**CODE**  
+Intégrer la proposition retenue dans le projet
 
 ↓
 
-**EXÉCUTION**
+**EXÉCUTION**  
 Observer le comportement réel
 
 ↓
 
-**HUMAIN**
+**HUMAIN**  
 Comparer le résultat aux specs
 
 ↓
 
-**ITÉRATION**
+**ITÉRATION**  
 Corriger le code ou ajuster la conception
 
 ↓
 
-**DOCUMENTATION**
+**DOCUMENTATION**  
 Répercuter les décisions validées dans les specs
+
+↓
+
+**VALIDATION TECHNIQUE**  
+Vérifier le build et la cohérence du projet
+
+↓
+
+**GIT**  
+Versionner une version précise et traçable

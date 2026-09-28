@@ -1,6 +1,6 @@
 # DON'T OVERFLOW! — Roadmap
 
-## 1. État actuel
+## 1. État actuel — POC
 
 La première version du projet correspond à un POC fonctionnel centré sur la validation de la mécanique principale.
 
@@ -19,7 +19,7 @@ Le POC permet actuellement de :
 - conserver le résultat après la tentative ;
 - utiliser `TRY AGAIN` pour recommencer sans recharger la page.
 
-Cette version constitue la base technique à partir de laquelle les prochaines itérations pourront être construites.
+Cette version constitue la base technique et ludique à partir de laquelle les prochaines itérations pourront être construites.
 
 ## 2. Enseignements du POC
 
@@ -27,115 +27,238 @@ Le POC a permis de confirmer que la mécanique de maintien et de relâchement fo
 
 Il a également montré l'intérêt de confronter rapidement les spécifications au prototype réel.
 
-La zone cible avait initialement été définie entre 90 % et 100 %. Après test, cette position a été jugée trop proche du bord supérieur du récipient et moins intéressante visuellement.
+La zone cible avait initialement été définie entre 90 % et 100 %. Lors des tests du prototype, cette position a été jugée trop proche du bord supérieur du récipient et moins intéressante visuellement.
 
 Elle a donc été repositionnée entre 70 % et 80 %.
 
-Cette modification constitue le premier ajustement de game design directement issu des tests du prototype.
+Cette modification constitue un premier ajustement de game design directement issu de l'observation du prototype.
 
-## 3. Étape suivante — MVP
+Le POC montre également qu'une interaction extrêmement simple peut servir de base à une difficulté beaucoup plus riche si plusieurs contraintes sont progressivement introduites.
 
-La prochaine étape consiste à transformer le POC en MVP tout en conservant la mécanique centrale déjà validée.
+## 3. Phase suivante — Validation utilisateur
 
-L'objectif n'est pas de reconstruire le jeu, mais d'enrichir progressivement la base existante.
-
-Le MVP pourrait notamment introduire :
-
-- un feedback graphique plus marqué pour chaque résultat ;
-- des animations lors de la réussite ou de l'échec ;
-- une meilleure transition entre les tentatives ;
-- la suppression des informations de debug visibles ;
-- une interface plus aboutie ;
-- des indications plus claires pour un premier joueur ;
-- une meilleure adaptation aux différentes tailles d'écran.
-
-La priorité restera la lisibilité de l'interaction.
-
-## 4. Tests utilisateurs
-
-Le fonctionnement technique du POC a été testé pendant son développement, mais une prochaine phase devra confronter le jeu à plusieurs utilisateurs.
+Avant d'augmenter fortement la complexité, la mécanique actuelle devra être confrontée à plusieurs utilisateurs.
 
 Les tests devront notamment vérifier :
 
 - si l'objectif est compris sans explication ;
 - si `HOLD TO FILL` est immédiatement compris ;
-- si la vitesse de 30 % / seconde est adaptée ;
+- si la vitesse actuelle d'environ 30 % par seconde est adaptée ;
 - si la zone 70–80 % offre une difficulté intéressante ;
 - si les résultats sont suffisamment clairs ;
 - si le joueur comprend comment recommencer ;
 - si l'interaction donne envie de refaire une tentative.
 
-Ces observations permettront de distinguer les problèmes techniques des problèmes d'expérience utilisateur.
+Ces observations permettront de distinguer les problèmes techniques des problèmes d'expérience utilisateur et d'ajuster la base avant le développement du MVP.
 
-## 5. Difficulté progressive
+## 4. MVP — Objectif général
 
-Une évolution importante pourrait être l'introduction de plusieurs niveaux.
+La prochaine étape consiste à transformer le POC en un jeu de précision plus complet sans remplacer la mécanique centrale déjà validée.
 
-La difficulté pourrait évoluer en modifiant certains paramètres déjà présents dans le POC :
+Le MVP conservera une interaction principale volontairement simple :
 
-- vitesse de remplissage ;
-- largeur de la zone cible ;
-- position de la zone cible ;
-- visibilité de la cible ;
-- temps disponible ;
-- comportement du récipient.
+**maintenir → observer → relâcher**
 
-Cette approche permettrait de conserver la même interaction principale tout en renouvelant progressivement le challenge.
+La profondeur supplémentaire proviendra de quatre dimensions :
 
-## 6. Système de score
+1. **Précision** — atteindre un niveau ou un volume demandé.
+2. **Perception** — interpréter correctement le récipient et le niveau d'eau.
+3. **Gestion des ressources** — contrôler l'eau disponible et les tentatives.
+4. **Gestion de la pression** — agir avec des contraintes de temps ou de difficulté.
 
-Une version ultérieure pourrait introduire un score basé sur la précision.
+Le MVP devra ainsi enrichir les décisions du joueur sans compliquer inutilement les commandes.
 
-Au lieu de limiter le résultat à trois catégories, le jeu pourrait mesurer la distance entre le niveau atteint et une valeur idéale.
+## 5. MVP — Objectifs de précision
 
-Par exemple, une tentative proche du centre de la zone cible pourrait obtenir davantage de points qu'une tentative située près de sa limite.
+Le premier enrichissement du gameplay consistera à faire varier les objectifs.
 
-Ce système pourrait ensuite permettre :
+Le jeu pourra proposer :
 
-- un meilleur score ;
-- des séries de réussites ;
-- des objectifs ;
-- un classement local ;
-- une progression entre plusieurs niveaux.
+- différentes zones cibles ;
+- des zones de plus en plus étroites ;
+- des objectifs exprimés sous forme de pourcentage précis ;
+- une tolérance variable autour d'une valeur cible ;
+- une précision demandée de plus en plus importante.
 
-Cette fonctionnalité reste hors du périmètre du POC actuel.
+Un niveau pourra par exemple demander :
 
-## 7. Enrichissement graphique
+> Atteindre 77 % avec une tolérance de ±2 %.
 
-Une fois la mécanique et la difficulté validées, l'identité visuelle pourra être enrichie.
+Cette évolution transforme progressivement le jeu d'un simple exercice de timing en un véritable challenge de précision.
 
-Les évolutions possibles comprennent :
+## 6. MVP — Tentatives et gestion des ressources
+
+Le MVP pourra limiter le nombre de tentatives disponibles.
+
+Un niveau pourra par exemple proposer seulement trois essais pour atteindre son objectif.
+
+Une réserve d'eau limitée pourra également être introduite.
+
+L'eau utilisée deviendra alors une ressource à gérer : une tentative ratée pourra réduire la quantité disponible pour les essais ou niveaux suivants.
+
+Cette mécanique ajoute une conséquence aux erreurs et introduit une dimension stratégique sans modifier l'interaction fondamentale.
+
+## 7. MVP — Temps, vitesse et débit
+
+Certains niveaux pourront introduire une pression temporelle ou modifier le comportement du remplissage.
+
+Les paramètres envisageables comprennent :
+
+- un chronomètre ;
+- un temps maximal pour terminer une tentative ;
+- différentes vitesses de remplissage ;
+- une accélération progressive ;
+- un débit variable ;
+- une légère inertie après le relâchement.
+
+L'inertie pourra par exemple simuler quelques gouttes supplémentaires après que le joueur a cessé de maintenir la commande.
+
+Le joueur devra alors anticiper l'arrêt plutôt que simplement réagir au niveau affiché.
+
+## 8. MVP — Formes de récipients et trompe-l'œil
+
+Une évolution majeure du MVP sera l'introduction de différents récipients.
+
+Les formes pourront comprendre :
+
+- récipients droits ;
+- verres larges ou étroits ;
+- formes coniques ;
+- bouteilles ;
+- fioles ;
+- récipients asymétriques ;
+- formes volontairement trompeuses.
+
+Cette variation ne sera pas uniquement esthétique.
+
+Dans le POC, le pourcentage est directement représenté par la hauteur de l'eau. Dans une évolution du MVP, le volume réel pourra être distingué de la hauteur visible.
+
+Ainsi, selon la géométrie du récipient, 50 % du volume total ne correspondra pas nécessairement à 50 % de sa hauteur.
+
+La forme du récipient deviendra alors une mécanique de gameplay à part entière.
+
+Le joueur devra progressivement apprendre à estimer un volume plutôt qu'à simplement suivre une barre verticale.
+
+## 9. MVP — Disparition progressive des aides
+
+Les premiers niveaux pourront conserver les aides actuelles afin de faciliter l'apprentissage.
+
+Celles-ci pourront ensuite être progressivement réduites :
+
+- pourcentage visible pendant toute la tentative ;
+- pourcentage masqué pendant le remplissage ;
+- cible visible au départ puis masquée ;
+- objectif affiché pendant quelques secondes seulement ;
+- niveau exact révélé uniquement après le relâchement.
+
+Cette progression permettra d'introduire des dimensions de mémorisation, d'estimation et de perception.
+
+## 10. MVP — Score et performance
+
+Le système de résultat pourra évoluer au-delà des trois catégories actuelles.
+
+Le jeu pourra mesurer l'écart entre le résultat obtenu et l'objectif demandé.
+
+Par exemple, pour une cible de 77 %, un résultat à 76,8 % pourra être récompensé davantage qu'un résultat à 74 %.
+
+Le système pourra prendre en compte :
+
+- la précision ;
+- le temps utilisé ;
+- la quantité d'eau consommée ;
+- le nombre de tentatives ;
+- les réussites consécutives.
+
+Ces données pourront ensuite produire :
+
+- un score ;
+- une évaluation par étoiles ;
+- un meilleur résultat personnel ;
+- des multiplicateurs ou séries de réussites.
+
+## 11. MVP — Feedback visuel et sonore
+
+L'interface du POC restera volontairement simple jusqu'à validation de la mécanique.
+
+Le MVP pourra ensuite améliorer fortement le feedback :
 
 - animation du liquide ;
-- changement de couleur selon le résultat ;
 - réaction visuelle du récipient ;
-- effets de débordement ;
+- effet de débordement ;
+- changement visuel selon le résultat ;
 - particules ;
 - transitions ;
-- micro-animations du bouton ;
-- feedback de réussite plus visible.
+- micro-animations ;
+- affichage de l'écart exact avec l'objectif ;
+- animation du score ;
+- effets sonores liés au remplissage et aux résultats.
 
-Ces éléments seront ajoutés uniquement s'ils améliorent la compréhension ou le plaisir de jeu.
+Le feedback devra rendre l'action plus satisfaisante sans nuire à la lisibilité.
 
-## 8. Son et feedback
+## 12. Progression de la difficulté
 
-Une future version pourrait également introduire du feedback sonore.
+La difficulté ne reposera pas sur une seule variable.
 
-Des sons différents pourraient accompagner :
+Elle sera construite par combinaison progressive des mécaniques.
 
-- le remplissage ;
-- le relâchement ;
-- `TOO LOW` ;
-- `PERFECT` ;
-- `OVERFLOW`.
+### Exemple de progression
 
-Le son resterait un élément complémentaire et ne remplacerait jamais le feedback visuel.
+**Niveaux 1–5 — Apprentissage**
 
-## 9. Évolution technique
+- récipient simple ;
+- cible large ;
+- pourcentage visible ;
+- tentatives libres.
+
+**Niveaux 6–10 — Précision**
+
+- objectifs variables ;
+- zones plus étroites ;
+- pourcentages précis.
+
+**Niveaux 11–15 — Ressources**
+
+- nombre de tentatives limité ;
+- réserve d'eau limitée.
+
+**Niveaux 16–20 — Perception**
+
+- différentes formes de récipients ;
+- relation plus complexe entre hauteur et volume.
+
+**Niveaux 21–25 — Mémoire**
+
+- disparition de certaines aides ;
+- cible à mémoriser ;
+- pourcentage masqué pendant le remplissage.
+
+**Niveaux 26–30 — Pression**
+
+- chronomètre ;
+- vitesse plus élevée ;
+- variation du débit ;
+- inertie après le relâchement.
+
+**Niveaux avancés — Combinaisons**
+
+Les contraintes précédentes pourront être combinées.
+
+Un niveau avancé pourrait par exemple demander :
+
+- d'atteindre 77 % ;
+- avec trois tentatives ;
+- avec une réserve d'eau limitée ;
+- dans un récipient trompeur ;
+- avec huit secondes disponibles ;
+- sans pourcentage visible pendant le remplissage.
+
+La difficulté émergera ainsi de la combinaison de règles simples.
+
+## 13. Évolution technique
 
 La structure actuelle est volontairement simple et adaptée au POC.
 
-Si le nombre de fonctionnalités augmente, le projet pourra être progressivement séparé en plusieurs composants et responsabilités.
+Lorsque le nombre de fonctionnalités augmentera, le projet pourra être progressivement séparé en plusieurs composants et responsabilités.
 
 Par exemple :
 
@@ -143,48 +266,97 @@ Par exemple :
 - `WaterLevel` ;
 - `ResultFeedback` ;
 - `GameControls` ;
-- configuration des niveaux ;
-- logique de score.
+- `Timer` ;
+- `WaterReserve` ;
+- `LevelConfig` ;
+- logique de score ;
+- logique de progression ;
+- gestion des différentes géométries de récipients.
 
-Cette évolution sera introduite uniquement lorsque la complexité du projet la justifiera.
+Les paramètres propres aux niveaux pourront progressivement être déplacés vers une configuration dédiée afin d'éviter de dupliquer la logique du jeu.
 
-## 10. Priorités
+Cette évolution technique sera introduite lorsque la complexité fonctionnelle la justifiera.
 
-L'ordre de développement envisagé est :
+## 14. Évolutions après le MVP
+
+Une fois le MVP validé, plusieurs extensions pourront être étudiées :
+
+- mode infini avec difficulté croissante ;
+- challenges de précision ;
+- séries de récipients avec une seule réserve d'eau ;
+- records personnels ;
+- challenges spéciaux ;
+- davantage de familles de récipients ;
+- événements et obstacles supplémentaires ;
+- système de progression plus développé.
+
+Ces fonctionnalités ne constituent pas des exigences du MVP initial.
+
+Elles représentent des possibilités d'évolution si la boucle enrichie est validée par les tests.
+
+## 15. Ordre de développement envisagé
+
+L'ordre de développement proposé est :
 
 ### Priorité 1 — Validation utilisateur
 
-Tester la mécanique actuelle avec plusieurs personnes et identifier les difficultés de compréhension ou d'interaction.
+Tester le POC actuel et identifier les problèmes de compréhension, de rythme ou d'interaction.
 
-### Priorité 2 — Ajustements de gameplay
+### Priorité 2 — Stabilisation de la mécanique
 
-Modifier si nécessaire :
+Ajuster si nécessaire :
 
 - la vitesse ;
 - la cible ;
 - le feedback ;
-- le rythme entre les tentatives.
+- le rythme entre les tentatives ;
+- l'expérience sur différentes tailles d'écran.
 
-### Priorité 3 — MVP
+### Priorité 3 — Premier MVP jouable
 
-Nettoyer l'interface, masquer les éléments de debug et renforcer le feedback graphique.
+Introduire :
 
-### Priorité 4 — Progression
+- plusieurs niveaux ;
+- objectifs variables ;
+- objectifs de précision ;
+- tentatives limitées ;
+- réserve d'eau ;
+- système de score simple ;
+- interface nettoyée sans informations de debug.
 
-Introduire plusieurs niveaux et une difficulté progressive.
+### Priorité 4 — Perception et difficulté avancée
 
-### Priorité 5 — Enrichissement
+Introduire progressivement :
 
-Ajouter score, animations, sons et autres éléments secondaires.
+- nouvelles formes de récipients ;
+- relation entre volume réel et hauteur visible ;
+- disparition des aides ;
+- timer ;
+- variations du débit.
 
-## 11. Vision
+### Priorité 5 — Polish
+
+Ajouter :
+
+- animations ;
+- effets de débordement ;
+- feedback plus riche ;
+- sons ;
+- transitions ;
+- amélioration générale de l'identité visuelle.
+
+### Priorité 6 — Validation du MVP
+
+Tester les nouvelles mécaniques avec des utilisateurs et déterminer lesquelles améliorent réellement l'expérience avant de poursuivre les extensions.
+
+## 16. Vision
 
 Le POC démontre la faisabilité de la mécanique centrale de DON'T OVERFLOW!.
 
-La suite du développement doit conserver cette simplicité tout en augmentant progressivement la profondeur du jeu.
+Le MVP doit démontrer qu'une interaction extrêmement simple peut produire une expérience progressivement plus riche grâce à la précision, à la perception, à la gestion des ressources et à la pression.
 
 Le principe retenu reste :
 
-**valider d'abord → enrichir ensuite.**
+**valider d'abord → enrichir ensuite**
 
-Chaque nouvelle fonctionnalité devra donc répondre à un besoin identifié par les tests ou contribuer directement à l'expérience du joueur.
+Chaque nouvelle fonctionnalité devra soit résoudre un problème identifié lors des tests, soit augmenter directement la profondeur, la lisibilité ou la satisfaction de la boucle principale.
