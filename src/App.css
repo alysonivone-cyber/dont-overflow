@@ -1,0 +1,203 @@
+/* =========================================
+   DON'T OVERFLOW — POC
+   12.1 Structure visuelle du jeu
+   ========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.game {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f3f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #16324f;
+}
+
+.game-card {
+  width: min(92vw, 520px);
+  padding: 42px 36px;
+  background: white;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 18px 50px rgba(22, 50, 79, 0.12);
+}
+
+/* ---------- TITRE ---------- */
+
+.game-title {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #16324f;
+}
+
+.game-subtitle {
+  margin: 10px 0 32px;
+  color: #6b7c8f;
+  font-size: 16px;
+}
+
+/* ---------- ZONE DE JEU ---------- */
+
+.container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 30px;
+}
+
+.glass {
+  position: relative;
+  width: 190px;
+  height: 260px;
+  overflow: hidden;
+
+  border: 5px solid #16324f;
+  border-top: 3px solid #16324f;
+  border-radius: 10px 10px 30px 30px;
+
+  background: #eef8ff;
+}
+
+/* Eau — sa hauteur sera contrôlée plus tard
+   par la variable waterLevel. */
+
+.water {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 0%;
+
+  background: #62c9f5;
+  transition: height 0.08s linear;
+}
+
+/* Zone que le joueur doit viser */
+
+.target-zone {
+  position: absolute;
+  left: 0;
+  bottom: 70%;
+
+  width: 100%;
+  height: 10%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-top: 2px dashed #18a999;
+  border-bottom: 2px dashed #18a999;
+
+  background: rgba(24, 169, 153, 0.12);
+
+  color: #11776d;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+
+  z-index: 2;
+}
+
+/* ---------- INTERACTION ---------- */
+
+.fill-button {
+  width: 100%;
+  max-width: 300px;
+
+  padding: 17px 24px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #16324f;
+  color: white;
+
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+
+  cursor: pointer;
+}
+
+.fill-button:hover {
+  background: #214b72;
+}
+
+.fill-button:active {
+  transform: scale(0.98);
+}
+
+.hint {
+  margin: 14px 0 0;
+  color: #7c8b99;
+  font-size: 14px;
+}
+
+/* ---------- ETAT DU POC ---------- */
+
+.debug-state {
+  margin-top: 30px;
+  padding-top: 20px;
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  border-top: 1px solid #e5ebf0;
+}
+
+.debug-state span {
+  padding: 7px 10px;
+
+  background: #f4f7fa;
+  border-radius: 8px;
+
+  color: #5e7183;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 600px) {
+  .game-card {
+    width: calc(100vw - 28px);
+    padding: 32px 20px;
+  }
+
+  .game-title {
+    font-size: 34px;
+  }
+
+  .glass {
+    width: 160px;
+    height: 220px;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #18a999;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.percentage {
+  margin: -16px 0 20px;
+  color: #16324f;
+  font-size: 18px;
+  font-weight: 700;
+}
