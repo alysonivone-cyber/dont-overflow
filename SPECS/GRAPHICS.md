@@ -31,6 +31,18 @@ Cette interface met en application les principes définis pour le POC :
 
 Cette capture représente l'interface actuelle du POC. Les informations de debug `waterLevel`, `isFilling` et `result` sont volontairement visibles pour faciliter la validation du prototype et ne sont pas destinées à l'interface finale du MVP.
 
+### Résultat observable de la mécanique
+
+La capture suivante montre une tentative terminée avec succès :
+
+![Résultat PERFECT du POC](./assets/poc-perfect.png)
+
+Le joueur a arrêté le remplissage à 76 %, à l'intérieur de la zone cible définie entre 70 % et 80 %. L'interface affiche alors le résultat `PERFECT` et propose immédiatement une nouvelle tentative avec `TRY AGAIN`.
+
+Les informations de debug visibles en bas de l'interface confirment également l'état du prototype après l'interaction : `waterLevel: 76`, `isFilling: false` et `result: PERFECT`.
+
+Cette capture complète la vue initiale du POC en montrant qu'une action du joueur modifie réellement les données du jeu et produit un résultat observable à l'écran.
+
 ## 2. Hiérarchie visuelle du POC
 
 L'interface est organisée autour d'une carte centrale contenant les éléments dans l'ordre suivant :
