@@ -14,6 +14,23 @@ Le design du POC reste volontairement minimal afin que l'attention du joueur soi
 
 Cette simplicité constitue une base fonctionnelle. Le MVP pourra développer une identité visuelle plus riche sans compromettre la compréhension de la mécanique.
 
+### Référence visuelle du POC
+
+L'interface actuelle du POC constitue la référence visuelle du Rendu 1.
+
+![Interface actuelle du POC](./assets/poc-interface.png)
+
+Cette interface met en application les principes définis pour le POC :
+
+- hiérarchie visuelle centrée sur le récipient ;
+- palette bleu marine, bleu clair et turquoise ;
+- zone cible immédiatement identifiable ;
+- action principale unique et fortement contrastée ;
+- affichage direct du niveau atteint ;
+- états internes visibles à des fins de développement.
+
+Cette capture représente l'interface actuelle du POC. Les informations de debug `waterLevel`, `isFilling` et `result` sont volontairement visibles pour faciliter la validation du prototype et ne sont pas destinées à l'interface finale du MVP.
+
 ## 2. Hiérarchie visuelle du POC
 
 L'interface est organisée autour d'une carte centrale contenant les éléments dans l'ordre suivant :

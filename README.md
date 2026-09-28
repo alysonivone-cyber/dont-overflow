@@ -204,6 +204,32 @@ Le POC a permis de valider plusieurs éléments importants :
 
 Le déplacement de la cible de 90–100 % vers 70–80 % constitue la première itération de game design issue de cette observation du prototype.
 
+### Bilan du POC
+
+#### Ce qui fonctionne
+
+La mécanique centrale est fonctionnelle et jouable : le joueur peut maintenir le bouton pour remplir le récipient, relâcher pour arrêter le remplissage, obtenir un résultat puis recommencer une tentative.
+
+Les états `TOO LOW`, `PERFECT` et `OVERFLOW` sont déclenchés selon les seuils définis dans les spécifications, et l'interface permet d'observer directement l'effet des actions du joueur.
+
+#### Ce qui doit évoluer
+
+Le POC remplit son objectif de validation, mais reste volontairement minimal. Il ne permet pas encore d'évaluer la progression sur plusieurs niveaux, la gestion de ressources, différentes formes de récipients ou l'effet de contraintes supplémentaires sur la difficulté.
+
+La compréhension et l'équilibrage devront également être confrontés à de vrais tests utilisateurs lors du développement du MVP.
+
+#### Ce qui a été modifié après observation du POC
+
+La zone cible initialement prévue entre 90 % et 100 % a été repositionnée entre 70 % et 80 % après observation du prototype.
+
+Cette modification a été répercutée dans les règles, la logique d'évaluation et la représentation graphique de la zone cible.
+
+#### Structure du code : suffisante pour le POC, à faire évoluer pour le MVP
+
+La structure actuelle est adaptée au périmètre réduit du POC : les états `waterLevel`, `isFilling` et `result` permettent de séparer les principales responsabilités de la mécanique.
+
+Pour le MVP, l'ajout de niveaux, de ressources, de timers, de récipients différents et d'un système de score nécessitera une architecture plus modulaire. Cette évolution est détaillée dans `SPECS/TECHNICAL.md` et `SPECS/ROADMAP.md`.
+
 ## Vers le MVP
 
 Le POC est volontairement minimal.
