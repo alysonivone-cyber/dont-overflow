@@ -5,6 +5,11 @@ import { levels } from './game/levels'
 import { evaluateResult } from './game/evaluateResult'
 import type { GameResult } from './game/types'
 import ResultFeedback from './components/ResultFeedback'
+import {
+  playSuccessSound,
+  playErrorSound,
+  playGameOverSound,
+} from './game/soundManager'
 
 function App() {
   // =====================================================
@@ -107,16 +112,35 @@ function App() {
 
     setResult(evaluatedResult)
 
-    // Une tentative est consommée uniquement
-    // lorsque le joueur rate.
-    if (
-      evaluatedResult !== 'SUCCESS' &&
-      evaluatedResult !== 'PERFECT'
-    ) {
-      setAttemptsLeft((currentAttempts) =>
-        Math.max(currentAttempts - 1, 0),
-      )
-    }
+// =====================================================
+// SOUND FEEDBACK
+// =====================================================
+
+// SUCCESS et PERFECT :
+// le niveau est réussi.
+if (
+  evaluatedResult === 'SUCCESS' ||
+  evaluatedResult === 'PERFECT'
+) {
+  playSuccessSound()
+  return
+}
+
+// Le joueur a raté.
+// On calcule combien de tentatives resteront
+// après cet échec.
+const nextAttempts = Math.max(attemptsLeft - 1, 0)
+
+setAttemptsLeft(nextAttempts)
+
+// S'il ne reste plus aucune tentative,
+// on joue le son de Game Over.
+if (nextAttempts === 0) {
+  playGameOverSound()
+} else {
+  // Sinon, simple erreur : il peut réessayer.
+  playErrorSound()
+}
   }
 
   // =====================================================
