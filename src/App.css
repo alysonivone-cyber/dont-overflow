@@ -1,451 +1,959 @@
-/* =========================================
-   DON'T OVERFLOW — POC
-   Structure visuelle du jeu
-   ========================================= */
+/* =========================================================
+   DON'T OVERFLOW!
+   POC DESIGN SYSTEM — MVP WORLDS 1–4
+   ========================================================= */
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 
 * {
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
 body {
-  margin: 0;
-}
-
-.game {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f3f7fb;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #16324f;
+
+  background: #ffffff;
+
+  color: #163a59;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
-.game-card {
-  width: min(92vw, 520px);
-  padding: 42px 36px;
-  background: white;
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 18px 50px rgba(22, 50, 79, 0.12);
+button {
+  font: inherit;
 }
 
-/* ---------- TITRE ---------- */
-
-.game-title {
-  margin: 0;
-  font-size: 42px;
-  font-weight: 800;
-  letter-spacing: -1px;
-  color: #16324f;
-}
-
-.game-subtitle {
-  margin: 10px 0 32px;
-  color: #6b7c8f;
-  font-size: 16px;
-}
-
-/* ---------- ZONE DE JEU ---------- */
-
-.container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0 30px;
-}
-
-.glass {
-  position: relative;
-  width: 190px;
-  height: 260px;
-  overflow: hidden;
-
-  border: 5px solid #16324f;
-  border-top: 3px solid #16324f;
-  border-radius: 10px 10px 30px 30px;
-
-  background: #eef8ff;
-}
-
-/* Eau — hauteur contrôlée par la variable waterLevel */
-
-.water {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-
-  width: 100%;
-  height: 0%;
-
-  background: #62c9f5;
-  transition: height 0.08s linear;
-}
-
-/* Zone cible du POC : 70 % à 80 % */
-
-.target-zone {
-  position: absolute;
-  left: 0;
-  bottom: 70%;
-
-  width: 100%;
-  height: 10%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-top: 2px dashed #18a999;
-  border-bottom: 2px dashed #18a999;
-
-  background: rgba(24, 169, 153, 0.12);
-
-  color: #11776d;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 1px;
-
-  z-index: 2;
-}
-
-/* ---------- INTERACTION ---------- */
-
-.fill-button {
-  width: 100%;
-  max-width: 300px;
-
-  padding: 17px 24px;
-
-  border: none;
-  border-radius: 14px;
-
-  background: #16324f;
-  color: white;
-
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-
-  cursor: pointer;
-}
-
-.fill-button:hover {
-  background: #214b72;
-}
-
-.fill-button:active {
-  transform: scale(0.98);
-}
-
-.hint {
-  margin: 14px 0 0;
-  color: #7c8b99;
-  font-size: 14px;
-}
-
-/* ---------- ÉTAT DU POC ---------- */
-
-.debug-state {
-  margin-top: 30px;
-  padding-top: 20px;
-
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-
-  border-top: 1px solid #e5ebf0;
-}
-
-.debug-state span {
-  padding: 7px 10px;
-
-  background: #f4f7fa;
-  border-radius: 8px;
-
-  color: #5e7183;
-  font-family: Consolas, monospace;
-  font-size: 12px;
-}
-
-/* ---------- RESPONSIVE ---------- */
-
-@media (max-width: 600px) {
-  .game-card {
-    width: calc(100vw - 28px);
-    padding: 32px 20px;
-  }
-
-  .game-title {
-    font-size: 34px;
-  }
-
-  .glass {
-    width: 160px;
-    height: 220px;
-  }
-}
-
-/* ---------- INFORMATIONS ---------- */
-
-.eyebrow {
-  margin: 0 0 8px;
-  color: #18a999;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.8px;
-}
-
-.percentage {
-  margin: -16px 0 20px;
-  color: #16324f;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-/* Informations propres au niveau */
-
-.level-info {
-  position: relative;
-  width: 100%;
-  max-width: 460px;
-  margin: 10px auto 18px;
-}
-
-.level-instruction {
-  margin: 0 auto;
-  max-width: 340px;
-  padding-right: 95px;
-
-  color: #667085;
-  font-size: 0.95rem;
-  line-height: 1.45;
-  text-align: left;
-}
-
-.attempts-counter {
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  padding: 7px 10px;
-
-  border: 1px solid #f59e0b;
-  border-radius: 10px;
-
-  background: #fff7ed;
-  color: #d97706;
-
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-/* Écran de fin du World 1 */
-
-.world-complete .level-instruction {
-  max-width: 420px;
-  margin: 20px auto 28px;
-  padding-right: 0;
-  text-align: center;
-}
 
 /* =========================================================
-   RESULT FEEDBACK — SUCCESS / FAILURE
+   PAGE
    ========================================================= */
 
-.result-feedback {
-  position: relative;
+.game {
   width: 100%;
-  max-width: 360px;
-  min-height: 150px;
-  margin: 14px auto;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  /* Slightly more compact than the previous version
+     so the complete gameplay area fits better on desktop. */
+  padding: 18px 20px 30px;
+
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   MAIN GAME CARD
+   ========================================================= */
+
+.game-card {
+  width: 100%;
+  max-width: 720px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 
-  overflow: hidden;
-  animation: feedback-pop 0.35s ease-out;
+  padding: 0 24px;
+
+  background: #ffffff;
+
+  text-align: center;
 }
 
-@keyframes feedback-pop {
+
+/* =========================================================
+   EYEBROW / WORLD INDICATOR
+   ========================================================= */
+
+.eyebrow {
+  margin: 0 0 8px;
+
+  color: #18a999;
+
+  font-size: 13px;
+  font-weight: 900;
+
+  letter-spacing: 2.3px;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   MAIN TITLE
+   ========================================================= */
+
+.game-title {
+  margin: 0;
+
+  color: #163a59;
+
+  font-size: clamp(42px, 7vw, 64px);
+  font-weight: 900;
+
+  line-height: 1;
+
+  letter-spacing: -2.4px;
+}
+
+
+/* =========================================================
+   LEVEL TITLE
+   ========================================================= */
+
+.game-subtitle {
+  margin: 12px 0 3px;
+
+  color: #56748b;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   LEVEL INFORMATION
+   ========================================================= */
+
+.level-info {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-top: 2px;
+}
+
+.level-instruction {
+  max-width: 520px;
+
+  margin: 0;
+
+  color: #71899c;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ATTEMPTS — POC ORANGE
+   ========================================================= */
+
+.attempts-counter {
+  width: fit-content;
+
+  margin-top: 3px;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  background: #fff4e6;
+
+  color: #e58a22;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 1.1px;
+}
+
+
+/* =========================================================
+   WORLD 3 — TIMER
+   ========================================================= */
+
+.timer-display {
+  min-width: 116px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  margin: 10px auto 0;
+  padding: 8px 14px;
+
+  border: 1px solid #d8e5ec;
+  border-radius: 10px;
+
+  background: #f6f9fb;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.timer-label {
+  color: #7890a2;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: 1.3px;
+}
+
+.timer-value {
+  color: #163a59;
+
+  font-family: Consolas, monospace;
+
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.timer-ready {
+  opacity: 0.82;
+}
+
+.timer-running {
+  border-color: #18a999;
+
+  background: #eefaf8;
+}
+
+.timer-running .timer-label {
+  color: #18a999;
+}
+
+.timer-danger {
+  border-color: #e85d68;
+
+  background: #fff3f4;
+
+  animation:
+    timer-pulse 0.45s
+    ease-in-out infinite alternate;
+}
+
+.timer-danger .timer-label,
+.timer-danger .timer-value {
+  color: #d94d59;
+}
+
+@keyframes timer-pulse {
   from {
-    opacity: 0;
-    transform: scale(0.85);
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.04);
+  }
+}
+
+
+/* =========================================================
+   WORLD 4 — WATER RESERVE
+   ========================================================= */
+
+.reserve-panel {
+  width: 100%;
+  max-width: 300px;
+
+  margin: 10px auto 0;
+  padding: 11px 13px;
+
+  border: 1px solid #d8e5ec;
+  border-radius: 10px;
+
+  background: #f6f9fb;
+}
+
+.reserve-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+}
+
+.reserve-label {
+  color: #6e8799;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: 1.2px;
+}
+
+.reserve-value {
+  color: #163a59;
+
+  font-family: Consolas, monospace;
+
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.reserve-track {
+  width: 100%;
+  height: 8px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #dce8ee;
+}
+
+.reserve-fill {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #18a999;
+
+  transition: width 0.08s linear;
+}
+
+
+/* =========================================================
+   WORLD 4 — INERTIA
+   ========================================================= */
+
+.inertia-status {
+  width: fit-content;
+
+  margin: 9px auto 0;
+  padding: 7px 12px;
+
+  border: 1px solid #18a999;
+  border-radius: 999px;
+
+  background: #eefaf8;
+
+  color: #148b7f;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  animation:
+    inertia-pulse 0.5s
+    ease-in-out infinite alternate;
+}
+
+@keyframes inertia-pulse {
+  from {
+    opacity: 0.68;
+    transform: scale(0.98);
   }
 
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.02);
   }
 }
 
-/* CAPYBARA TEMPORAIRE */
 
-.capybara-placeholder {
-  position: relative;
-  z-index: 2;
+/* =========================================================
+   CONTAINER AREA
+   ========================================================= */
 
-  font-size: 4.5rem;
-  line-height: 1;
+.container {
+  width: 100%;
 
-  animation: capybara-celebrate 0.6s ease-in-out infinite alternate;
-}
-
-@keyframes capybara-celebrate {
-  from {
-    transform: translateY(0) rotate(-4deg);
-  }
-
-  to {
-    transform: translateY(-8px) rotate(4deg);
-  }
-}
-
-/* SUCCESS */
-
-.success-feedback {
-  min-height: 175px;
-}
-
-.success-feedback .feedback-title {
-  color: #059669;
-}
-
-.confetti {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+  /*
+   * We keep the glass itself at the same size.
+   * Only the surrounding empty vertical space is reduced.
+   */
+  min-height: 285px;
 
   display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
+  align-items: flex-end;
+  justify-content: center;
+
+  margin-top: 14px;
+}
+
+
+/* =========================================================
+   BASE GLASS
+   ========================================================= */
+
+.glass {
+  position: relative;
+
+  /*
+   * SAME SIZE AS BEFORE.
+   */
+  height: 275px;
+
+  overflow: hidden;
+
+  background: #edf7fc;
+
+  box-shadow:
+    0 2px 5px rgba(22, 58, 89, 0.08);
+}
+
+
+/* =========================================================
+   WORLD 1 / 3 / 4 — STRAIGHT GLASS
+   ========================================================= */
+
+.glass-straight {
+  width: 225px;
+
+  border: 4px solid #163a59;
+
+  border-radius:
+    14px 14px
+    34px 34px;
+}
+
+
+/* =========================================================
+   WORLD 2 — WIDE GLASS
+   ========================================================= */
+
+.glass-wide {
+  width: 275px;
+
+  border: 4px solid #163a59;
+
+  border-radius:
+    15px 15px
+    36px 36px;
+}
+
+
+/* =========================================================
+   WORLD 2 — CONICAL GLASS
+   ========================================================= */
+
+.glass-conical {
+  width: 250px;
+
+  border: none;
+
+  clip-path:
+    polygon(
+      5% 0%,
+      95% 0%,
+      72% 100%,
+      28% 100%
+    );
+
+  background: #163a59;
+
+  padding: 4px;
+}
+
+.glass-conical::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 4px;
+
+  z-index: 0;
+
+  clip-path:
+    polygon(
+      4% 0%,
+      96% 0%,
+      71% 100%,
+      29% 100%
+    );
+
+  background: #edf7fc;
+}
+
+
+/* =========================================================
+   WORLD 2 — MARTINI GLASS
+   ========================================================= */
+
+.glass-martini {
+  width: 280px;
+
+  border: none;
+
+  clip-path:
+    polygon(
+      2% 0%,
+      98% 0%,
+      58% 100%,
+      42% 100%
+    );
+
+  background: #163a59;
+
+  padding: 4px;
+}
+
+.glass-martini::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 4px;
+
+  z-index: 0;
+
+  clip-path:
+    polygon(
+      2% 0%,
+      98% 0%,
+      58% 100%,
+      42% 100%
+    );
+
+  background: #edf7fc;
+}
+
+
+/* =========================================================
+   WATER
+   ========================================================= */
+
+.water {
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  z-index: 1;
+
+  width: 100%;
+  height: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #72d6ee 0%,
+      #48c6e5 45%,
+      #28b6dc 100%
+    );
+
+  transition:
+    height 0.035s linear;
+}
+
+
+/* =========================================================
+   TARGET ZONE
+   ========================================================= */
+
+.target-zone {
+  position: absolute;
+
+  left: 0;
+
+  z-index: 3;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-top:
+    2px dashed #18a999;
+
+  border-bottom:
+    2px dashed #18a999;
+
+  background:
+    rgba(24, 169, 153, 0.10);
 
   pointer-events: none;
 }
 
-.confetti span {
-  font-size: 1.4rem;
-  animation: confetti-fall 1.4s ease-in infinite;
+.target-zone span {
+  padding: 3px 7px;
+
+  background:
+    rgba(237, 247, 252, 0.88);
+
+  color: #168f84;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
 }
 
-.confetti span:nth-child(2) {
-  animation-delay: 0.2s;
+
+/* =========================================================
+   PERCENTAGE
+   ========================================================= */
+
+.percentage {
+  margin: 12px 0 2px;
+
+  color: #163a59;
+
+  font-family:
+    Consolas,
+    monospace;
+
+  font-size: 27px;
+  font-weight: 900;
 }
 
-.confetti span:nth-child(3) {
-  animation-delay: 0.4s;
+
+/* =========================================================
+   RESULT
+   ========================================================= */
+
+.result {
+  margin: 7px 0 0;
+
+  color: #18a999;
+
+  font-size: 15px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
 }
 
-.confetti span:nth-child(4) {
-  animation-delay: 0.6s;
+
+/* =========================================================
+   MAIN BUTTON
+   ========================================================= */
+
+.fill-button {
+  width: 100%;
+  max-width: 360px;
+
+  margin-top: 15px;
+  padding: 15px 22px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #163a59;
+
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 9px
+    rgba(22, 58, 89, 0.12);
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.confetti span:nth-child(5) {
-  animation-delay: 0.8s;
+.fill-button:hover:not(:disabled) {
+  background: #1d4a70;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 15px
+    rgba(22, 58, 89, 0.17);
 }
 
-@keyframes confetti-fall {
-  0% {
-    opacity: 0;
-    transform: translateY(-30px) rotate(0deg);
-  }
-
-  20% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(150px) rotate(360deg);
-  }
+.fill-button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
-/* FAILURE */
+.fill-button:disabled {
+  cursor: not-allowed;
 
-.failure-feedback {
-  min-height: 190px;
+  background: #527087;
+
+  opacity: 0.75;
 }
 
-.failure-zero {
+
+/* =========================================================
+   HINT
+   ========================================================= */
+
+.hint {
+  max-width: 520px;
+
+  margin: 13px 0 0;
+
+  color: #8497a6;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   DEBUG AREA
+   ========================================================= */
+
+.debug-state {
+  position: relative;
+
+  width: 100%;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  gap: 9px;
+
+  /*
+   * Debug is intentionally below the main gameplay.
+   * Scrolling for debug information is perfectly fine.
+   */
+  margin-top: 28px;
+  padding-top: 20px;
+}
+
+.debug-state::before {
+  content: "";
+
   position: absolute;
-  z-index: 0;
 
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
 
-  transform: translate(-50%, -55%);
+  width: 100%;
+  height: 1px;
 
-  color: #f59e0b;
-  opacity: 0.16;
-
-  font-size: 11rem;
-  font-weight: 900;
-  line-height: 1;
-
-  user-select: none;
+  background: #e4ebef;
 }
 
-.capybara-placeholder.sad {
-  animation: capybara-sad 1.3s ease-in-out infinite;
+
+/* =========================================================
+   DEBUG PILLS
+   ========================================================= */
+
+.debug-state span {
+  padding: 10px 12px;
+
+  border-radius: 10px;
+
+  background: #f4f7f9;
+
+  color: #748a9a;
+
+  font-family:
+    Consolas,
+    monospace;
+
+  font-size: 10px;
+  font-weight: 600;
 }
 
-@keyframes capybara-sad {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
 
-  50% {
-    transform: translateY(4px);
-  }
-}
+/* =========================================================
+   SUCCESS / FAILURE FEEDBACK
+   ========================================================= */
 
-/* TEXT */
-
-.feedback-title {
+.result-feedback {
   position: relative;
-  z-index: 2;
 
-  margin: 10px 0 2px;
+  width: 100%;
 
-  color: #d97706;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  font-size: 1rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
+  margin-top: 22px;
 }
-
-.feedback-message {
-  position: relative;
-  z-index: 2;
-
-  margin: 0;
-
-  color: #667085;
-
-  font-size: 0.85rem;
-}
-
-/* REAL CAPYBARA MASCOTS */
 
 .capybara-image {
-  position: relative;
-  z-index: 2;
+  display: block;
 
-  width: 150px;
-  height: 150px;
+  max-width: 230px;
+  max-height: 220px;
 
   object-fit: contain;
 }
 
-.success-capybara {
-  animation: capybara-celebrate 0.6s ease-in-out infinite alternate;
+.feedback-title {
+  margin: 10px 0 4px;
+
+  color: #163a59;
+
+  font-size: 24px;
+  font-weight: 900;
 }
 
-.failure-capybara {
-  animation: capybara-sad 1.3s ease-in-out infinite;
+.feedback-message {
+  margin: 0;
+
+  color: #71899c;
+
+  font-size: 14px;
+}
+
+.confetti {
+  position: absolute;
+
+  top: -7px;
+
+  width: 285px;
+
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 21px;
+
+  pointer-events: none;
+}
+
+.failure-zero {
+  position: absolute;
+
+  top: 12px;
+  right: calc(50% - 115px);
+
+  color: #e85d68;
+
+  font-size: 42px;
+  font-weight: 900;
+}
+
+
+/* =========================================================
+   SUCCESS DETAILS
+   ========================================================= */
+
+.success-details {
+  margin: 6px 0 12px;
+}
+
+.reserve-result {
+  margin: 0 0 12px;
+
+  padding: 7px 12px;
+
+  border-radius: 999px;
+
+  background: #eefaf8;
+
+  color: #148b7f;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   RESULT / WORLD COMPLETE SCREENS
+   ========================================================= */
+
+.result-screen,
+.world-complete {
+  min-height: 620px;
+
+  justify-content: center;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .game {
+    padding:
+      16px 12px 28px;
+  }
+
+  .game-card {
+    padding: 0 10px;
+  }
+
+  .game-title {
+    font-size: 40px;
+
+    letter-spacing: -1.5px;
+  }
+
+  .game-subtitle {
+    font-size: 16px;
+  }
+
+  .level-instruction {
+    font-size: 14px;
+  }
+
+  .container {
+    min-height: 250px;
+
+    margin-top: 14px;
+  }
+
+  .glass {
+    height: 235px;
+  }
+
+  .glass-straight {
+    width: 190px;
+  }
+
+  .glass-wide {
+    width: 225px;
+  }
+
+  .glass-conical {
+    width: 215px;
+  }
+
+  .glass-martini {
+    width: 235px;
+  }
+
+  .fill-button {
+    max-width: 320px;
+  }
+
+  .reserve-panel {
+    max-width: 270px;
+  }
+
+  .debug-state {
+    margin-top: 26px;
+
+    gap: 6px;
+  }
+
+  .debug-state span {
+    padding: 8px 9px;
+
+    font-size: 9px;
+  }
 }
