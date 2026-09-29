@@ -202,3 +202,250 @@ body {
   font-size: 18px;
   font-weight: 700;
 }
+
+/* Informations propres au niveau */
+
+.level-info {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin: 10px auto 18px;
+}
+
+.level-instruction {
+  margin: 0 auto;
+  max-width: 340px;
+  padding-right: 95px;
+
+  color: #667085;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.attempts-counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  padding: 7px 10px;
+
+  border: 1px solid #f59e0b;
+  border-radius: 10px;
+
+  background: #fff7ed;
+  color: #d97706;
+
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* Écran de fin du World 1 */
+
+.world-complete .level-instruction {
+  max-width: 420px;
+  margin: 20px auto 28px;
+  padding-right: 0;
+  text-align: center;
+}
+
+/* =========================================================
+   RESULT FEEDBACK — SUCCESS / FAILURE
+   ========================================================= */
+
+.result-feedback {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  min-height: 150px;
+  margin: 14px auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+  animation: feedback-pop 0.35s ease-out;
+}
+
+@keyframes feedback-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* CAPYBARA TEMPORAIRE */
+
+.capybara-placeholder {
+  position: relative;
+  z-index: 2;
+
+  font-size: 4.5rem;
+  line-height: 1;
+
+  animation: capybara-celebrate 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes capybara-celebrate {
+  from {
+    transform: translateY(0) rotate(-4deg);
+  }
+
+  to {
+    transform: translateY(-8px) rotate(4deg);
+  }
+}
+
+/* SUCCESS */
+
+.success-feedback {
+  min-height: 175px;
+}
+
+.success-feedback .feedback-title {
+  color: #059669;
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+
+  pointer-events: none;
+}
+
+.confetti span {
+  font-size: 1.4rem;
+  animation: confetti-fall 1.4s ease-in infinite;
+}
+
+.confetti span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.confetti span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.confetti span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.confetti span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) rotate(0deg);
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(150px) rotate(360deg);
+  }
+}
+
+/* FAILURE */
+
+.failure-feedback {
+  min-height: 190px;
+}
+
+.failure-zero {
+  position: absolute;
+  z-index: 0;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -55%);
+
+  color: #f59e0b;
+  opacity: 0.16;
+
+  font-size: 11rem;
+  font-weight: 900;
+  line-height: 1;
+
+  user-select: none;
+}
+
+.capybara-placeholder.sad {
+  animation: capybara-sad 1.3s ease-in-out infinite;
+}
+
+@keyframes capybara-sad {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* TEXT */
+
+.feedback-title {
+  position: relative;
+  z-index: 2;
+
+  margin: 10px 0 2px;
+
+  color: #d97706;
+
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.feedback-message {
+  position: relative;
+  z-index: 2;
+
+  margin: 0;
+
+  color: #667085;
+
+  font-size: 0.85rem;
+}
+
+/* REAL CAPYBARA MASCOTS */
+
+.capybara-image {
+  position: relative;
+  z-index: 2;
+
+  width: 150px;
+  height: 150px;
+
+  object-fit: contain;
+}
+
+.success-capybara {
+  animation: capybara-celebrate 0.6s ease-in-out infinite alternate;
+}
+
+.failure-capybara {
+  animation: capybara-sad 1.3s ease-in-out infinite;
+}
