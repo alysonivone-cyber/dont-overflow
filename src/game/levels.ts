@@ -277,10 +277,7 @@ export const levels: LevelConfig[] = [
     flowType: 'constant',
 
     attempts: 3,
-
-    // Seconds available once filling begins.
     timeLimit: 4,
-
     waterReserve: null,
 
     showPercentage: true,
@@ -305,7 +302,6 @@ export const levels: LevelConfig[] = [
     flowType: 'accelerating',
 
     attempts: 3,
-
     timeLimit: null,
     waterReserve: null,
 
@@ -331,7 +327,6 @@ export const levels: LevelConfig[] = [
     flowType: 'variable',
 
     attempts: 3,
-
     timeLimit: null,
     waterReserve: null,
 
@@ -357,7 +352,6 @@ export const levels: LevelConfig[] = [
     flowType: 'accelerating',
 
     attempts: 3,
-
     timeLimit: 3.5,
     waterReserve: null,
 
@@ -383,7 +377,6 @@ export const levels: LevelConfig[] = [
     flowType: 'variable',
 
     attempts: 3,
-
     timeLimit: 3,
     waterReserve: null,
 
@@ -395,143 +388,286 @@ export const levels: LevelConfig[] = [
     inertia: 0,
   },
 
-// =====================================================
-// WORLD 4 — CONTROL
-// =====================================================
+  // =====================================================
+  // WORLD 4 — CONTROL
+  // =====================================================
 
-{
-  id: 1,
-  world: 4,
-  name: 'Limited Supply',
-  instruction:
-    'Water is limited. Reach the target without wasting your reserve.',
+  {
+    id: 1,
+    world: 4,
+    name: 'Limited Supply',
+    instruction:
+      'Water is limited. Reach the target without wasting your reserve.',
 
-  target: 65,
-  tolerance: 5,
+    target: 65,
+    tolerance: 5,
 
-  fillSpeed: 30,
-  flowType: 'constant',
+    fillSpeed: 30,
+    flowType: 'constant',
 
-  attempts: 3,
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 180,
 
-  timeLimit: null,
+    showPercentage: true,
+    showTargetZone: true,
 
-  waterReserve: 180,
+    containerShape: 'straight',
 
-  showPercentage: true,
-  showTargetZone: true,
+    inertia: 0,
+  },
 
-  containerShape: 'straight',
+  {
+    id: 2,
+    world: 4,
+    name: 'Think Before You Pour',
+    instruction:
+      'Your reserve is smaller. Every drop matters.',
 
-  inertia: 0,
-},
+    target: 70,
+    tolerance: 4,
 
-{
-  id: 2,
-  world: 4,
-  name: 'Think Before You Pour',
-  instruction:
-    'Your reserve is smaller. Every drop matters.',
+    fillSpeed: 32,
+    flowType: 'constant',
 
-  target: 70,
-  tolerance: 4,
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 150,
 
-  fillSpeed: 32,
-  flowType: 'constant',
+    showPercentage: true,
+    showTargetZone: true,
 
-  attempts: 3,
+    containerShape: 'straight',
 
-  timeLimit: null,
+    inertia: 0,
+  },
 
-  waterReserve: 150,
+  {
+    id: 3,
+    world: 4,
+    name: 'Momentum',
+    instruction:
+      'The water keeps flowing after release. Stop early.',
 
-  showPercentage: true,
-  showTargetZone: true,
+    target: 65,
+    tolerance: 4,
 
-  containerShape: 'straight',
+    fillSpeed: 30,
+    flowType: 'constant',
 
-  inertia: 0,
-},
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
 
-{
-  id: 3,
-  world: 4,
-  name: 'Momentum',
-  instruction:
-    'The water keeps flowing after release. Stop early.',
+    showPercentage: true,
+    showTargetZone: true,
 
-  target: 65,
-  tolerance: 4,
+    containerShape: 'straight',
 
-  fillSpeed: 30,
-  flowType: 'constant',
+    inertia: 0.35,
+  },
 
-  attempts: 3,
+  {
+    id: 4,
+    world: 4,
+    name: 'Resource Control',
+    instruction:
+      'Manage your reserve and anticipate the remaining flow.',
 
-  timeLimit: null,
+    target: 72,
+    tolerance: 3,
 
-  waterReserve: null,
+    fillSpeed: 32,
+    flowType: 'constant',
 
-  showPercentage: true,
-  showTargetZone: true,
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 170,
 
-  containerShape: 'straight',
+    showPercentage: true,
+    showTargetZone: true,
 
-  inertia: 0.35,
-},
+    containerShape: 'straight',
 
-{
-  id: 4,
-  world: 4,
-  name: 'Resource Control',
-  instruction:
-    'Manage your reserve and anticipate the remaining flow.',
+    inertia: 0.4,
+  },
 
-  target: 72,
-  tolerance: 3,
+  {
+    id: 5,
+    world: 4,
+    name: 'Control Test',
+    instruction:
+      'Limited water. Strong momentum. Precise control required.',
 
-  fillSpeed: 32,
-  flowType: 'constant',
+    target: 68,
+    tolerance: 2,
 
-  attempts: 3,
+    fillSpeed: 34,
+    flowType: 'constant',
 
-  timeLimit: null,
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 155,
 
-  waterReserve: 170,
+    showPercentage: false,
+    showTargetZone: true,
 
-  showPercentage: true,
-  showTargetZone: true,
+    containerShape: 'straight',
 
-  containerShape: 'straight',
+    inertia: 0.5,
+  },
 
-  inertia: 0.4,
-},
+  // =====================================================
+  // WORLD 5 — ENVIRONMENT
+  // =====================================================
 
-{
-  id: 5,
-  world: 4,
-  name: 'Control Test',
-  instruction:
-    'Limited water. Strong momentum. Precise control required.',
+  {
+    id: 1,
+    world: 5,
+    name: 'Warm Up',
+    instruction:
+      'Warm water evaporates after release. Aim slightly above the target.',
 
-  target: 68,
-  tolerance: 2,
+    target: 65,
+    tolerance: 4,
 
-  fillSpeed: 34,
-  flowType: 'constant',
+    fillSpeed: 30,
+    flowType: 'constant',
 
-  attempts: 3,
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
 
-  timeLimit: null,
+    showPercentage: true,
+    showTargetZone: true,
 
-  waterReserve: 155,
+    containerShape: 'straight',
 
-  showPercentage: false,
-  showTargetZone: true,
+    inertia: 0,
 
-  containerShape: 'straight',
+    temperature: 45,
+    temperatureMode: 'fixed',
+    evaporationRate: 1.5,
+    evaporationDuration: 1.2,
+  },
 
-  inertia: 0.5,
-},
+  {
+    id: 2,
+    world: 5,
+    name: 'Getting Hot',
+    instruction:
+      'Hotter water evaporates faster. Anticipate the loss before you release.',
 
+    target: 68,
+    tolerance: 4,
+
+    fillSpeed: 31,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    temperature: 70,
+    temperatureMode: 'fixed',
+    evaporationRate: 3,
+    evaporationDuration: 1.4,
+  },
+
+  {
+    id: 3,
+    world: 5,
+    name: 'Cooling Down',
+    instruction:
+      'The water cools over time. Its evaporation rate changes with temperature.',
+
+    target: 62,
+    tolerance: 3,
+
+    fillSpeed: 32,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    temperature: 85,
+    temperatureMode: 'cooling',
+    evaporationRate: 4,
+    evaporationDuration: 1.5,
+  },
+
+  {
+    id: 4,
+    world: 5,
+    name: 'Heat Control',
+    instruction:
+      'Manage your limited reserve while accounting for evaporation.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 32,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 170,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    temperature: 78,
+    temperatureMode: 'fixed',
+    evaporationRate: 3.5,
+    evaporationDuration: 1.5,
+  },
+
+  {
+    id: 5,
+    world: 5,
+    name: 'Boiling Point',
+    instruction:
+      'Heat, evaporation and momentum combine. Anticipate every change.',
+
+    target: 68,
+    tolerance: 2,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 165,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.4,
+
+    temperature: 92,
+    temperatureMode: 'fixed',
+    evaporationRate: 4.5,
+    evaporationDuration: 1.7,
+  },
 ]

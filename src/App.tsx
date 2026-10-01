@@ -6,6 +6,7 @@ import { levels } from './game/levels'
 import { evaluateResult } from './game/evaluateResult'
 import { getVisualWaterLevel } from './game/getVisualWaterLevel'
 import { getFlowSpeed } from './game/getFlowSpeed'
+import { getEvaporationRate } from './game/getEvaporationRate'
 
 import type { GameResult } from './game/types'
 
@@ -28,7 +29,7 @@ function App() {
   const currentLevel = levels[currentLevelIndex]
 
   // =====================================================
-  // GAME STATE
+  // CORE GAME STATE
   // =====================================================
 
   const [waterLevel, setWaterLevel] =
@@ -50,7 +51,7 @@ function App() {
     useState(false)
 
   // =====================================================
-  // WORLD 3 — PRESSURE STATE
+  // WORLD 3 — PRESSURE
   // =====================================================
 
   const [elapsedTime, setElapsedTime] =
@@ -60,52 +61,53 @@ function App() {
     useState(false)
 
   // =====================================================
-  // WORLD 4 — CONTROL STATE
+  // WORLD 4 — CONTROL
   // =====================================================
 
-  /*
-   * Remaining water belongs to the LEVEL.
-   *
-   * TRY AGAIN:
-   * keeps the remaining reserve.
-   *
-   * RESTART LEVEL:
-   * restores the full reserve.
-   */
   const [waterReserve, setWaterReserve] =
     useState<number | null>(
       levels[0].waterReserve,
     )
 
-  /*
-   * After the player releases the button,
-   * inertia can keep water flowing.
-   */
   const [isInertiaActive, setIsInertiaActive] =
     useState(false)
 
-  /*
-   * Remaining inertia duration in seconds.
-   */
   const [inertiaTimeLeft, setInertiaTimeLeft] =
     useState(0)
 
-  /*
-   * We keep the water value in a ref too.
-   *
-   * This lets delayed callbacks evaluate the
-   * most recent water level instead of an old
-   * React render value.
-   */
+  // =====================================================
+  // WORLD 5 — ENVIRONMENT
+  // =====================================================
+
+  const [currentTemperature, setCurrentTemperature] =
+    useState<number | null>(
+      levels[0].temperature ?? null,
+    )
+
+  const [isEvaporating, setIsEvaporating] =
+    useState(false)
+
+  const [evaporationTimeLeft, setEvaporationTimeLeft] =
+    useState(0)
+
+  // =====================================================
+  // REFS
+  // =====================================================
+
   const waterLevelRef = useRef(0)
 
-  /*
-   * Same idea for the reserve.
-   */
   const waterReserveRef =
     useRef<number | null>(
       levels[0].waterReserve,
     )
+
+  const temperatureRef =
+    useRef<number | null>(
+      levels[0].temperature ?? null,
+    )
+
+  const evaporationTimeRef =
+    useRef(0)
 
   // =====================================================
   // KEEP REFS SYNCHRONIZED
@@ -118,6 +120,16 @@ function App() {
   useEffect(() => {
     waterReserveRef.current = waterReserve
   }, [waterReserve])
+
+  useEffect(() => {
+    temperatureRef.current =
+      currentTemperature
+  }, [currentTemperature])
+
+  useEffect(() => {
+    evaporationTimeRef.current =
+      evaporationTimeLeft
+  }, [evaporationTimeLeft])
 
   // =====================================================
   // DERIVED GAME STATE
@@ -183,6 +195,45 @@ function App() {
     currentLevel.inertia > 0
 
   // =====================================================
+  // WORLD 5 — ENVIRONMENT VALUES
+  // =====================================================
+
+  const hasEnvironment =
+    currentLevel.temperature !== undefined &&
+    currentLevel.evaporationRate !== undefined &&
+    currentLevel.evaporationDuration !== undefined
+
+  const initialTemperature =
+    currentLevel.temperature ?? 0
+
+  const evaporationBaseRate =
+    currentLevel.evaporationRate ?? 0
+
+  const evaporationDuration =
+    currentLevel.evaporationDuration ?? 0
+
+  const currentEvaporationRate =
+    hasEnvironment &&
+    currentTemperature !== null
+      ? getEvaporationRate({
+          baseRate: evaporationBaseRate,
+          currentTemperature,
+          initialTemperature,
+        })
+      : 0
+
+  const temperaturePercentage =
+    currentTemperature === null
+      ? 0
+      : Math.max(
+          0,
+          Math.min(
+            currentTemperature,
+            100,
+          ),
+        )
+
+  // =====================================================
   // CURRENT FLOW SPEED
   // =====================================================
 
@@ -203,6 +254,9 @@ function App() {
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
+    setIsEvaporating(false)
+    setEvaporationTimeLeft(0)
+
     const nextAttempts = Math.max(
       attemptsLeft - 1,
       0,
@@ -218,15 +272,19 @@ function App() {
   }
 
   // =====================================================
-  // EVALUATE FINAL WATER LEVEL
+  // FINAL EVALUATION
   // =====================================================
 
   const finishAttempt = (
     finalWaterLevel: number,
   ) => {
     setIsFilling(false)
+
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
+
+    setIsEvaporating(false)
+    setEvaporationTimeLeft(0)
 
     const evaluatedResult =
       evaluateResult(
@@ -248,6 +306,36 @@ function App() {
   }
 
   // =====================================================
+  // START EVAPORATION OR FINISH
+  // =====================================================
+
+  const startEvaporationOrFinish = (
+    finalWaterLevel: number,
+  ) => {
+    if (
+      !hasEnvironment ||
+      evaporationBaseRate <= 0 ||
+      evaporationDuration <= 0
+    ) {
+      finishAttempt(finalWaterLevel)
+      return
+    }
+
+    setIsFilling(false)
+    setIsInertiaActive(false)
+    setInertiaTimeLeft(0)
+
+    setEvaporationTimeLeft(
+      evaporationDuration,
+    )
+
+    evaporationTimeRef.current =
+      evaporationDuration
+
+    setIsEvaporating(true)
+  }
+
+  // =====================================================
   // WATER FILLING
   // =====================================================
 
@@ -255,6 +343,7 @@ function App() {
     if (
       !isFilling ||
       isInertiaActive ||
+      isEvaporating ||
       worldComplete ||
       gameComplete ||
       levelSucceeded ||
@@ -283,18 +372,8 @@ function App() {
             elapsedTime,
           })
 
-        /*
-         * Interval = 10 ms.
-         *
-         * fillSpeed represents percentage
-         * points per second.
-         */
         const amountToAdd =
           effectiveSpeed / 100
-
-        // -----------------------------------------------
-        // LEVELS WITHOUT WATER RESERVE
-        // -----------------------------------------------
 
         if (!hasWaterReserve) {
           const nextWater =
@@ -308,17 +387,9 @@ function App() {
           return
         }
 
-        // -----------------------------------------------
-        // LEVELS WITH WATER RESERVE
-        // -----------------------------------------------
-
         const currentReserve =
           waterReserveRef.current ?? 0
 
-        /*
-         * We cannot pour more water than
-         * what remains in the reserve.
-         */
         const actualAmount =
           Math.min(
             amountToAdd,
@@ -344,16 +415,13 @@ function App() {
         setWaterLevel(nextWater)
         setWaterReserve(nextReserve)
 
-        /*
-         * Reserve empty:
-         * stop pouring and evaluate exactly
-         * where the player ended.
-         */
         if (nextReserve <= 0) {
           setIsFilling(false)
 
           window.setTimeout(() => {
-            finishAttempt(nextWater)
+            startEvaporationOrFinish(
+              nextWater,
+            )
           }, 0)
         }
       }, 10)
@@ -364,6 +432,7 @@ function App() {
   }, [
     isFilling,
     isInertiaActive,
+    isEvaporating,
     currentLevel.fillSpeed,
     currentLevel.flowType,
     elapsedTime,
@@ -376,13 +445,17 @@ function App() {
   ])
 
   // =====================================================
-  // WORLD 3 — TIMER
+  // GAME CLOCK
+  //
+  // IMPORTANT:
+  // elapsedTime now also progresses while filling.
+  // This allows VARIABLE FLOW to work even on a level
+  // without a visible countdown timer.
   // =====================================================
 
   useEffect(() => {
     if (
       !timerStarted ||
-      !hasTimeLimit ||
       result !== 'waiting' ||
       worldComplete ||
       gameComplete ||
@@ -407,7 +480,6 @@ function App() {
     }
   }, [
     timerStarted,
-    hasTimeLimit,
     result,
     worldComplete,
     gameComplete,
@@ -434,6 +506,9 @@ function App() {
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
+    setIsEvaporating(false)
+    setEvaporationTimeLeft(0)
+
     setResult('OVERFLOW')
 
     const nextAttempts = Math.max(
@@ -454,6 +529,59 @@ function App() {
     timeLeft,
     result,
     attemptsLeft,
+  ])
+
+  // =====================================================
+  // WORLD 5 — COOLING
+  // =====================================================
+
+  useEffect(() => {
+    if (
+      !hasEnvironment ||
+      currentLevel.temperatureMode !==
+        'cooling' ||
+      currentTemperature === null ||
+      result !== 'waiting' ||
+      worldComplete ||
+      gameComplete
+    ) {
+      return
+    }
+
+    const coolingInterval =
+      window.setInterval(() => {
+        setCurrentTemperature(
+          (temperature) => {
+            if (temperature === null) {
+              return null
+            }
+
+            const nextTemperature =
+              Math.max(
+                temperature - 0.25,
+                25,
+              )
+
+            temperatureRef.current =
+              nextTemperature
+
+            return nextTemperature
+          },
+        )
+      }, 100)
+
+    return () => {
+      window.clearInterval(
+        coolingInterval,
+      )
+    }
+  }, [
+    hasEnvironment,
+    currentLevel.temperatureMode,
+    currentTemperature,
+    result,
+    worldComplete,
+    gameComplete,
   ])
 
   // =====================================================
@@ -478,12 +606,6 @@ function App() {
         const currentWater =
           waterLevelRef.current
 
-        /*
-         * inertiaProgress:
-         *
-         * 1 = inertia just started
-         * 0 = inertia finished
-         */
         const inertiaProgress =
           currentLevel.inertia > 0
             ? Math.max(
@@ -493,11 +615,6 @@ function App() {
               )
             : 0
 
-        /*
-         * Water starts with a fraction of
-         * the normal flow and progressively
-         * slows down.
-         */
         const inertiaSpeed =
           currentLevel.fillSpeed *
           0.55 *
@@ -505,10 +622,6 @@ function App() {
 
         const amountToAdd =
           inertiaSpeed / 100
-
-        // -----------------------------------------------
-        // INERTIA WITHOUT RESERVE
-        // -----------------------------------------------
 
         if (!hasWaterReserve) {
           const nextWater =
@@ -521,10 +634,6 @@ function App() {
 
           return
         }
-
-        // -----------------------------------------------
-        // INERTIA WITH RESERVE
-        // -----------------------------------------------
 
         const currentReserve =
           waterReserveRef.current ?? 0
@@ -554,16 +663,14 @@ function App() {
         setWaterLevel(nextWater)
         setWaterReserve(nextReserve)
 
-        /*
-         * If inertia consumes the final drop,
-         * the attempt ends immediately.
-         */
         if (nextReserve <= 0) {
           setIsInertiaActive(false)
           setInertiaTimeLeft(0)
 
           window.setTimeout(() => {
-            finishAttempt(nextWater)
+            startEvaporationOrFinish(
+              nextWater,
+            )
           }, 0)
         }
       }, 10)
@@ -630,12 +737,131 @@ function App() {
 
     setIsInertiaActive(false)
 
-    finishAttempt(
+    startEvaporationOrFinish(
       waterLevelRef.current,
     )
   }, [
     isInertiaActive,
     inertiaTimeLeft,
+    result,
+  ])
+
+  // =====================================================
+  // WORLD 5 — EVAPORATION
+  // =====================================================
+
+  useEffect(() => {
+    if (
+      !isEvaporating ||
+      evaporationTimeLeft <= 0 ||
+      result !== 'waiting'
+    ) {
+      return
+    }
+
+    const interval =
+      window.setInterval(() => {
+        const temperature =
+          temperatureRef.current ??
+          initialTemperature
+
+        const evaporationRate =
+          getEvaporationRate({
+            baseRate:
+              evaporationBaseRate,
+            currentTemperature:
+              temperature,
+            initialTemperature,
+          })
+
+        // 10 ms interval:
+        // rate is percentage points / second.
+        const amountToRemove =
+          evaporationRate / 100
+
+        const nextWater =
+          Math.max(
+            waterLevelRef.current -
+              amountToRemove,
+            0,
+          )
+
+        waterLevelRef.current =
+          nextWater
+
+        setWaterLevel(nextWater)
+      }, 10)
+
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [
+    isEvaporating,
+    evaporationTimeLeft,
+    result,
+    evaporationBaseRate,
+    initialTemperature,
+  ])
+
+  // =====================================================
+  // WORLD 5 — EVAPORATION COUNTDOWN
+  // =====================================================
+
+  useEffect(() => {
+    if (
+      !isEvaporating ||
+      result !== 'waiting'
+    ) {
+      return
+    }
+
+    const interval =
+      window.setInterval(() => {
+        setEvaporationTimeLeft(
+          (currentTime) => {
+            const nextTime =
+              Math.max(
+                currentTime - 0.01,
+                0,
+              )
+
+            evaporationTimeRef.current =
+              nextTime
+
+            return nextTime
+          },
+        )
+      }, 10)
+
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [
+    isEvaporating,
+    result,
+  ])
+
+  // =====================================================
+  // WORLD 5 — FINISH AFTER EVAPORATION
+  // =====================================================
+
+  useEffect(() => {
+    if (
+      !isEvaporating ||
+      evaporationTimeLeft > 0 ||
+      result !== 'waiting'
+    ) {
+      return
+    }
+
+    setIsEvaporating(false)
+
+    finishAttempt(
+      waterLevelRef.current,
+    )
+  }, [
+    isEvaporating,
+    evaporationTimeLeft,
     result,
   ])
 
@@ -649,31 +875,26 @@ function App() {
       worldComplete ||
       gameComplete ||
       attemptsLeft <= 0 ||
-      isInertiaActive
+      isInertiaActive ||
+      isEvaporating
     ) {
       return
     }
 
-    /*
-     * No water left:
-     * the player cannot start another pour.
-     */
     if (
       hasWaterReserve &&
       (waterReserveRef.current ?? 0) <= 0
     ) {
-      finishAttempt(
+      startEvaporationOrFinish(
         waterLevelRef.current,
       )
 
       return
     }
 
-    // World 3 timer begins on first interaction.
-    if (
-      hasTimeLimit &&
-      !timerStarted
-    ) {
+    // Internal clock begins on first interaction.
+    // It is used by timers AND variable flow.
+    if (!timerStarted) {
       setTimerStarted(true)
     }
 
@@ -696,10 +917,6 @@ function App() {
 
     setIsFilling(false)
 
-    // -----------------------------------------------
-    // WORLD 4 — INERTIA
-    // -----------------------------------------------
-
     if (hasInertia) {
       setInertiaTimeLeft(
         currentLevel.inertia,
@@ -710,11 +927,7 @@ function App() {
       return
     }
 
-    // -----------------------------------------------
-    // NORMAL IMMEDIATE STOP
-    // -----------------------------------------------
-
-    finishAttempt(
+    startEvaporationOrFinish(
       waterLevelRef.current,
     )
   }
@@ -723,14 +936,6 @@ function App() {
   // RESET CURRENT ATTEMPT
   // =====================================================
 
-  /*
-   * IMPORTANT:
-   *
-   * This does NOT restore waterReserve.
-   *
-   * Therefore TRY AGAIN keeps the remaining
-   * resource from the previous attempt.
-   */
   const resetAttemptState = () => {
     setIsFilling(false)
 
@@ -744,6 +949,19 @@ function App() {
 
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
+
+    setIsEvaporating(false)
+    setEvaporationTimeLeft(0)
+
+    const resetTemperature =
+      currentLevel.temperature ?? null
+
+    setCurrentTemperature(
+      resetTemperature,
+    )
+
+    temperatureRef.current =
+      resetTemperature
   }
 
   // =====================================================
@@ -769,10 +987,6 @@ function App() {
       currentLevel.attempts,
     )
 
-    /*
-     * RESTART LEVEL restores the complete
-     * resource pool.
-     */
     setWaterReserve(
       currentLevel.waterReserve,
     )
@@ -808,6 +1022,9 @@ function App() {
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
+    setIsEvaporating(false)
+    setEvaporationTimeLeft(0)
+
     setAttemptsLeft(
       newLevel.attempts,
     )
@@ -818,6 +1035,16 @@ function App() {
 
     waterReserveRef.current =
       newLevel.waterReserve
+
+    const newTemperature =
+      newLevel.temperature ?? null
+
+    setCurrentTemperature(
+      newTemperature,
+    )
+
+    temperatureRef.current =
+      newTemperature
   }
 
   // =====================================================
@@ -831,21 +1058,14 @@ function App() {
     const newLevel =
       levels[newLevelIndex]
 
-    // ---------------------------------------------------
-    // END OF ENTIRE GAME
-    // ---------------------------------------------------
-
     if (!newLevel) {
       setIsFilling(false)
       setIsInertiaActive(false)
+      setIsEvaporating(false)
       setGameComplete(true)
 
       return
     }
-
-    // ---------------------------------------------------
-    // END OF CURRENT WORLD
-    // ---------------------------------------------------
 
     if (
       newLevel.world !==
@@ -853,14 +1073,11 @@ function App() {
     ) {
       setIsFilling(false)
       setIsInertiaActive(false)
+      setIsEvaporating(false)
       setWorldComplete(true)
 
       return
     }
-
-    // ---------------------------------------------------
-    // NEXT LEVEL IN SAME WORLD
-    // ---------------------------------------------------
 
     loadLevel(newLevelIndex)
   }
@@ -900,25 +1117,17 @@ function App() {
   }
 
   // =====================================================
-  // DISPLAYED REAL WATER VALUE
+  // DISPLAY VALUES
   // =====================================================
 
   const displayedLevel =
     Math.round(waterLevel)
-
-  // =====================================================
-  // VISUAL PERCEPTION
-  // =====================================================
 
   const visualWaterLevel =
     getVisualWaterLevel(
       waterLevel,
       currentLevel.containerShape,
     )
-
-  // =====================================================
-  // VISUAL TARGET ZONE
-  // =====================================================
 
   const realTargetMinimum =
     currentLevel.target -
@@ -928,10 +1137,6 @@ function App() {
     currentLevel.target +
     currentLevel.tolerance
 
-  /*
-   * Target and water use the SAME visual
-   * transformation.
-   */
   const visualTargetMinimum =
     getVisualWaterLevel(
       realTargetMinimum,
@@ -948,18 +1153,10 @@ function App() {
     visualTargetMaximum -
     visualTargetMinimum
 
-  // =====================================================
-  // TIMER DISPLAY
-  // =====================================================
-
   const displayedTime =
     timeLeft === null
       ? null
       : timeLeft.toFixed(1)
-
-  // =====================================================
-  // RESERVE DISPLAY
-  // =====================================================
 
   const displayedReserve =
     waterReserve === null
@@ -968,6 +1165,13 @@ function App() {
           waterReserve,
           0,
         ).toFixed(0)
+
+  const displayedTemperature =
+    currentTemperature === null
+      ? null
+      : Math.round(
+          currentTemperature,
+        )
 
   // =====================================================
   // GAME COMPLETE SCREEN
@@ -1010,6 +1214,19 @@ function App() {
   // =====================================================
 
   if (worldComplete) {
+    const worldMasteryTitle =
+      currentLevel.world === 1
+        ? 'CALIBRATION MASTERED!'
+        : currentLevel.world === 2
+          ? 'PERCEPTION MASTERED!'
+          : currentLevel.world === 3
+            ? 'PRESSURE MASTERED!'
+            : currentLevel.world === 4
+              ? 'CONTROL MASTERED!'
+              : currentLevel.world === 5
+                ? 'ENVIRONMENT MASTERED!'
+                : 'WORLD MASTERED!'
+
     return (
       <main className="game">
         <section className="game-card world-complete">
@@ -1018,15 +1235,7 @@ function App() {
           </p>
 
           <h1 className="game-title">
-            {currentLevel.world === 1
-              ? 'CALIBRATION MASTERED!'
-              : currentLevel.world === 2
-                ? 'PERCEPTION MASTERED!'
-                : currentLevel.world === 3
-                  ? 'PRESSURE MASTERED!'
-                  : currentLevel.world === 4
-                    ? 'CONTROL MASTERED!'
-                    : 'WORLD MASTERED!'}
+            {worldMasteryTitle}
           </h1>
 
           <p className="game-subtitle">
@@ -1180,10 +1389,6 @@ function App() {
           {currentLevel.name}
         </p>
 
-        {/* =================================================
-            LEVEL INFORMATION
-            ================================================= */}
-
         <div className="level-info">
           <p className="level-instruction">
             {currentLevel.instruction}
@@ -1195,9 +1400,7 @@ function App() {
           </div>
         </div>
 
-        {/* =================================================
-            WORLD 3 — TIMER
-            ================================================= */}
+        {/* WORLD 3 — TIMER */}
 
         {hasTimeLimit && (
           <div
@@ -1222,9 +1425,7 @@ function App() {
           </div>
         )}
 
-        {/* =================================================
-            WORLD 4 — WATER RESERVE
-            ================================================= */}
+        {/* WORLD 4 — WATER RESERVE */}
 
         {hasWaterReserve &&
           waterReserve !== null &&
@@ -1252,9 +1453,54 @@ function App() {
             </div>
           )}
 
-        {/* =================================================
-            WORLD 4 — INERTIA STATUS
-            ================================================= */}
+        {/* WORLD 5 — TEMPERATURE */}
+
+        {hasEnvironment &&
+          displayedTemperature !== null && (
+            <div className="temperature-panel">
+              <div className="temperature-header">
+                <span className="temperature-label">
+                  TEMPERATURE
+                </span>
+
+                <span className="temperature-value">
+                  {displayedTemperature}°C
+                </span>
+              </div>
+
+              <div className="temperature-scale">
+                <span>COLD</span>
+
+                <div className="temperature-track">
+                  <div
+                    className="temperature-fill"
+                    style={{
+                      width:
+                        `${temperaturePercentage}%`,
+                    }}
+                  />
+
+                  <div
+                    className="temperature-marker"
+                    style={{
+                      left:
+                        `${temperaturePercentage}%`,
+                    }}
+                  />
+                </div>
+
+                <span>HOT</span>
+              </div>
+
+              <div className="evaporation-info">
+                EVAPORATION{' '}
+                {currentEvaporationRate.toFixed(1)}
+                % / s
+              </div>
+            </div>
+          )}
+
+        {/* STATUS */}
 
         {isInertiaActive && (
           <div className="inertia-status">
@@ -1262,9 +1508,13 @@ function App() {
           </div>
         )}
 
-        {/* =================================================
-            CONTAINER
-            ================================================= */}
+        {isEvaporating && (
+          <div className="evaporation-status">
+            EVAPORATING...
+          </div>
+        )}
+
+        {/* CONTAINER */}
 
         <div className="container">
           <div
@@ -1297,9 +1547,7 @@ function App() {
           </div>
         </div>
 
-        {/* =================================================
-            PERCENTAGE
-            ================================================= */}
+        {/* PERCENTAGE */}
 
         {currentLevel.showPercentage && (
           <p className="percentage">
@@ -1307,9 +1555,7 @@ function App() {
           </p>
         )}
 
-        {/* =================================================
-            RESULT
-            ================================================= */}
+        {/* RESULT */}
 
         {result !== 'waiting' && (
           <p className="result">
@@ -1317,15 +1563,16 @@ function App() {
           </p>
         )}
 
-        {/* =================================================
-            ACTION BUTTON
-            ================================================= */}
+        {/* ACTION BUTTON */}
 
         {result === 'waiting' ? (
           <button
             className="fill-button"
             type="button"
-            disabled={isInertiaActive}
+            disabled={
+              isInertiaActive ||
+              isEvaporating
+            }
             onPointerDown={pointerDown}
             onPointerUp={pointerUp}
             onPointerLeave={pointerUp}
@@ -1333,7 +1580,9 @@ function App() {
           >
             {isInertiaActive
               ? 'WATER STILL FLOWING...'
-              : 'HOLD TO FILL'}
+              : isEvaporating
+                ? 'EVAPORATING...'
+                : 'HOLD TO FILL'}
           </button>
         ) : (
           <button
@@ -1345,28 +1594,28 @@ function App() {
           </button>
         )}
 
-        {/* =================================================
-            HINT
-            ================================================= */}
+        {/* HINT */}
 
         <p className="hint">
           {isInertiaActive
             ? 'You released the button, but momentum is still pushing water.'
-            : result === 'waiting'
-              ? hasTimeLimit &&
-                !timerStarted
-                ? 'The timer starts when you begin filling.'
-                : hasWaterReserve
-                  ? hasInertia
-                    ? 'Every drop counts • Release early to anticipate momentum'
-                    : 'Every drop counts • Your reserve carries across attempts'
-                  : 'Hold to fill • Release to stop'
-              : 'Try again before you run out of attempts.'}
+            : isEvaporating
+              ? 'Wait for evaporation to finish before the final result.'
+              : result === 'waiting'
+                ? hasEnvironment
+                  ? 'Heat causes evaporation • Anticipate the water loss'
+                  : hasTimeLimit &&
+                      !timerStarted
+                    ? 'The timer starts when you begin filling.'
+                    : hasWaterReserve
+                      ? hasInertia
+                        ? 'Every drop counts • Release early to anticipate momentum'
+                        : 'Every drop counts • Your reserve carries across attempts'
+                      : 'Hold to fill • Release to stop'
+                : 'Try again before you run out of attempts.'}
         </p>
 
-        {/* =================================================
-            DEVELOPMENT DEBUG
-            ================================================= */}
+        {/* DEVELOPMENT DEBUG */}
 
         <div className="debug-state">
           <span>
@@ -1378,18 +1627,15 @@ function App() {
           </span>
 
           <span>
-            shape:{' '}
-            {currentLevel.containerShape}
+            shape: {currentLevel.containerShape}
           </span>
 
           <span>
-            flowType:{' '}
-            {currentLevel.flowType}
+            flowType: {currentLevel.flowType}
           </span>
 
           <span>
-            real waterLevel:{' '}
-            {displayedLevel}
+            real waterLevel: {displayedLevel}
           </span>
 
           <span>
@@ -1400,8 +1646,7 @@ function App() {
           </span>
 
           <span>
-            target:{' '}
-            {currentLevel.target}%
+            target: {currentLevel.target}%
           </span>
 
           <span>
@@ -1410,14 +1655,12 @@ function App() {
           </span>
 
           <span>
-            attempts:{' '}
-            {attemptsLeft}/
+            attempts: {attemptsLeft}/
             {currentLevel.attempts}
           </span>
 
           <span>
-            baseSpeed:{' '}
-            {currentLevel.fillSpeed}
+            baseSpeed: {currentLevel.fillSpeed}
           </span>
 
           <span>
@@ -1451,6 +1694,25 @@ function App() {
           <span>
             inertiaActive:{' '}
             {String(isInertiaActive)}
+          </span>
+
+          <span>
+            temperature:{' '}
+            {currentTemperature === null
+              ? 'none'
+              : `${currentTemperature.toFixed(1)}°C`}
+          </span>
+
+          <span>
+            evaporationRate:{' '}
+            {hasEnvironment
+              ? `${currentEvaporationRate.toFixed(2)}%/s`
+              : 'none'}
+          </span>
+
+          <span>
+            evaporationActive:{' '}
+            {String(isEvaporating)}
           </span>
 
           <span>

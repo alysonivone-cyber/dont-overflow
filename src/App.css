@@ -957,3 +957,187 @@ button {
     font-size: 9px;
   }
 }
+
+/* =========================================================
+   WORLD 5 — ENVIRONMENT
+   Temperature + evaporation
+   ========================================================= */
+
+.temperature-panel {
+  width: 100%;
+  max-width: 300px;
+
+  margin: 10px auto 0;
+  padding: 11px 13px;
+
+  border: 1px solid #d8e5ec;
+  border-radius: 10px;
+
+  background: #f6f9fb;
+}
+
+.temperature-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 9px;
+}
+
+.temperature-label {
+  color: #6e8799;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: 1.2px;
+}
+
+.temperature-value {
+  color: #163a59;
+
+  font-family: Consolas, monospace;
+
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.temperature-scale {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.temperature-scale > span {
+  color: #8497a6;
+
+  font-size: 8px;
+  font-weight: 900;
+
+  letter-spacing: 0.7px;
+}
+
+.temperature-track {
+  position: relative;
+
+  flex: 1;
+
+  height: 8px;
+
+  border-radius: 999px;
+
+  background: #dce8ee;
+}
+
+.temperature-fill {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: linear-gradient(
+    90deg,
+    #48c6e5 0%,
+    #18a999 48%,
+    #e58a22 75%,
+    #e85d68 100%
+  );
+
+  transition: width 0.15s linear;
+}
+
+.temperature-marker {
+  position: absolute;
+
+  top: 50%;
+
+  width: 14px;
+  height: 14px;
+
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+
+  background: #163a59;
+
+  box-shadow:
+    0 1px 4px
+    rgba(22, 58, 89, 0.25);
+
+  transform:
+    translate(-50%, -50%);
+
+  transition: left 0.15s linear;
+}
+
+.evaporation-info {
+  margin-top: 9px;
+
+  color: #71899c;
+
+  font-family: Consolas, monospace;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+}
+
+
+/* =========================================================
+   WORLD 5 — ACTIVE EVAPORATION
+   ========================================================= */
+
+.evaporation-status {
+  width: fit-content;
+
+  margin: 9px auto 0;
+  padding: 7px 12px;
+
+  border: 1px solid #e58a22;
+  border-radius: 999px;
+
+  background: #fff4e6;
+
+  color: #d97b13;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  animation:
+    evaporation-pulse
+    0.55s ease-in-out
+    infinite alternate;
+}
+
+@keyframes evaporation-pulse {
+  from {
+    opacity: 0.68;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+
+/* =========================================================
+   WORLD 5 — MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .temperature-panel {
+    max-width: 270px;
+  }
+
+  .temperature-scale {
+    gap: 6px;
+  }
+
+  .temperature-scale > span {
+    font-size: 7px;
+  }
+}

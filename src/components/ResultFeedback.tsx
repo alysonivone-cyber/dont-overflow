@@ -13,56 +13,54 @@ function ResultFeedback({
   levelFailed,
 }: ResultFeedbackProps) {
   // =====================================================
-  // SUCCESS — après CHAQUE niveau réussi
+  // SUCCESS
   // =====================================================
 
-  if (result === 'SUCCESS' || result === 'PERFECT') {
-  return (
-    <div className="result-feedback success-feedback">
+  if (
+    result === 'SUCCESS' ||
+    result === 'PERFECT'
+  ) {
+    return (
+      <div className="result-feedback success-feedback">
+        <div
+          className="confetti"
+          aria-hidden="true"
+        >
+          <span>🎉</span>
+          <span>✨</span>
+          <span>🎊</span>
+          <span>✨</span>
+          <span>🎉</span>
+        </div>
 
-      <div className="confetti" aria-hidden="true">
-        <span>🎉</span>
-        <span>✨</span>
-        <span>🎊</span>
-        <span>✨</span>
-        <span>🎉</span>
+        <img
+          className="capybara-image success-capybara"
+          src={capybaraSuccess}
+          alt="Happy capybara celebrating"
+        />
+
+        <p className="feedback-title">
+          {result === 'PERFECT'
+            ? 'PERFECT!'
+            : 'LEVEL COMPLETE!'}
+        </p>
+
+        <p className="feedback-message">
+          {result === 'PERFECT'
+            ? 'Bullseye! Exact target!'
+            : 'Target reached!'}
+        </p>
       </div>
-
-      <img
-        className="capybara-image success-capybara"
-        src={capybaraSuccess}
-        alt="Happy capybara celebrating"
-      />
-
-      <p className="feedback-title">
-        {result === 'PERFECT' ? 'PERFECT!' : 'LEVEL COMPLETE!'}
-      </p>
-
-      <p className="feedback-message">
-        {result === 'PERFECT'
-          ? 'Bullseye! Exact target!'
-          : 'Target reached!'}
-      </p>
-
-    </div>
-  )
-}
+    )
+  }
 
   // =====================================================
-  // FAILURE — UNIQUEMENT quand les 3 attempts sont perdues
+  // FAILURE
   // =====================================================
 
   if (levelFailed) {
     return (
       <div className="result-feedback failure-feedback">
-
-        <div
-          className="failure-zero"
-          aria-hidden="true"
-        >
-          0
-        </div>
-
         <img
           className="capybara-image failure-capybara"
           src={capybaraFailure}
@@ -76,12 +74,10 @@ function ResultFeedback({
         <p className="feedback-message">
           Restart this level and try again.
         </p>
-
       </div>
     )
   }
 
-  // Pas de capybara pour un simple TOO LOW / OVERFLOW.
   return null
 }
 

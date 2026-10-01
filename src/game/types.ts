@@ -16,6 +16,10 @@ export type ContainerShape =
   | 'conical'
   | 'martini'
 
+export type TemperatureMode =
+  | 'fixed'
+  | 'cooling'
+
 export interface LevelConfig {
   // Identification
   id: number
@@ -45,4 +49,11 @@ export interface LevelConfig {
 
   // Mécaniques avancées
   inertia: number
+
+  // Environnement — World 5
+  // Optional so Worlds 1–4 do not need these properties.
+  temperature?: number
+  temperatureMode?: TemperatureMode
+  evaporationRate?: number
+  evaporationDuration?: number
 }
