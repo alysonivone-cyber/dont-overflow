@@ -1,17 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-
 import './App.css'
-
 import { levels } from './game/levels'
 import { evaluateResult } from './game/evaluateResult'
 import { getVisualWaterLevel } from './game/getVisualWaterLevel'
 import { getFlowSpeed } from './game/getFlowSpeed'
 import { getEvaporationRate } from './game/getEvaporationRate'
-
+import { getObstacleEffect } from './game/getObstacleEffect'
 import type { GameResult } from './game/types'
-
 import ResultFeedback from './components/ResultFeedback'
-
+import ObstacleField from './components/ObstacleField'
 import {
   playSuccessSound,
   playErrorSound,
@@ -51,7 +48,7 @@ function App() {
     useState(false)
 
   // =====================================================
-  // WORLD 3 — PRESSURE
+  // WORLD 3 — PRESSURE / GLOBAL GAME CLOCK
   // =====================================================
 
   const [elapsedTime, setElapsedTime] =
@@ -234,10 +231,49 @@ function App() {
         )
 
   // =====================================================
+  // WORLD 6 — OBSTACLE VALUES
+  // =====================================================
+
+  const hasObstacles =
+    currentLevel.obstacleMode !== undefined
+
+  const obstacleMode =
+    currentLevel.obstacleMode ?? 'fixed'
+
+  const obstacleStrength =
+    currentLevel.obstacleStrength ?? 0
+
+  const obstaclePositions =
+    currentLevel.obstaclePositions ?? []
+
+  const obstacleMovementSpeed =
+    currentLevel.obstacleMovementSpeed ?? 0
+
+  const blindSpotSize =
+    currentLevel.blindSpotSize ?? 0
+
+  const obstacleEffect =
+    hasObstacles
+      ? getObstacleEffect({
+          waterLevel,
+          elapsedTime,
+          mode: obstacleMode,
+          strength: obstacleStrength,
+          positions: obstaclePositions,
+          movementSpeed:
+            obstacleMovementSpeed,
+        })
+      : {
+          flowMultiplier: 1,
+          activePositions: [],
+          isBlockingFlow: false,
+        }
+
+  // =====================================================
   // CURRENT FLOW SPEED
   // =====================================================
 
-  const currentFlowSpeed =
+  const baseFlowSpeed =
     getFlowSpeed({
       baseSpeed: currentLevel.fillSpeed,
       flowType: currentLevel.flowType,
@@ -245,22 +281,28 @@ function App() {
       elapsedTime,
     })
 
+  const currentFlowSpeed =
+    baseFlowSpeed *
+    obstacleEffect.flowMultiplier
+
   // =====================================================
   // FAILURE HANDLER
   // =====================================================
 
   const registerFailure = () => {
     setIsFilling(false)
+
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
 
-    const nextAttempts = Math.max(
-      attemptsLeft - 1,
-      0,
-    )
+    const nextAttempts =
+      Math.max(
+        attemptsLeft - 1,
+        0,
+      )
 
     setAttemptsLeft(nextAttempts)
 
@@ -322,6 +364,7 @@ function App() {
     }
 
     setIsFilling(false)
+
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
@@ -337,6 +380,7 @@ function App() {
 
   // =====================================================
   // WATER FILLING
+  // WORLD 6 OBSTACLES MODIFY THE REAL FLOW
   // =====================================================
 
   useEffect(() => {
@@ -358,7 +402,7 @@ function App() {
         const currentWater =
           waterLevelRef.current
 
-        const effectiveSpeed =
+        const normalFlowSpeed =
           getFlowSpeed({
             baseSpeed:
               currentLevel.fillSpeed,
@@ -372,12 +416,43 @@ function App() {
             elapsedTime,
           })
 
+        const liveObstacleEffect =
+          hasObstacles
+            ? getObstacleEffect({
+                waterLevel:
+                  currentWater,
+
+                elapsedTime,
+
+                mode:
+                  obstacleMode,
+
+                strength:
+                  obstacleStrength,
+
+                positions:
+                  obstaclePositions,
+
+                movementSpeed:
+                  obstacleMovementSpeed,
+              })
+            : {
+                flowMultiplier: 1,
+                activePositions: [],
+                isBlockingFlow: false,
+              }
+
+        const effectiveSpeed =
+          normalFlowSpeed *
+          liveObstacleEffect.flowMultiplier
+
         const amountToAdd =
           effectiveSpeed / 100
 
         if (!hasWaterReserve) {
           const nextWater =
-            currentWater + amountToAdd
+            currentWater +
+            amountToAdd
 
           waterLevelRef.current =
             nextWater
@@ -397,7 +472,8 @@ function App() {
           )
 
         const nextWater =
-          currentWater + actualAmount
+          currentWater +
+          actualAmount
 
         const nextReserve =
           Math.max(
@@ -433,10 +509,20 @@ function App() {
     isFilling,
     isInertiaActive,
     isEvaporating,
+
     currentLevel.fillSpeed,
     currentLevel.flowType,
+
     elapsedTime,
+
     hasWaterReserve,
+
+    hasObstacles,
+    obstacleMode,
+    obstacleStrength,
+    obstaclePositions,
+    obstacleMovementSpeed,
+
     worldComplete,
     gameComplete,
     levelSucceeded,
@@ -446,11 +532,6 @@ function App() {
 
   // =====================================================
   // GAME CLOCK
-  //
-  // IMPORTANT:
-  // elapsedTime now also progresses while filling.
-  // This allows VARIABLE FLOW to work even on a level
-  // without a visible countdown timer.
   // =====================================================
 
   useEffect(() => {
@@ -489,6 +570,7 @@ function App() {
 
   // =====================================================
   // WORLD 3 — TIMER EXPIRATION
+  // CORRECTED VERSION
   // =====================================================
 
   useEffect(() => {
@@ -502,33 +584,30 @@ function App() {
       return
     }
 
+    // Stop the clock and filling.
+    // Do NOT force an OVERFLOW result.
+    setTimerStarted(false)
     setIsFilling(false)
-    setIsInertiaActive(false)
-    setInertiaTimeLeft(0)
 
-    setIsEvaporating(false)
-    setEvaporationTimeLeft(0)
-
-    setResult('OVERFLOW')
-
-    const nextAttempts = Math.max(
-      attemptsLeft - 1,
-      0,
-    )
-
-    setAttemptsLeft(nextAttempts)
-
-    if (nextAttempts === 0) {
-      playGameOverSound()
-    } else {
-      playErrorSound()
+    // If another post-release mechanic is resolving,
+    // allow it to finish normally.
+    if (
+      isInertiaActive ||
+      isEvaporating
+    ) {
+      return
     }
+
+    startEvaporationOrFinish(
+      waterLevelRef.current,
+    )
   }, [
     hasTimeLimit,
     timerStarted,
     timeLeft,
     result,
-    attemptsLeft,
+    isInertiaActive,
+    isEvaporating,
   ])
 
   // =====================================================
@@ -552,7 +631,9 @@ function App() {
       window.setInterval(() => {
         setCurrentTemperature(
           (temperature) => {
-            if (temperature === null) {
+            if (
+              temperature === null
+            ) {
               return null
             }
 
@@ -584,8 +665,11 @@ function App() {
     gameComplete,
   ])
 
-  // =====================================================
+    // =====================================================
   // WORLD 4 — INERTIA
+  //
+  // WORLD 6:
+  // Obstacles can also disrupt inertia flow.
   // =====================================================
 
   useEffect(() => {
@@ -615,17 +699,48 @@ function App() {
               )
             : 0
 
-        const inertiaSpeed =
+        const normalInertiaSpeed =
           currentLevel.fillSpeed *
           0.55 *
           inertiaProgress
+
+        const liveObstacleEffect =
+          hasObstacles
+            ? getObstacleEffect({
+                waterLevel:
+                  currentWater,
+
+                elapsedTime,
+
+                mode:
+                  obstacleMode,
+
+                strength:
+                  obstacleStrength,
+
+                positions:
+                  obstaclePositions,
+
+                movementSpeed:
+                  obstacleMovementSpeed,
+              })
+            : {
+                flowMultiplier: 1,
+                activePositions: [],
+                isBlockingFlow: false,
+              }
+
+        const inertiaSpeed =
+          normalInertiaSpeed *
+          liveObstacleEffect.flowMultiplier
 
         const amountToAdd =
           inertiaSpeed / 100
 
         if (!hasWaterReserve) {
           const nextWater =
-            currentWater + amountToAdd
+            currentWater +
+            amountToAdd
 
           waterLevelRef.current =
             nextWater
@@ -645,7 +760,8 @@ function App() {
           )
 
         const nextWater =
-          currentWater + actualAmount
+          currentWater +
+          actualAmount
 
         const nextReserve =
           Math.max(
@@ -681,9 +797,19 @@ function App() {
   }, [
     isInertiaActive,
     inertiaTimeLeft,
+
     currentLevel.inertia,
     currentLevel.fillSpeed,
+
     hasWaterReserve,
+
+    hasObstacles,
+    obstacleMode,
+    obstacleStrength,
+    obstaclePositions,
+    obstacleMovementSpeed,
+    elapsedTime,
+
     result,
     worldComplete,
     gameComplete,
@@ -769,13 +895,15 @@ function App() {
           getEvaporationRate({
             baseRate:
               evaporationBaseRate,
+
             currentTemperature:
               temperature,
+
             initialTemperature,
           })
 
         // 10 ms interval:
-        // rate is percentage points / second.
+        // rate = percentage points / second.
         const amountToRemove =
           evaporationRate / 100
 
@@ -892,8 +1020,11 @@ function App() {
       return
     }
 
-    // Internal clock begins on first interaction.
-    // It is used by timers AND variable flow.
+    // Start the gameplay clock on the first interaction.
+    // This clock is used by:
+    // - World 3 timers
+    // - variable flow
+    // - World 6 moving obstacles
     if (!timerStarted) {
       setTimerStarted(true)
     }
@@ -903,6 +1034,7 @@ function App() {
 
   // =====================================================
   // PLAYER INPUT — POINTER UP
+  // CORRECTED TIMER VERSION
   // =====================================================
 
   const pointerUp = () => {
@@ -916,6 +1048,12 @@ function App() {
     }
 
     setIsFilling(false)
+
+    // On timed levels, releasing the button ends
+    // the countdown immediately.
+    if (hasTimeLimit) {
+      setTimerStarted(false)
+    }
 
     if (hasInertia) {
       setInertiaTimeLeft(
@@ -952,6 +1090,8 @@ function App() {
 
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
+
+    evaporationTimeRef.current = 0
 
     const resetTemperature =
       currentLevel.temperature ?? null
@@ -1025,6 +1165,8 @@ function App() {
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
 
+    evaporationTimeRef.current = 0
+
     setAttemptsLeft(
       newLevel.attempts,
     )
@@ -1062,6 +1204,7 @@ function App() {
       setIsFilling(false)
       setIsInertiaActive(false)
       setIsEvaporating(false)
+
       setGameComplete(true)
 
       return
@@ -1074,6 +1217,7 @@ function App() {
       setIsFilling(false)
       setIsInertiaActive(false)
       setIsEvaporating(false)
+
       setWorldComplete(true)
 
       return
@@ -1225,7 +1369,9 @@ function App() {
               ? 'CONTROL MASTERED!'
               : currentLevel.world === 5
                 ? 'ENVIRONMENT MASTERED!'
-                : 'WORLD MASTERED!'
+                : currentLevel.world === 6
+                  ? 'OBSTACLES MASTERED!'
+                  : 'WORLD MASTERED!'
 
     return (
       <main className="game">
@@ -1259,8 +1405,7 @@ function App() {
       </main>
     )
   }
-
-  // =====================================================
+    // =====================================================
   // SUCCESS SCREEN
   // =====================================================
 
@@ -1500,7 +1645,40 @@ function App() {
             </div>
           )}
 
-        {/* STATUS */}
+        {/* WORLD 6 — OBSTACLE INFORMATION */}
+
+        {hasObstacles && (
+          <div
+            className={`obstacle-panel ${
+              obstacleEffect.isBlockingFlow
+                ? 'obstacle-panel-active'
+                : ''
+            }`}
+          >
+            <div className="obstacle-panel-header">
+              <span className="obstacle-panel-label">
+                FLOW OBSTACLES
+              </span>
+
+              <span className="obstacle-panel-value">
+                {obstacleEffect.isBlockingFlow
+                  ? 'DISRUPTED'
+                  : 'CLEAR'}
+              </span>
+            </div>
+
+            <div className="obstacle-flow-info">
+              FLOW{' '}
+              {Math.round(
+                obstacleEffect.flowMultiplier *
+                  100,
+              )}
+              %
+            </div>
+          </div>
+        )}
+
+        {/* CURRENT MECHANIC STATUS */}
 
         {isInertiaActive && (
           <div className="inertia-status">
@@ -1514,12 +1692,24 @@ function App() {
           </div>
         )}
 
-        {/* CONTAINER */}
+        {hasObstacles &&
+          obstacleEffect.isBlockingFlow &&
+          isFilling && (
+            <div className="obstacle-status">
+              FLOW DISRUPTED
+            </div>
+          )}
+
+        {/* =================================================
+            CONTAINER
+            ================================================= */}
 
         <div className="container">
           <div
             className={`glass glass-${currentLevel.containerShape}`}
           >
+            {/* WATER */}
+
             <div
               className="water"
               style={{
@@ -1529,6 +1719,8 @@ function App() {
                 )}%`,
               }}
             />
+
+            {/* TARGET ZONE */}
 
             {currentLevel.showTargetZone && (
               <div
@@ -1544,10 +1736,31 @@ function App() {
                 <span>TARGET</span>
               </div>
             )}
+
+            {/* WORLD 6 — OBSTACLES */}
+
+            {hasObstacles && (
+              <ObstacleField
+                positions={
+                  obstacleEffect.activePositions
+                }
+                moving={
+                  obstacleMode === 'moving'
+                }
+                blindSpotSize={
+                  blindSpotSize
+                }
+                isBlockingFlow={
+                  obstacleEffect.isBlockingFlow
+                }
+              />
+            )}
           </div>
         </div>
 
-        {/* PERCENTAGE */}
+        {/* =================================================
+            PERCENTAGE
+            ================================================= */}
 
         {currentLevel.showPercentage && (
           <p className="percentage">
@@ -1555,7 +1768,9 @@ function App() {
           </p>
         )}
 
-        {/* RESULT */}
+        {/* =================================================
+            RESULT
+            ================================================= */}
 
         {result !== 'waiting' && (
           <p className="result">
@@ -1563,7 +1778,9 @@ function App() {
           </p>
         )}
 
-        {/* ACTION BUTTON */}
+        {/* =================================================
+            ACTION BUTTON
+            ================================================= */}
 
         {result === 'waiting' ? (
           <button
@@ -1575,7 +1792,6 @@ function App() {
             }
             onPointerDown={pointerDown}
             onPointerUp={pointerUp}
-            onPointerLeave={pointerUp}
             onPointerCancel={pointerUp}
           >
             {isInertiaActive
@@ -1594,7 +1810,9 @@ function App() {
           </button>
         )}
 
-        {/* HINT */}
+        {/* =================================================
+            CONTEXTUAL HINT
+            ================================================= */}
 
         <p className="hint">
           {isInertiaActive
@@ -1602,20 +1820,29 @@ function App() {
             : isEvaporating
               ? 'Wait for evaporation to finish before the final result.'
               : result === 'waiting'
-                ? hasEnvironment
-                  ? 'Heat causes evaporation • Anticipate the water loss'
-                  : hasTimeLimit &&
-                      !timerStarted
-                    ? 'The timer starts when you begin filling.'
-                    : hasWaterReserve
-                      ? hasInertia
-                        ? 'Every drop counts • Release early to anticipate momentum'
-                        : 'Every drop counts • Your reserve carries across attempts'
-                      : 'Hold to fill • Release to stop'
+                ? hasObstacles
+                  ? obstacleEffect.isBlockingFlow
+                    ? 'Obstacle contact • The water flow is currently disrupted'
+                    : blindSpotSize > 0
+                      ? 'Obstacles alter the flow • Hidden areas force you to estimate the level'
+                      : obstacleMode === 'moving'
+                        ? 'The barrier moves • Its position changes the flow in real time'
+                        : 'Obstacles alter the flow • Adapt your timing'
+                  : hasEnvironment
+                    ? 'Heat causes evaporation • Anticipate the water loss'
+                    : hasTimeLimit &&
+                        !timerStarted
+                      ? 'The timer starts when you begin filling.'
+                      : hasWaterReserve
+                        ? hasInertia
+                          ? 'Every drop counts • Release early to anticipate momentum'
+                          : 'Every drop counts • Your reserve carries across attempts'
+                        : 'Hold to fill • Release to stop'
                 : 'Try again before you run out of attempts.'}
         </p>
-
-        {/* DEVELOPMENT DEBUG */}
+        {/* =================================================
+            DEVELOPMENT DEBUG
+            ================================================= */}
 
         <div className="debug-state">
           <span>
@@ -1661,6 +1888,11 @@ function App() {
 
           <span>
             baseSpeed: {currentLevel.fillSpeed}
+          </span>
+
+          <span>
+            normalFlowSpeed:{' '}
+            {baseFlowSpeed.toFixed(1)}
           </span>
 
           <span>
@@ -1713,6 +1945,53 @@ function App() {
           <span>
             evaporationActive:{' '}
             {String(isEvaporating)}
+          </span>
+
+          <span>
+            obstacleMode:{' '}
+            {hasObstacles
+              ? obstacleMode
+              : 'none'}
+          </span>
+
+          <span>
+            obstacleStrength:{' '}
+            {hasObstacles
+              ? obstacleStrength.toFixed(2)
+              : 'none'}
+          </span>
+
+          <span>
+            obstacleMultiplier:{' '}
+            {hasObstacles
+              ? obstacleEffect.flowMultiplier.toFixed(2)
+              : 'none'}
+          </span>
+
+          <span>
+            obstacleBlocking:{' '}
+            {String(
+              obstacleEffect.isBlockingFlow,
+            )}
+          </span>
+
+          <span>
+            obstaclePositions:{' '}
+            {hasObstacles
+              ? obstacleEffect.activePositions
+                  .map(
+                    (position) =>
+                      position.toFixed(1),
+                  )
+                  .join(', ')
+              : 'none'}
+          </span>
+
+          <span>
+            blindSpot:{' '}
+            {hasObstacles
+              ? `${blindSpotSize}%`
+              : 'none'}
           </span>
 
           <span>

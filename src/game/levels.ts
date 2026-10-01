@@ -670,4 +670,162 @@ export const levels: LevelConfig[] = [
     evaporationRate: 4.5,
     evaporationDuration: 1.7,
   },
+    // =====================================================
+  // WORLD 6 — OBSTACLES
+  // =====================================================
+
+  {
+    id: 1,
+    world: 6,
+    name: 'First Impact',
+    instruction:
+      'The obstacle disrupts the flow. Adapt when the water reaches it.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 36,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    obstacleMode: 'fixed',
+    obstacleStrength: 0.45,
+    obstaclePositions: [45],
+    obstacleMovementSpeed: 0,
+    blindSpotSize: 0,
+  },
+
+  {
+    id: 2,
+    world: 6,
+    name: 'Double Trouble',
+    instruction:
+      'Two barriers disrupt the flow at different heights. Do not trust one rhythm.',
+
+    target: 74,
+    tolerance: 3,
+
+    fillSpeed: 38,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    obstacleMode: 'double',
+    obstacleStrength: 0.5,
+    obstaclePositions: [35, 62],
+    obstacleMovementSpeed: 0,
+    blindSpotSize: 0,
+  },
+
+  {
+    id: 3,
+    world: 6,
+    name: 'Moving Barrier',
+    instruction:
+      'The barrier moves while you pour. Its effect changes continuously.',
+
+    target: 68,
+    tolerance: 2,
+
+    fillSpeed: 39,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    obstacleMode: 'moving',
+    obstacleStrength: 0.55,
+    obstaclePositions: [52],
+    obstacleMovementSpeed: 3,
+    blindSpotSize: 0,
+  },
+
+  {
+    id: 4,
+    world: 6,
+    name: 'Blind Spot',
+    instruction:
+      'Part of the glass is hidden. Track the flow and estimate what you cannot see.',
+
+    target: 72,
+    tolerance: 2,
+
+    fillSpeed: 40,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    obstacleMode: 'blind',
+    obstacleStrength: 0.5,
+    obstaclePositions: [48],
+    obstacleMovementSpeed: 0,
+    blindSpotSize: 28,
+  },
+
+  {
+    id: 5,
+    world: 6,
+    name: 'Obstacle Course',
+    instruction:
+      'Moving barriers, hidden information and momentum combine. Stay in control.',
+
+    target: 76,
+    tolerance: 1,
+
+    fillSpeed: 42,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.4,
+
+    obstacleMode: 'moving',
+    obstacleStrength: 0.6,
+    obstaclePositions: [55],
+    obstacleMovementSpeed: 4.2,
+    blindSpotSize: 32,
+  },
 ]

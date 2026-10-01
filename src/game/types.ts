@@ -20,6 +20,12 @@ export type TemperatureMode =
   | 'fixed'
   | 'cooling'
 
+export type ObstacleMode =
+  | 'fixed'
+  | 'double'
+  | 'moving'
+  | 'blind'
+
 export interface LevelConfig {
   // Identification
   id: number
@@ -27,33 +33,39 @@ export interface LevelConfig {
   name: string
   instruction: string
 
-  // Objectif
+  // Objective
   target: number
   tolerance: number
 
-  // Remplissage
+  // Filling
   fillSpeed: number
   flowType: FlowType
 
-  // Ressources
+  // Resources
   attempts: number
   timeLimit: number | null
   waterReserve: number | null
 
-  // Aides visuelles
+  // Visual helpers
   showPercentage: boolean
   showTargetZone: boolean
 
-  // Récipient
+  // Container
   containerShape: ContainerShape
 
-  // Mécaniques avancées
+  // Advanced mechanics
   inertia: number
 
-  // Environnement — World 5
-  // Optional so Worlds 1–4 do not need these properties.
+  // World 5 — Environment
   temperature?: number
   temperatureMode?: TemperatureMode
   evaporationRate?: number
   evaporationDuration?: number
+
+  // World 6 — Obstacles
+  obstacleMode?: ObstacleMode
+  obstacleStrength?: number
+  obstaclePositions?: number[]
+  obstacleMovementSpeed?: number
+  blindSpotSize?: number
 }
