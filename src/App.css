@@ -1405,3 +1405,281 @@ button {
     font-size: 7px;
   }
 }
+
+/* =====================================================
+   WORLD 7 — MOTION
+   ===================================================== */
+
+.glass-motion {
+  will-change: transform;
+  transform-origin: center center;
+}
+
+.motion-panel {
+  width: 100%;
+  max-width: 300px;
+  margin: 10px auto 0;
+  padding: 11px 13px;
+
+  border: 1px solid #d8e5ec;
+  border-radius: 10px;
+
+  background: #f6f9fb;
+}
+
+.motion-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.motion-panel-label {
+  color: #6e8799;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+}
+
+.motion-panel-value {
+  color: #163a59;
+
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.motion-info {
+  margin-top: 7px;
+
+  color: #71899c;
+
+  font-family: Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+@media (max-width: 640px) {
+  .motion-panel {
+    max-width: 270px;
+  }
+
+/* =====================================================
+   WORLD 8 — FROG INVASION
+   ===================================================== */
+
+.frog-field {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 20;
+}
+
+.frog {
+  position: absolute;
+  display: block;
+
+  width: 70px;
+  height: auto;
+
+  object-fit: contain;
+
+  z-index: 22;
+
+  opacity: 1;
+
+  filter: drop-shadow(
+    0 4px 5px rgba(0, 0, 0, 0.3)
+  );
+
+  user-select: none;
+  pointer-events: none;
+
+  animation: frog-jump-in 0.35s ease-out;
+}
+
+.frog-1 {
+  left: 10%;
+  bottom: 12%;
+}
+
+.frog-2 {
+  right: 10%;
+  bottom: 29%;
+}
+
+.frog-3 {
+  left: 34%;
+  bottom: 47%;
+}
+
+.frog-4 {
+  right: 25%;
+  bottom: 63%;
+}
+
+.frog-obstruction {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 21;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(48, 105, 55, 0.72),
+      rgba(100, 150, 68, 0.58)
+    );
+
+  border-top:
+    2px solid
+    rgba(200, 240, 135, 0.65);
+
+  backdrop-filter: blur(2px);
+
+  transition: height 0.25s ease;
+}
+
+@keyframes frog-jump-in {
+  0% {
+    opacity: 0;
+    transform:
+      translateY(-45px)
+      scale(0.55);
+  }
+
+  70% {
+    opacity: 1;
+    transform:
+      translateY(6px)
+      scale(1.12);
+  }
+
+  100% {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+/* -----------------------------------------------------
+   FROGS
+   ----------------------------------------------------- */
+
+.frog {
+  position: absolute;
+  display: block;
+
+  width: 70px;
+  height: 70px;
+
+  object-fit: contain;
+
+  z-index: 1000;
+
+  opacity: 1;
+
+  user-select: none;
+  pointer-events: none;
+
+  filter: drop-shadow(
+    0 4px 5px rgba(0, 0, 0, 0.3)
+  );
+
+  animation: frog-jump-in 0.35s ease-out;
+}
+
+.frog-1 {
+  left: 13%;
+  bottom: 16%;
+  transform: rotate(-10deg);
+}
+
+.frog-2 {
+  right: 12%;
+  bottom: 31%;
+  transform:
+    rotate(9deg)
+    scale(0.92);
+}
+
+.frog-3 {
+  left: 35%;
+  bottom: 48%;
+  transform:
+    rotate(-5deg)
+    scale(1.06);
+}
+
+.frog-4 {
+  right: 28%;
+  bottom: 64%;
+  transform:
+    rotate(7deg)
+    scale(0.88);
+}
+
+/* -----------------------------------------------------
+   VISUAL OBSTRUCTION — LEVELS 8.4 / 8.5
+   ----------------------------------------------------- */
+
+.frog-obstruction {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 1;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(48, 105, 55, 0.72),
+      rgba(100, 150, 68, 0.58)
+    );
+
+  border-top:
+    2px solid
+    rgba(200, 240, 135, 0.65);
+
+  backdrop-filter: blur(2px);
+
+  transition:
+    height 0.25s ease;
+}
+
+/* -----------------------------------------------------
+   FROG ENTRY ANIMATION
+   ----------------------------------------------------- */
+
+@keyframes frog-jump-in {
+  0% {
+    opacity: 0;
+    translate: 0 -45px;
+    scale: 0.55;
+  }
+
+  70% {
+    opacity: 1;
+    translate: 0 6px;
+    scale: 1.12;
+  }
+
+  100% {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+}

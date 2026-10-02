@@ -1,14 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+
 import { levels } from './game/levels'
 import { evaluateResult } from './game/evaluateResult'
 import { getVisualWaterLevel } from './game/getVisualWaterLevel'
 import { getFlowSpeed } from './game/getFlowSpeed'
 import { getEvaporationRate } from './game/getEvaporationRate'
 import { getObstacleEffect } from './game/getObstacleEffect'
+import { getContainerMotion } from './game/getContainerMotion'
+import { getAnimalInterference } from './game/getAnimalInterference'
+
 import type { GameResult } from './game/types'
+
 import ResultFeedback from './components/ResultFeedback'
 import ObstacleField from './components/ObstacleField'
+import FrogField from './components/FrogField'
+
 import {
   playSuccessSound,
   playErrorSound,
@@ -17,17 +24,13 @@ import {
 
 function App() {
   // =====================================================
-  // LEVEL STATE
+  // CORE GAME STATE
   // =====================================================
 
   const [currentLevelIndex, setCurrentLevelIndex] =
     useState(0)
 
   const currentLevel = levels[currentLevelIndex]
-
-  // =====================================================
-  // CORE GAME STATE
-  // =====================================================
 
   const [waterLevel, setWaterLevel] =
     useState(0)
@@ -48,7 +51,7 @@ function App() {
     useState(false)
 
   // =====================================================
-  // WORLD 3 — PRESSURE / GLOBAL GAME CLOCK
+  // TIMER / PRESSURE STATE
   // =====================================================
 
   const [elapsedTime, setElapsedTime] =
@@ -58,13 +61,17 @@ function App() {
     useState(false)
 
   // =====================================================
-  // WORLD 4 — CONTROL
+  // WATER RESERVE STATE
   // =====================================================
 
   const [waterReserve, setWaterReserve] =
     useState<number | null>(
       levels[0].waterReserve,
     )
+
+  // =====================================================
+  // INERTIA STATE
+  // =====================================================
 
   const [isInertiaActive, setIsInertiaActive] =
     useState(false)
@@ -73,19 +80,23 @@ function App() {
     useState(0)
 
   // =====================================================
-  // WORLD 5 — ENVIRONMENT
+  // WORLD 5 — ENVIRONMENT STATE
   // =====================================================
 
-  const [currentTemperature, setCurrentTemperature] =
-    useState<number | null>(
-      levels[0].temperature ?? null,
-    )
+  const [
+    currentTemperature,
+    setCurrentTemperature,
+  ] = useState<number | null>(
+    levels[0].temperature ?? null,
+  )
 
   const [isEvaporating, setIsEvaporating] =
     useState(false)
 
-  const [evaporationTimeLeft, setEvaporationTimeLeft] =
-    useState(0)
+  const [
+    evaporationTimeLeft,
+    setEvaporationTimeLeft,
+  ] = useState(0)
 
   // =====================================================
   // REFS
@@ -107,15 +118,24 @@ function App() {
     useRef(0)
 
   // =====================================================
+  // WORLD 8 — FROG INVASION REF
+  // =====================================================
+
+  const appliedFrogOffsetRef =
+    useRef(0)
+
+  // =====================================================
   // KEEP REFS SYNCHRONIZED
   // =====================================================
 
   useEffect(() => {
-    waterLevelRef.current = waterLevel
+    waterLevelRef.current =
+      waterLevel
   }, [waterLevel])
 
   useEffect(() => {
-    waterReserveRef.current = waterReserve
+    waterReserveRef.current =
+      waterReserve
   }, [waterReserve])
 
   useEffect(() => {
@@ -129,7 +149,7 @@ function App() {
   }, [evaporationTimeLeft])
 
   // =====================================================
-  // DERIVED GAME STATE
+  // LEVEL STATUS
   // =====================================================
 
   const levelSucceeded =
@@ -149,7 +169,7 @@ function App() {
       currentLevel.world
 
   // =====================================================
-  // WORLD 3 — TIMER VALUES
+  // WORLD 3 — TIMER
   // =====================================================
 
   const hasTimeLimit =
@@ -165,7 +185,7 @@ function App() {
         )
 
   // =====================================================
-  // WORLD 4 — RESOURCE VALUES
+  // WORLD 4 — WATER RESERVE / INERTIA
   // =====================================================
 
   const hasWaterReserve =
@@ -192,7 +212,7 @@ function App() {
     currentLevel.inertia > 0
 
   // =====================================================
-  // WORLD 5 — ENVIRONMENT VALUES
+  // WORLD 5 — ENVIRONMENT
   // =====================================================
 
   const hasEnvironment =
@@ -213,7 +233,8 @@ function App() {
     hasEnvironment &&
     currentTemperature !== null
       ? getEvaporationRate({
-          baseRate: evaporationBaseRate,
+          baseRate:
+            evaporationBaseRate,
           currentTemperature,
           initialTemperature,
         })
@@ -231,26 +252,32 @@ function App() {
         )
 
   // =====================================================
-  // WORLD 6 — OBSTACLE VALUES
+  // WORLD 6 — OBSTACLES
   // =====================================================
 
   const hasObstacles =
-    currentLevel.obstacleMode !== undefined
+    currentLevel.obstacleMode !==
+    undefined
 
   const obstacleMode =
-    currentLevel.obstacleMode ?? 'fixed'
+    currentLevel.obstacleMode ??
+    'fixed'
 
   const obstacleStrength =
-    currentLevel.obstacleStrength ?? 0
+    currentLevel.obstacleStrength ??
+    0
 
   const obstaclePositions =
-    currentLevel.obstaclePositions ?? []
+    currentLevel.obstaclePositions ??
+    []
 
   const obstacleMovementSpeed =
-    currentLevel.obstacleMovementSpeed ?? 0
+    currentLevel.obstacleMovementSpeed ??
+    0
 
   const blindSpotSize =
-    currentLevel.blindSpotSize ?? 0
+    currentLevel.blindSpotSize ??
+    0
 
   const obstacleEffect =
     hasObstacles
@@ -258,8 +285,10 @@ function App() {
           waterLevel,
           elapsedTime,
           mode: obstacleMode,
-          strength: obstacleStrength,
-          positions: obstaclePositions,
+          strength:
+            obstacleStrength,
+          positions:
+            obstaclePositions,
           movementSpeed:
             obstacleMovementSpeed,
         })
@@ -270,13 +299,109 @@ function App() {
         }
 
   // =====================================================
+  // WORLD 7 — MOTION
+  // =====================================================
+
+  const hasMotion =
+    currentLevel.motionMode !==
+    undefined
+
+  const motionMode =
+    currentLevel.motionMode ??
+    'horizontal'
+
+  const motionAmplitude =
+    currentLevel.motionAmplitude ??
+    0
+
+  const motionSpeed =
+    currentLevel.motionSpeed ??
+    0
+
+  const containerMotion =
+    hasMotion
+      ? getContainerMotion({
+          elapsedTime,
+          mode: motionMode,
+          amplitude:
+            motionAmplitude,
+          speed: motionSpeed,
+        })
+      : {
+          x: 0,
+          y: 0,
+          rotation: 0,
+        }
+
+  // =====================================================
+  // WORLD 8 — FROG INVASION
+  // =====================================================
+
+  const hasFrogs =
+    currentLevel.frogMode !==
+    undefined
+
+  const frogMode =
+    currentLevel.frogMode ??
+    'single'
+
+  const frogTriggerTimes =
+    currentLevel.frogTriggerTimes ??
+    []
+
+  const frogDisplacement =
+    currentLevel.frogDisplacement ??
+    0
+
+  const frogExitDisplacement =
+    currentLevel.frogExitDisplacement ??
+    0
+
+  const frogObstruction =
+    currentLevel.frogObstruction ??
+    0
+
+  const frogShakeStrength =
+    currentLevel.frogShakeStrength ??
+    0
+
+  const frogInterference =
+    hasFrogs
+      ? getAnimalInterference({
+          mode: frogMode,
+          elapsedTime,
+          triggerTimes:
+            frogTriggerTimes,
+          displacement:
+            frogDisplacement,
+          exitDisplacement:
+            frogExitDisplacement,
+          obstruction:
+            frogObstruction,
+          shakeStrength:
+            frogShakeStrength,
+        })
+      : {
+          triggeredEvents: 0,
+          waterOffset: 0,
+          frogsInGlass: 0,
+          visualObstruction: 0,
+          glassOffsetX: 0,
+          glassOffsetY: 0,
+          glassRotation: 0,
+          isActive: false,
+        }
+
+  // =====================================================
   // CURRENT FLOW SPEED
   // =====================================================
 
   const baseFlowSpeed =
     getFlowSpeed({
-      baseSpeed: currentLevel.fillSpeed,
-      flowType: currentLevel.flowType,
+      baseSpeed:
+        currentLevel.fillSpeed,
+      flowType:
+        currentLevel.flowType,
       waterLevel,
       elapsedTime,
     })
@@ -286,15 +411,13 @@ function App() {
     obstacleEffect.flowMultiplier
 
   // =====================================================
-  // FAILURE HANDLER
+  // ATTEMPT RESULT HELPERS
   // =====================================================
 
   const registerFailure = () => {
     setIsFilling(false)
-
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
-
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
 
@@ -304,7 +427,9 @@ function App() {
         0,
       )
 
-    setAttemptsLeft(nextAttempts)
+    setAttemptsLeft(
+      nextAttempts,
+    )
 
     if (nextAttempts === 0) {
       playGameOverSound()
@@ -313,18 +438,12 @@ function App() {
     }
   }
 
-  // =====================================================
-  // FINAL EVALUATION
-  // =====================================================
-
   const finishAttempt = (
     finalWaterLevel: number,
   ) => {
     setIsFilling(false)
-
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
-
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
 
@@ -334,11 +453,15 @@ function App() {
         currentLevel,
       )
 
-    setResult(evaluatedResult)
+    setResult(
+      evaluatedResult,
+    )
 
     if (
-      evaluatedResult === 'SUCCESS' ||
-      evaluatedResult === 'PERFECT'
+      evaluatedResult ===
+        'SUCCESS' ||
+      evaluatedResult ===
+        'PERFECT'
     ) {
       playSuccessSound()
       return
@@ -346,10 +469,6 @@ function App() {
 
     registerFailure()
   }
-
-  // =====================================================
-  // START EVAPORATION OR FINISH
-  // =====================================================
 
   const startEvaporationOrFinish = (
     finalWaterLevel: number,
@@ -359,12 +478,13 @@ function App() {
       evaporationBaseRate <= 0 ||
       evaporationDuration <= 0
     ) {
-      finishAttempt(finalWaterLevel)
+      finishAttempt(
+        finalWaterLevel,
+      )
       return
     }
 
     setIsFilling(false)
-
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
@@ -379,8 +499,68 @@ function App() {
   }
 
   // =====================================================
+  // WORLD 8 — APPLY FROG WATER DISPLACEMENT
+  // =====================================================
+
+  useEffect(() => {
+    if (
+      !hasFrogs ||
+      result !== 'waiting' ||
+      worldComplete ||
+      gameComplete ||
+      levelSucceeded ||
+      levelFailed
+    ) {
+      return
+    }
+
+    const previousOffset =
+      appliedFrogOffsetRef.current
+
+    const nextOffset =
+      frogInterference.waterOffset
+
+    const offsetDifference =
+      nextOffset -
+      previousOffset
+
+    if (
+      offsetDifference === 0
+    ) {
+      return
+    }
+
+    const nextWater =
+      Math.max(
+        0,
+        Math.min(
+          waterLevelRef.current +
+            offsetDifference,
+          100,
+        ),
+      )
+
+    waterLevelRef.current =
+      nextWater
+
+    setWaterLevel(
+      nextWater,
+    )
+
+    appliedFrogOffsetRef.current =
+      nextOffset
+  }, [
+    hasFrogs,
+    frogInterference.waterOffset,
+    result,
+    worldComplete,
+    gameComplete,
+    levelSucceeded,
+    levelFailed,
+  ])
+
+  // =====================================================
   // WATER FILLING
-  // WORLD 6 OBSTACLES MODIFY THE REAL FLOW
   // =====================================================
 
   useEffect(() => {
@@ -406,13 +586,10 @@ function App() {
           getFlowSpeed({
             baseSpeed:
               currentLevel.fillSpeed,
-
             flowType:
               currentLevel.flowType,
-
             waterLevel:
               currentWater,
-
             elapsedTime,
           })
 
@@ -421,25 +598,21 @@ function App() {
             ? getObstacleEffect({
                 waterLevel:
                   currentWater,
-
                 elapsedTime,
-
                 mode:
                   obstacleMode,
-
                 strength:
                   obstacleStrength,
-
                 positions:
                   obstaclePositions,
-
                 movementSpeed:
                   obstacleMovementSpeed,
               })
             : {
                 flowMultiplier: 1,
                 activePositions: [],
-                isBlockingFlow: false,
+                isBlockingFlow:
+                  false,
               }
 
         const effectiveSpeed =
@@ -449,7 +622,9 @@ function App() {
         const amountToAdd =
           effectiveSpeed / 100
 
-        if (!hasWaterReserve) {
+        if (
+          !hasWaterReserve
+        ) {
           const nextWater =
             currentWater +
             amountToAdd
@@ -457,13 +632,16 @@ function App() {
           waterLevelRef.current =
             nextWater
 
-          setWaterLevel(nextWater)
+          setWaterLevel(
+            nextWater,
+          )
 
           return
         }
 
         const currentReserve =
-          waterReserveRef.current ?? 0
+          waterReserveRef.current ??
+          0
 
         const actualAmount =
           Math.min(
@@ -488,41 +666,48 @@ function App() {
         waterReserveRef.current =
           nextReserve
 
-        setWaterLevel(nextWater)
-        setWaterReserve(nextReserve)
+        setWaterLevel(
+          nextWater,
+        )
 
-        if (nextReserve <= 0) {
+        setWaterReserve(
+          nextReserve,
+        )
+
+        if (
+          nextReserve <= 0
+        ) {
           setIsFilling(false)
 
-          window.setTimeout(() => {
-            startEvaporationOrFinish(
-              nextWater,
-            )
-          }, 0)
+          window.setTimeout(
+            () => {
+              startEvaporationOrFinish(
+                nextWater,
+              )
+            },
+            0,
+          )
         }
       }, 10)
 
     return () => {
-      window.clearInterval(interval)
+      window.clearInterval(
+        interval,
+      )
     }
   }, [
     isFilling,
     isInertiaActive,
     isEvaporating,
-
     currentLevel.fillSpeed,
     currentLevel.flowType,
-
     elapsedTime,
-
     hasWaterReserve,
-
     hasObstacles,
     obstacleMode,
     obstacleStrength,
     obstaclePositions,
     obstacleMovementSpeed,
-
     worldComplete,
     gameComplete,
     levelSucceeded,
@@ -530,8 +715,9 @@ function App() {
     result,
   ])
 
-  // =====================================================
-  // GAME CLOCK
+    // =====================================================
+  // GLOBAL ELAPSED-TIME CLOCK
+  // Worlds 3, 6, 7 and 8 use elapsed time
   // =====================================================
 
   useEffect(() => {
@@ -569,8 +755,7 @@ function App() {
   ])
 
   // =====================================================
-  // WORLD 3 — TIMER EXPIRATION
-  // CORRECTED VERSION
+  // WORLD 3 — TIME LIMIT
   // =====================================================
 
   useEffect(() => {
@@ -584,13 +769,9 @@ function App() {
       return
     }
 
-    // Stop the clock and filling.
-    // Do NOT force an OVERFLOW result.
     setTimerStarted(false)
     setIsFilling(false)
 
-    // If another post-release mechanic is resolving,
-    // allow it to finish normally.
     if (
       isInertiaActive ||
       isEvaporating
@@ -665,11 +846,8 @@ function App() {
     gameComplete,
   ])
 
-    // =====================================================
-  // WORLD 4 — INERTIA
-  //
-  // WORLD 6:
-  // Obstacles can also disrupt inertia flow.
+  // =====================================================
+  // WORLD 4 — INERTIA WATER FLOW
   // =====================================================
 
   useEffect(() => {
@@ -709,25 +887,21 @@ function App() {
             ? getObstacleEffect({
                 waterLevel:
                   currentWater,
-
                 elapsedTime,
-
                 mode:
                   obstacleMode,
-
                 strength:
                   obstacleStrength,
-
                 positions:
                   obstaclePositions,
-
                 movementSpeed:
                   obstacleMovementSpeed,
               })
             : {
                 flowMultiplier: 1,
                 activePositions: [],
-                isBlockingFlow: false,
+                isBlockingFlow:
+                  false,
               }
 
         const inertiaSpeed =
@@ -737,7 +911,9 @@ function App() {
         const amountToAdd =
           inertiaSpeed / 100
 
-        if (!hasWaterReserve) {
+        if (
+          !hasWaterReserve
+        ) {
           const nextWater =
             currentWater +
             amountToAdd
@@ -745,13 +921,16 @@ function App() {
           waterLevelRef.current =
             nextWater
 
-          setWaterLevel(nextWater)
+          setWaterLevel(
+            nextWater,
+          )
 
           return
         }
 
         const currentReserve =
-          waterReserveRef.current ?? 0
+          waterReserveRef.current ??
+          0
 
         const actualAmount =
           Math.min(
@@ -776,40 +955,51 @@ function App() {
         waterReserveRef.current =
           nextReserve
 
-        setWaterLevel(nextWater)
-        setWaterReserve(nextReserve)
+        setWaterLevel(
+          nextWater,
+        )
 
-        if (nextReserve <= 0) {
-          setIsInertiaActive(false)
+        setWaterReserve(
+          nextReserve,
+        )
+
+        if (
+          nextReserve <= 0
+        ) {
+          setIsInertiaActive(
+            false,
+          )
+
           setInertiaTimeLeft(0)
 
-          window.setTimeout(() => {
-            startEvaporationOrFinish(
-              nextWater,
-            )
-          }, 0)
+          window.setTimeout(
+            () => {
+              startEvaporationOrFinish(
+                nextWater,
+              )
+            },
+            0,
+          )
         }
       }, 10)
 
     return () => {
-      window.clearInterval(interval)
+      window.clearInterval(
+        interval,
+      )
     }
   }, [
     isInertiaActive,
     inertiaTimeLeft,
-
     currentLevel.inertia,
     currentLevel.fillSpeed,
-
     hasWaterReserve,
-
     hasObstacles,
     obstacleMode,
     obstacleStrength,
     obstaclePositions,
     obstacleMovementSpeed,
     elapsedTime,
-
     result,
     worldComplete,
     gameComplete,
@@ -841,7 +1031,9 @@ function App() {
       }, 10)
 
     return () => {
-      window.clearInterval(timer)
+      window.clearInterval(
+        timer,
+      )
     }
   }, [
     isInertiaActive,
@@ -849,7 +1041,7 @@ function App() {
   ])
 
   // =====================================================
-  // WORLD 4 — FINISH AFTER INERTIA
+  // WORLD 4 — END INERTIA
   // =====================================================
 
   useEffect(() => {
@@ -873,7 +1065,7 @@ function App() {
   ])
 
   // =====================================================
-  // WORLD 5 — EVAPORATION
+  // WORLD 5 — EVAPORATION WATER LOSS
   // =====================================================
 
   useEffect(() => {
@@ -895,15 +1087,11 @@ function App() {
           getEvaporationRate({
             baseRate:
               evaporationBaseRate,
-
             currentTemperature:
               temperature,
-
             initialTemperature,
           })
 
-        // 10 ms interval:
-        // rate = percentage points / second.
         const amountToRemove =
           evaporationRate / 100
 
@@ -917,11 +1105,15 @@ function App() {
         waterLevelRef.current =
           nextWater
 
-        setWaterLevel(nextWater)
+        setWaterLevel(
+          nextWater,
+        )
       }, 10)
 
     return () => {
-      window.clearInterval(interval)
+      window.clearInterval(
+        interval,
+      )
     }
   }, [
     isEvaporating,
@@ -962,7 +1154,9 @@ function App() {
       }, 10)
 
     return () => {
-      window.clearInterval(interval)
+      window.clearInterval(
+        interval,
+      )
     }
   }, [
     isEvaporating,
@@ -970,7 +1164,7 @@ function App() {
   ])
 
   // =====================================================
-  // WORLD 5 — FINISH AFTER EVAPORATION
+  // WORLD 5 — END EVAPORATION
   // =====================================================
 
   useEffect(() => {
@@ -994,7 +1188,7 @@ function App() {
   ])
 
   // =====================================================
-  // PLAYER INPUT — POINTER DOWN
+  // PLAYER INPUT — HOLD
   // =====================================================
 
   const pointerDown = () => {
@@ -1011,7 +1205,8 @@ function App() {
 
     if (
       hasWaterReserve &&
-      (waterReserveRef.current ?? 0) <= 0
+      (waterReserveRef.current ??
+        0) <= 0
     ) {
       startEvaporationOrFinish(
         waterLevelRef.current,
@@ -1020,11 +1215,6 @@ function App() {
       return
     }
 
-    // Start the gameplay clock on the first interaction.
-    // This clock is used by:
-    // - World 3 timers
-    // - variable flow
-    // - World 6 moving obstacles
     if (!timerStarted) {
       setTimerStarted(true)
     }
@@ -1033,8 +1223,7 @@ function App() {
   }
 
   // =====================================================
-  // PLAYER INPUT — POINTER UP
-  // CORRECTED TIMER VERSION
+  // PLAYER INPUT — RELEASE
   // =====================================================
 
   const pointerUp = () => {
@@ -1049,9 +1238,11 @@ function App() {
 
     setIsFilling(false)
 
-    // On timed levels, releasing the button ends
-    // the countdown immediately.
-    if (hasTimeLimit) {
+    if (
+      hasTimeLimit ||
+      hasMotion ||
+      hasFrogs
+    ) {
       setTimerStarted(false)
     }
 
@@ -1085,16 +1276,21 @@ function App() {
     setElapsedTime(0)
     setTimerStarted(false)
 
+    appliedFrogOffsetRef.current =
+      0
+
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
 
-    evaporationTimeRef.current = 0
+    evaporationTimeRef.current =
+      0
 
     const resetTemperature =
-      currentLevel.temperature ?? null
+      currentLevel.temperature ??
+      null
 
     setCurrentTemperature(
       resetTemperature,
@@ -1117,7 +1313,7 @@ function App() {
   }
 
   // =====================================================
-  // RESTART FAILED LEVEL
+  // RESTART LEVEL
   // =====================================================
 
   const restartLevel = () => {
@@ -1136,7 +1332,7 @@ function App() {
   }
 
   // =====================================================
-  // LOAD LEVEL
+  // LOAD A LEVEL
   // =====================================================
 
   const loadLevel = (
@@ -1159,13 +1355,17 @@ function App() {
     setElapsedTime(0)
     setTimerStarted(false)
 
+    appliedFrogOffsetRef.current =
+      0
+
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
 
-    evaporationTimeRef.current = 0
+    evaporationTimeRef.current =
+      0
 
     setAttemptsLeft(
       newLevel.attempts,
@@ -1179,7 +1379,8 @@ function App() {
       newLevel.waterReserve
 
     const newTemperature =
-      newLevel.temperature ?? null
+      newLevel.temperature ??
+      null
 
     setCurrentTemperature(
       newTemperature,
@@ -1223,11 +1424,13 @@ function App() {
       return
     }
 
-    loadLevel(newLevelIndex)
+    loadLevel(
+      newLevelIndex,
+    )
   }
 
   // =====================================================
-  // START NEXT WORLD
+  // NEXT WORLD
   // =====================================================
 
   const startNextWorld = () => {
@@ -1244,7 +1447,9 @@ function App() {
       return
     }
 
-    loadLevel(newLevelIndex)
+    loadLevel(
+      newLevelIndex,
+    )
 
     setWorldComplete(false)
   }
@@ -1260,8 +1465,8 @@ function App() {
     setGameComplete(false)
   }
 
-  // =====================================================
-  // DISPLAY VALUES
+    // =====================================================
+  // DISPLAYED / VISUAL VALUES
   // =====================================================
 
   const displayedLevel =
@@ -1318,6 +1523,28 @@ function App() {
         )
 
   // =====================================================
+  // WORLDS 7 + 8 — FINAL GLASS TRANSFORM
+  // =====================================================
+
+  const finalGlassX =
+    containerMotion.x +
+    frogInterference.glassOffsetX
+
+  const finalGlassY =
+    containerMotion.y +
+    frogInterference.glassOffsetY
+
+  const finalGlassRotation =
+    containerMotion.rotation +
+    frogInterference.glassRotation
+
+  const hasGlassMovement =
+    hasMotion ||
+    frogInterference.glassOffsetX !== 0 ||
+    frogInterference.glassOffsetY !== 0 ||
+    frogInterference.glassRotation !== 0
+
+  // =====================================================
   // GAME COMPLETE SCREEN
   // =====================================================
 
@@ -1371,7 +1598,11 @@ function App() {
                 ? 'ENVIRONMENT MASTERED!'
                 : currentLevel.world === 6
                   ? 'OBSTACLES MASTERED!'
-                  : 'WORLD MASTERED!'
+                  : currentLevel.world === 7
+                    ? 'MOTION MASTERED!'
+                    : currentLevel.world === 8
+                      ? 'FROG INVASION SURVIVED!'
+                      : 'WORLD MASTERED!'
 
     return (
       <main className="game">
@@ -1405,8 +1636,9 @@ function App() {
       </main>
     )
   }
-    // =====================================================
-  // SUCCESS SCREEN
+
+  // =====================================================
+  // LEVEL SUCCESS SCREEN
   // =====================================================
 
   if (levelSucceeded) {
@@ -1443,7 +1675,8 @@ function App() {
           {hasWaterReserve &&
             displayedReserve !== null && (
               <p className="reserve-result">
-                Water remaining: {displayedReserve}%
+                Water remaining:{' '}
+                {displayedReserve}%
               </p>
             )}
 
@@ -1468,7 +1701,7 @@ function App() {
   }
 
   // =====================================================
-  // FAILED LEVEL SCREEN
+  // LEVEL FAILED SCREEN
   // =====================================================
 
   if (levelFailed) {
@@ -1515,12 +1748,16 @@ function App() {
   }
 
   // =====================================================
-  // NORMAL GAME SCREEN
+  // MAIN GAME SCREEN
   // =====================================================
 
   return (
     <main className="game">
       <section className="game-card">
+        {/* =================================================
+            LEVEL HEADER
+            ================================================= */}
+
         <p className="eyebrow">
           WORLD {currentLevel.world} • LEVEL{' '}
           {currentLevel.id}
@@ -1545,7 +1782,9 @@ function App() {
           </div>
         </div>
 
-        {/* WORLD 3 — TIMER */}
+        {/* =================================================
+            WORLD 3 — TIMER
+            ================================================= */}
 
         {hasTimeLimit && (
           <div
@@ -1570,7 +1809,9 @@ function App() {
           </div>
         )}
 
-        {/* WORLD 4 — WATER RESERVE */}
+        {/* =================================================
+            WORLD 4 — WATER RESERVE
+            ================================================= */}
 
         {hasWaterReserve &&
           waterReserve !== null &&
@@ -1598,7 +1839,9 @@ function App() {
             </div>
           )}
 
-        {/* WORLD 5 — TEMPERATURE */}
+        {/* =================================================
+            WORLD 5 — TEMPERATURE
+            ================================================= */}
 
         {hasEnvironment &&
           displayedTemperature !== null && (
@@ -1645,7 +1888,9 @@ function App() {
             </div>
           )}
 
-        {/* WORLD 6 — OBSTACLE INFORMATION */}
+        {/* =================================================
+            WORLD 6 — OBSTACLE INFORMATION
+            ================================================= */}
 
         {hasObstacles && (
           <div
@@ -1678,7 +1923,56 @@ function App() {
           </div>
         )}
 
-        {/* CURRENT MECHANIC STATUS */}
+        {/* =================================================
+            WORLD 7 — MOTION INFORMATION
+            ================================================= */}
+
+        {hasMotion && (
+          <div className="motion-panel">
+            <div className="motion-panel-header">
+              <span className="motion-panel-label">
+                CONTAINER MOTION
+              </span>
+
+              <span className="motion-panel-value">
+                {motionMode.toUpperCase()}
+              </span>
+            </div>
+
+            <div className="motion-info">
+              AMPLITUDE {motionAmplitude}px • SPEED{' '}
+              {motionSpeed.toFixed(1)}
+            </div>
+          </div>
+        )}
+
+        {/* =================================================
+            WORLD 8 — FROG INFORMATION
+            ================================================= */}
+
+        {hasFrogs && (
+          <div className="motion-panel">
+            <div className="motion-panel-header">
+              <span className="motion-panel-label">
+                FROG INVASION
+              </span>
+
+              <span className="motion-panel-value">
+                {frogInterference.frogsInGlass} 🐸
+              </span>
+            </div>
+
+            <div className="motion-info">
+              EVENTS{' '}
+              {frogInterference.triggeredEvents}/
+              {frogTriggerTimes.length}
+            </div>
+          </div>
+        )}
+
+        {/* =================================================
+            LIVE STATUS
+            ================================================= */}
 
         {isInertiaActive && (
           <div className="inertia-status">
@@ -1701,14 +1995,27 @@ function App() {
           )}
 
         {/* =================================================
-            CONTAINER
+            GLASS / CONTAINER
             ================================================= */}
 
         <div className="container">
           <div
-            className={`glass glass-${currentLevel.containerShape}`}
+            className={`glass glass-${currentLevel.containerShape} ${
+              hasGlassMovement
+                ? 'glass-motion'
+                : ''
+            }`}
+            style={
+              hasGlassMovement
+                ? {
+                    transform: `translate(${finalGlassX}px, ${finalGlassY}px) rotate(${finalGlassRotation}deg)`,
+                  }
+                : undefined
+            }
           >
-            {/* WATER */}
+            {/* =============================================
+                WATER
+                ============================================= */}
 
             <div
               className="water"
@@ -1720,7 +2027,9 @@ function App() {
               }}
             />
 
-            {/* TARGET ZONE */}
+            {/* =============================================
+                TARGET ZONE
+                ============================================= */}
 
             {currentLevel.showTargetZone && (
               <div
@@ -1728,7 +2037,6 @@ function App() {
                 style={{
                   bottom:
                     `${visualTargetMinimum}%`,
-
                   height:
                     `${visualTargetHeight}%`,
                 }}
@@ -1737,12 +2045,17 @@ function App() {
               </div>
             )}
 
-            {/* WORLD 6 — OBSTACLES */}
+            {/* =============================================
+                WORLD 6 — OBSTACLES
+                ============================================= */}
 
             {hasObstacles && (
               <ObstacleField
                 positions={
                   obstacleEffect.activePositions
+                }
+                isBlockingFlow={
+                  obstacleEffect.isBlockingFlow
                 }
                 moving={
                   obstacleMode === 'moving'
@@ -1750,8 +2063,20 @@ function App() {
                 blindSpotSize={
                   blindSpotSize
                 }
-                isBlockingFlow={
-                  obstacleEffect.isBlockingFlow
+              />
+            )}
+
+            {/* =============================================
+                WORLD 8 — FROG INVASION
+                ============================================= */}
+
+            {hasFrogs && (
+              <FrogField
+                frogCount={
+                  frogInterference.frogsInGlass
+                }
+                obstruction={
+                  frogInterference.visualObstruction
                 }
               />
             )}
@@ -1779,7 +2104,7 @@ function App() {
         )}
 
         {/* =================================================
-            ACTION BUTTON
+            MAIN ACTION BUTTON
             ================================================= */}
 
         {result === 'waiting' ? (
@@ -1811,7 +2136,7 @@ function App() {
         )}
 
         {/* =================================================
-            CONTEXTUAL HINT
+            PLAYER HINT
             ================================================= */}
 
         <p className="hint">
@@ -1820,28 +2145,41 @@ function App() {
             : isEvaporating
               ? 'Wait for evaporation to finish before the final result.'
               : result === 'waiting'
-                ? hasObstacles
-                  ? obstacleEffect.isBlockingFlow
-                    ? 'Obstacle contact • The water flow is currently disrupted'
-                    : blindSpotSize > 0
-                      ? 'Obstacles alter the flow • Hidden areas force you to estimate the level'
-                      : obstacleMode === 'moving'
-                        ? 'The barrier moves • Its position changes the flow in real time'
-                        : 'Obstacles alter the flow • Adapt your timing'
-                  : hasEnvironment
-                    ? 'Heat causes evaporation • Anticipate the water loss'
-                    : hasTimeLimit &&
-                        !timerStarted
-                      ? 'The timer starts when you begin filling.'
-                      : hasWaterReserve
-                        ? hasInertia
-                          ? 'Every drop counts • Release early to anticipate momentum'
-                          : 'Every drop counts • Your reserve carries across attempts'
-                        : 'Hold to fill • Release to stop'
+                ? hasFrogs
+                  ? frogMode === 'in-out'
+                    ? frogInterference.frogsInGlass > 0
+                      ? 'The frog is inside • Remember that it can jump back out'
+                      : frogInterference.triggeredEvents >= 2
+                        ? 'The frog escaped • The water level dropped again'
+                        : 'Keep pouring • A frog is about to interfere'
+                    : frogInterference.isActive
+                      ? 'Frogs displace water • Adapt before you release'
+                      : 'Keep pouring • The frogs are coming'
+                  : hasObstacles
+                    ? obstacleEffect.isBlockingFlow
+                      ? 'Obstacle contact • The water flow is currently disrupted'
+                      : blindSpotSize > 0
+                        ? 'Obstacles alter the flow • Hidden areas force you to estimate the level'
+                        : obstacleMode === 'moving'
+                          ? 'The barrier moves • Its position changes the flow in real time'
+                          : 'Obstacles alter the flow • Adapt your timing'
+                    : hasEnvironment
+                      ? 'Heat causes evaporation • Anticipate the water loss'
+                      : hasTimeLimit &&
+                          !timerStarted
+                        ? 'The timer starts when you begin filling.'
+                        : hasWaterReserve
+                          ? hasInertia
+                            ? 'Every drop counts • Release early to anticipate momentum'
+                            : 'Every drop counts • Your reserve carries across attempts'
+                          : hasMotion
+                            ? 'The container moves • Keep control of your timing'
+                            : 'Hold to fill • Release to stop'
                 : 'Try again before you run out of attempts.'}
         </p>
+
         {/* =================================================
-            DEVELOPMENT DEBUG
+            DEBUG / OBSERVABLE GAME STATE
             ================================================= */}
 
         <div className="debug-state">
@@ -1854,15 +2192,18 @@ function App() {
           </span>
 
           <span>
-            shape: {currentLevel.containerShape}
+            shape:{' '}
+            {currentLevel.containerShape}
           </span>
 
           <span>
-            flowType: {currentLevel.flowType}
+            flowType:{' '}
+            {currentLevel.flowType}
           </span>
 
           <span>
-            real waterLevel: {displayedLevel}
+            real waterLevel:{' '}
+            {displayedLevel}
           </span>
 
           <span>
@@ -1873,7 +2214,8 @@ function App() {
           </span>
 
           <span>
-            target: {currentLevel.target}%
+            target:{' '}
+            {currentLevel.target}%
           </span>
 
           <span>
@@ -1882,12 +2224,14 @@ function App() {
           </span>
 
           <span>
-            attempts: {attemptsLeft}/
+            attempts:{' '}
+            {attemptsLeft}/
             {currentLevel.attempts}
           </span>
 
           <span>
-            baseSpeed: {currentLevel.fillSpeed}
+            baseSpeed:{' '}
+            {currentLevel.fillSpeed}
           </span>
 
           <span>
@@ -1925,7 +2269,9 @@ function App() {
 
           <span>
             inertiaActive:{' '}
-            {String(isInertiaActive)}
+            {String(
+              isInertiaActive,
+            )}
           </span>
 
           <span>
@@ -1944,7 +2290,9 @@ function App() {
 
           <span>
             evaporationActive:{' '}
-            {String(isEvaporating)}
+            {String(
+              isEvaporating,
+            )}
           </span>
 
           <span>
@@ -1991,6 +2339,62 @@ function App() {
             blindSpot:{' '}
             {hasObstacles
               ? `${blindSpotSize}%`
+              : 'none'}
+          </span>
+
+          <span>
+            motionMode:{' '}
+            {hasMotion
+              ? motionMode
+              : 'none'}
+          </span>
+
+          <span>
+            motionAmplitude:{' '}
+            {hasMotion
+              ? `${motionAmplitude}px`
+              : 'none'}
+          </span>
+
+          <span>
+            motionSpeed:{' '}
+            {hasMotion
+              ? motionSpeed.toFixed(1)
+              : 'none'}
+          </span>
+
+          <span>
+            frogMode:{' '}
+            {hasFrogs
+              ? frogMode
+              : 'none'}
+          </span>
+
+          <span>
+            frogEvents:{' '}
+            {hasFrogs
+              ? `${frogInterference.triggeredEvents}/${frogTriggerTimes.length}`
+              : 'none'}
+          </span>
+
+          <span>
+            frogsInGlass:{' '}
+            {hasFrogs
+              ? frogInterference.frogsInGlass
+              : 'none'}
+          </span>
+
+          <span>
+            frogWaterOffset:{' '}
+            {hasFrogs
+              ? frogInterference.waterOffset.toFixed(1)
+              : 'none'}
+          </span>
+
+          <span>
+            frogObstruction:{' '}
+            {hasFrogs
+              ? `${frogInterference.visualObstruction}%`
               : 'none'}
           </span>
 

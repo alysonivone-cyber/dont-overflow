@@ -259,7 +259,7 @@ export const levels: LevelConfig[] = [
     inertia: 0,
   },
 
-  // =====================================================
+    // =====================================================
   // WORLD 3 — PRESSURE
   // =====================================================
 
@@ -517,7 +517,7 @@ export const levels: LevelConfig[] = [
     inertia: 0.5,
   },
 
-  // =====================================================
+    // =====================================================
   // WORLD 5 — ENVIRONMENT
   // =====================================================
 
@@ -670,7 +670,8 @@ export const levels: LevelConfig[] = [
     evaporationRate: 4.5,
     evaporationDuration: 1.7,
   },
-    // =====================================================
+
+  // =====================================================
   // WORLD 6 — OBSTACLES
   // =====================================================
 
@@ -827,5 +828,318 @@ export const levels: LevelConfig[] = [
     obstaclePositions: [55],
     obstacleMovementSpeed: 4.2,
     blindSpotSize: 32,
+  },
+
+    // =====================================================
+  // WORLD 7 — MOTION
+  // =====================================================
+
+  {
+    id: 1,
+    world: 7,
+    name: 'First Move',
+    instruction:
+      'The container is moving. Follow it and keep control of your timing.',
+
+    target: 70,
+    tolerance: 4,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    motionMode: 'horizontal',
+    motionAmplitude: 14,
+    motionSpeed: 1.8,
+  },
+
+  {
+    id: 2,
+    world: 7,
+    name: 'Pendulum',
+    instruction:
+      'The container now swings and tilts. Track its rhythm before you release.',
+
+    target: 68,
+    tolerance: 4,
+
+    fillSpeed: 35,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    motionMode: 'pendulum',
+    motionAmplitude: 18,
+    motionSpeed: 2.2,
+  },
+
+  {
+    id: 3,
+    world: 7,
+    name: 'Unstable Ground',
+    instruction:
+      'Vertical movement changes your visual reference. Keep your eyes on the target.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 36,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    motionMode: 'vertical',
+    motionAmplitude: 20,
+    motionSpeed: 2.7,
+  },
+
+  {
+    id: 4,
+    world: 7,
+    name: 'Moving Blind',
+    instruction:
+      'The container moves without numerical feedback. Trust your visual timing.',
+
+    target: 66,
+    tolerance: 3,
+
+    fillSpeed: 37,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    motionMode: 'combined',
+    motionAmplitude: 22,
+    motionSpeed: 3,
+  },
+
+  {
+    id: 5,
+    world: 7,
+    name: 'Motion Mastery',
+    instruction:
+      'Movement and momentum combine. Release early and anticipate where the water will finish.',
+
+    target: 74,
+    tolerance: 2,
+
+    fillSpeed: 38,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.45,
+
+    motionMode: 'combined',
+    motionAmplitude: 28,
+    motionSpeed: 3.6,
+  },
+
+  // =====================================================
+  // WORLD 8 — FROG INVASION
+  // =====================================================
+
+  {
+    id: 1,
+    world: 8,
+    name: 'Frog Attack',
+    instruction:
+      'A frog will jump into the glass. Anticipate the sudden water displacement.',
+
+    target: 68,
+    tolerance: 4,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    frogMode: 'single',
+    frogTriggerTimes: [1.4],
+    frogDisplacement: 8,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+  },
+
+  {
+    id: 2,
+    world: 8,
+    name: 'Double Trouble',
+    instruction:
+      'Two frogs jump into the glass at different moments. Anticipate both splashes.',
+
+    target: 72,
+    tolerance: 4,
+
+    fillSpeed: 35,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    frogMode: 'double',
+    frogTriggerTimes: [0.9, 1.7],
+    frogDisplacement: 6,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+  },
+
+  {
+    id: 3,
+    world: 8,
+    name: 'Jump In, Jump Out',
+    instruction:
+      'The frog jumps into the glass, then escapes. The water rises and falls while you pour.',
+
+    target: 66,
+    tolerance: 3,
+
+    fillSpeed: 36,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    frogMode: 'in-out',
+    frogTriggerTimes: [1, 1.8],
+    frogDisplacement: 9,
+    frogExitDisplacement: 9,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+  },
+
+  {
+    id: 4,
+    world: 8,
+    name: 'Frog Invasion',
+    instruction:
+      'Frogs invade the glass and block your view. Track the level through the chaos.',
+
+    target: 74,
+    tolerance: 3,
+
+    fillSpeed: 37,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    frogMode: 'invasion',
+    frogTriggerTimes: [0.7, 1.2, 1.7],
+    frogDisplacement: 4,
+    frogExitDisplacement: 0,
+    frogObstruction: 45,
+    frogShakeStrength: 0,
+  },
+
+  {
+    id: 5,
+    world: 8,
+    name: 'Frog Apocalypse',
+    instruction:
+      'Multiple frogs, hidden information and violent movement combine. Survive the invasion.',
+
+    target: 70,
+    tolerance: 2,
+
+    fillSpeed: 38,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.35,
+
+    frogMode: 'apocalypse',
+    frogTriggerTimes: [0.6, 1.05, 1.5, 1.95],
+    frogDisplacement: 3,
+    frogExitDisplacement: 0,
+    frogObstruction: 55,
+    frogShakeStrength: 12,
   },
 ]
