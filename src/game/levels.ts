@@ -1314,7 +1314,7 @@ export const levels: LevelConfig[] = [
     frogShakeStrength: 0,
   },
 
-    // =====================================================
+  // =====================================================
   // WORLD 10 — MASTERY
   // =====================================================
 
@@ -1847,5 +1847,861 @@ export const levels: LevelConfig[] = [
     survivorShakeStrength: 12,
     survivorHideDuration: 0.6,
     survivorObstruction: 0.4,
+  },
+
+  // =====================================================
+  // WORLD 13 — MUD
+  // =====================================================
+
+  {
+    id: 1,
+    world: 13,
+    name: 'First Splash',
+    instruction:
+      'Mud hits the screen for the first time. Keep your focus on the visible parts of the glass.',
+
+    target: 70,
+    tolerance: 4,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    mudMode: 'splash',
+    mudTriggerTimes: [
+      0.85,
+    ],
+    mudCoverage: 18,
+    mudDuration: 1,
+  },
+
+  {
+    id: 2,
+    world: 13,
+    name: 'Dirty Screen',
+    instruction:
+      'More mud splashes accumulate across the screen. Find the remaining clear areas and keep control.',
+
+    target: 68,
+    tolerance: 3,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    mudMode: 'multiple',
+    mudTriggerTimes: [
+      0.55,
+      1.05,
+      1.55,
+    ],
+    mudCoverage: 15,
+    mudDuration: 1,
+  },
+
+  {
+    id: 3,
+    world: 13,
+    name: 'Mud Rain',
+    instruction:
+      'Mud keeps raining onto the screen while you fill. Visibility gets worse with every new splash.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    mudMode: 'rain',
+    mudTriggerTimes: [
+      0.4,
+      0.75,
+      1.1,
+      1.45,
+      1.8,
+    ],
+    mudCoverage: 14,
+    mudDuration: 1.2,
+  },
+
+  {
+    id: 4,
+    world: 13,
+    name: 'Almost Blind',
+    instruction:
+      'Heavy mud hides most of your visual references. Read the remaining gaps and trust your timing.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.1,
+
+    mudMode: 'blind',
+    mudTriggerTimes: [
+      0.4,
+      0.75,
+      1.1,
+      1.45,
+      1.8,
+    ],
+    mudCoverage: 18,
+    mudDuration: 1.3,
+  },
+
+  {
+    id: 5,
+    world: 13,
+    name: 'Mud Disaster',
+    instruction:
+      'Mud covers the battlefield while unstable pressure and movement fight your control. Find a way through the mess.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 32,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.1,
+
+    mudMode: 'disaster',
+    mudTriggerTimes: [
+      0.3,
+      0.6,
+      0.9,
+      1.2,
+      1.5,
+      1.8,
+      2.1,
+    ],
+    mudCoverage: 15,
+    mudDuration: 1.4,
+
+    survivorMode: 'pressure',
+    survivorTriggerTimes: [
+      0.75,
+      1.55,
+    ],
+    survivorShakeStrength: 0,
+    survivorHideDuration: 0,
+    survivorObstruction: 0.35,
+
+    motionMode: 'horizontal',
+    motionAmplitude: 12,
+    motionSpeed: 1.8,
+  },
+
+  // =====================================================
+  // WORLD 14 — SWAMP CHAOS
+  // MUD × FROGS × SHAPES
+  // =====================================================
+
+  {
+    id: 1,
+    world: 14,
+    name: 'Swamp Glass',
+    instruction:
+      'Mud returns inside a deceptive glass. Read the shape carefully before the screen gets dirty.',
+
+    target: 70,
+    tolerance: 4,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'wide',
+
+    inertia: 0,
+
+    mudMode: 'splash',
+    mudTriggerTimes: [
+      0.85,
+    ],
+    mudCoverage: 18,
+    mudDuration: 1,
+  },
+
+  {
+    id: 2,
+    world: 14,
+    name: 'Frog in the Mud',
+    instruction:
+      'A frog changes the water level while mud hides part of the conical glass. Watch both threats.',
+
+    target: 68,
+    tolerance: 3,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'conical',
+
+    inertia: 0,
+
+    frogMode: 'single',
+    frogTriggerTimes: [
+      1.05,
+    ],
+    frogDisplacement: 6,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+
+    mudMode: 'multiple',
+    mudTriggerTimes: [
+      0.55,
+      1.35,
+    ],
+    mudCoverage: 16,
+    mudDuration: 1,
+  },
+
+  {
+    id: 3,
+    world: 14,
+    name: 'Dirty Martini',
+    instruction:
+      'Frogs invade a deceptive martini glass while mud progressively removes your visual references.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'martini',
+
+    inertia: 0,
+
+    frogMode: 'double',
+    frogTriggerTimes: [
+      0.85,
+      1.55,
+    ],
+    frogDisplacement: 4,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+
+    mudMode: 'rain',
+    mudTriggerTimes: [
+      0.45,
+      0.8,
+      1.15,
+      1.5,
+      1.85,
+    ],
+    mudCoverage: 13,
+    mudDuration: 1.1,
+  },
+
+  {
+    id: 4,
+    world: 14,
+    name: 'Swamp Invasion',
+    instruction:
+      'Mud and frogs invade the glass together. The glass moves too, so every visual reference is unstable.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'wide',
+
+    inertia: 0.1,
+
+    frogMode: 'invasion',
+    frogTriggerTimes: [
+      0.7,
+      1.2,
+      1.7,
+    ],
+    frogDisplacement: 3,
+    frogExitDisplacement: 0,
+    frogObstruction: 28,
+    frogShakeStrength: 0,
+
+    mudMode: 'blind',
+    mudTriggerTimes: [
+      0.4,
+      0.75,
+      1.1,
+      1.45,
+      1.8,
+    ],
+    mudCoverage: 15,
+    mudDuration: 1.2,
+
+    motionMode: 'horizontal',
+    motionAmplitude: 12,
+    motionSpeed: 1.8,
+  },
+
+  {
+    id: 5,
+    world: 14,
+    name: 'Swamp Apocalypse',
+    instruction:
+      'Frogs, mud, movement and an unstable flow collide. Keep control through the final swamp invasion.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 33,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'martini',
+
+    inertia: 0.15,
+
+    frogMode: 'apocalypse',
+    frogTriggerTimes: [
+      0.65,
+      1.1,
+      1.55,
+      2,
+    ],
+    frogDisplacement: 3,
+    frogExitDisplacement: 0,
+    frogObstruction: 32,
+    frogShakeStrength: 8,
+
+    mudMode: 'disaster',
+    mudTriggerTimes: [
+      0.35,
+      0.7,
+      1.05,
+      1.4,
+      1.75,
+      2.1,
+    ],
+    mudCoverage: 13,
+    mudDuration: 1.3,
+
+    motionMode: 'pendulum',
+    motionAmplitude: 14,
+    motionSpeed: 2,
+  },
+
+  // =====================================================
+  // WORLD 15 — FINAL CHAOS
+  // =====================================================
+
+  {
+    id: 1,
+    world: 15,
+    name: 'Final Warning',
+    instruction:
+      'The final world begins. Survive the unstable flow, moving glass and the mud ambush hiding your target.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 32,
+    flowType: 'variable',
+
+    attempts: 3,
+
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'wide',
+
+    inertia: 0.1,
+
+    // Movement
+    motionMode: 'horizontal',
+    motionAmplitude: 10,
+    motionSpeed: 1.6,
+
+    // Mud
+    mudMode: 'disaster',
+    mudTriggerTimes: [
+      0.3,
+      0.55,
+      0.8,
+      1.05,
+      1.3,
+      1.55,
+      1.8,
+    ],
+    mudCoverage: 13,
+    mudDuration: 1.2,
+
+    // Special World 15 mechanic:
+    // the final mud impact becomes enormous.
+    mudMegaSplash: true,
+  },
+
+  {
+    id: 2,
+    world: 15,
+    name: 'System Failure',
+    instruction:
+      'The system is failing. Manage your limited reserve, anticipate inertia and evaporation, and adapt to the moving obstruction.',
+
+    target: 68,
+    tolerance: 3,
+
+    fillSpeed: 31,
+    flowType: 'constant',
+
+    attempts: 3,
+
+    timeLimit: null,
+    waterReserve: 155,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    // Water keeps flowing after release.
+    inertia: 0.25,
+
+    // Environment / evaporation
+    temperature: 82,
+    temperatureMode: 'fixed',
+    evaporationRate: 3,
+    evaporationDuration: 1.2,
+
+    // Moving obstacle
+    obstacleMode: 'moving',
+    obstacleStrength: 0.35,
+    obstaclePositions: [52],
+    obstacleMovementSpeed: 2.6,
+    blindSpotSize: 12,
+
+    // Container movement
+    motionMode: 'combined',
+    motionAmplitude: 12,
+    motionSpeed: 2,
+  },
+
+  {
+    id: 3,
+    world: 15,
+    name: 'Total Invasion',
+    instruction:
+      'The arena is under attack. Frogs invade the glass, warriors interfere with your view and mud keeps spreading. Stay focused.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    // Deceptive shape from the perception worlds.
+    containerShape: 'martini',
+
+    inertia: 0.1,
+
+    // =====================================================
+    // FROG INVASION
+    // =====================================================
+
+    frogMode: 'invasion',
+
+    frogTriggerTimes: [
+      0.75,
+      1.3,
+      1.85,
+    ],
+
+    frogDisplacement: 3,
+    frogExitDisplacement: 0,
+
+    // Moderate obstruction so the level stays playable.
+    frogObstruction: 20,
+    frogShakeStrength: 0,
+
+    // =====================================================
+    // WARRIORS
+    // =====================================================
+
+    warriorMode: 'war-zone',
+
+    warriorTriggerTimes: [
+      0.6,
+      1.15,
+      1.7,
+      2.25,
+    ],
+
+    warriorPushStrength: 12,
+    warriorHideDuration: 0.35,
+    warriorObstruction: 25,
+
+    // =====================================================
+    // MUD
+    // =====================================================
+
+    mudMode: 'rain',
+
+    mudTriggerTimes: [
+      0.4,
+      0.75,
+      1.1,
+      1.45,
+      1.8,
+    ],
+
+    mudCoverage: 10,
+    mudDuration: 1.1,
+
+    // No mega splash here.
+    mudMegaSplash: false,
+  },
+
+  {
+    id: 4,
+    world: 15,
+    name: 'No Control',
+    instruction:
+      'Control is collapsing. Survive pressure surges, blackouts, moving obstacles and an unstable container without losing the target.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 31,
+    flowType: 'variable',
+
+    attempts: 3,
+
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'wide',
+
+    inertia: 0.1,
+
+    // =====================================================
+    // SURVIVORS — SHAKE / PRESSURE / BLACKOUT
+    // =====================================================
+
+    survivorMode: 'survival',
+
+    survivorTriggerTimes: [
+      0.55,
+      1.15,
+      1.75,
+      2.35,
+    ],
+
+    survivorShakeStrength: 8,
+
+    // Blackout duration
+    survivorHideDuration: 0.45,
+
+    // Pressure strength:
+    // temporarily accelerates the flow.
+    survivorObstruction: 0.25,
+
+    // =====================================================
+    // MOVING OBSTACLE
+    // =====================================================
+
+    obstacleMode: 'moving',
+    obstacleStrength: 0.3,
+
+    obstaclePositions: [
+      50,
+    ],
+
+    obstacleMovementSpeed: 2.4,
+
+    // Part of the glass becomes harder to read.
+    blindSpotSize: 10,
+
+    // =====================================================
+    // CONTAINER MOTION
+    // =====================================================
+
+    motionMode: 'pendulum',
+    motionAmplitude: 10,
+    motionSpeed: 1.8,
+
+    // =====================================================
+    // FROGS — SMALL EXTRA DISTURBANCE
+    // =====================================================
+
+    frogMode: 'double',
+
+    frogTriggerTimes: [
+      0.9,
+      1.65,
+    ],
+
+    frogDisplacement: 2,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+
+    // =====================================================
+    // MUD — LIGHT VISUAL PRESSURE
+    // =====================================================
+
+    mudMode: 'blind',
+
+    mudTriggerTimes: [
+      0.5,
+      1,
+      1.5,
+      2,
+    ],
+
+    mudCoverage: 9,
+    mudDuration: 1,
+
+    mudMegaSplash: false,
+  },
+
+  {
+    id: 5,
+    world: 15,
+    name: 'THE LAST DROP',
+    instruction:
+      'This is the final test. Every system is failing at once. Read the chaos, anticipate the final impact and make the last drop count.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 30,
+    flowType: 'variable',
+
+    attempts: 3,
+
+    timeLimit: null,
+
+    // Limited water makes every decision matter,
+    // without being too punishing for the final level.
+    waterReserve: 170,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'martini',
+
+    // =====================================================
+    // INERTIA
+    // =====================================================
+
+    inertia: 0.15,
+
+    // =====================================================
+    // ENVIRONMENT — HEAT / EVAPORATION
+    // =====================================================
+
+    temperature: 80,
+    temperatureMode: 'fixed',
+
+    evaporationRate: 2,
+    evaporationDuration: 1,
+
+    // =====================================================
+    // OBSTACLES
+    // =====================================================
+
+    obstacleMode: 'moving',
+    obstacleStrength: 0.25,
+
+    obstaclePositions: [
+      50,
+    ],
+
+    obstacleMovementSpeed: 2.2,
+    blindSpotSize: 8,
+
+    // =====================================================
+    // MOTION
+    // =====================================================
+
+    motionMode: 'combined',
+    motionAmplitude: 10,
+    motionSpeed: 2,
+
+    // =====================================================
+    // FROG APOCALYPSE
+    // =====================================================
+
+    frogMode: 'apocalypse',
+
+    frogTriggerTimes: [
+      0.55,
+      1,
+      1.45,
+      1.9,
+    ],
+
+    frogDisplacement: 2,
+    frogExitDisplacement: 0,
+
+    frogObstruction: 18,
+    frogShakeStrength: 4,
+
+    // =====================================================
+    // WARRIORS — WAR ZONE
+    // =====================================================
+
+    warriorMode: 'war-zone',
+
+    warriorTriggerTimes: [
+      0.45,
+      0.95,
+      1.45,
+      1.95,
+    ],
+
+    warriorPushStrength: 10,
+
+    warriorHideDuration: 0.3,
+
+    warriorObstruction: 20,
+
+    // =====================================================
+    // SURVIVORS
+    // =====================================================
+
+    survivorMode: 'survival',
+
+    survivorTriggerTimes: [
+      0.65,
+      1.15,
+      1.65,
+      2.15,
+    ],
+
+    survivorShakeStrength: 7,
+
+    survivorHideDuration: 0.4,
+
+    // +20% flow during pressure phases.
+    survivorObstruction: 0.2,
+
+    // =====================================================
+    // FINAL MUD DISASTER
+    // =====================================================
+
+    mudMode: 'disaster',
+
+    // Seven impacts are important:
+    // the seventh activates the Mega Splash.
+    mudTriggerTimes: [
+      0.25,
+      0.5,
+      0.75,
+      1,
+      1.25,
+      1.5,
+      1.75,
+    ],
+
+    mudCoverage: 10,
+    mudDuration: 1.2,
+
+    // THE LAST SPLASH.
+    mudMegaSplash: true,
   },
 ]

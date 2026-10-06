@@ -11,6 +11,7 @@ import { getContainerMotion } from './game/getContainerMotion'
 import { getAnimalInterference } from './game/getAnimalInterference'
 import { getWarriorInterference } from './game/getWarriorInterference'
 import { getSurvivorInterference } from './game/getSurvivorInterference'
+import { getMudInterference } from './game/getMudInterference'
 
 import type { GameResult } from './game/types'
 
@@ -18,15 +19,16 @@ import ResultFeedback from './components/ResultFeedback'
 import ObstacleField from './components/ObstacleField'
 import FrogField from './components/FrogField'
 import WarriorField from './components/WarriorField'
+import MudField from './components/MudField'
 
 import {
   playSuccessSound,
   playErrorSound,
   playGameOverSound,
+  playMudSplatSound,
 } from './game/soundManager'
 
 function App() {
-
   // =====================================================
   // DEV MENU
   // =====================================================
@@ -44,7 +46,8 @@ function App() {
   const [currentLevelIndex, setCurrentLevelIndex] =
     useState(0)
 
-  const currentLevel = levels[currentLevelIndex]
+  const currentLevel =
+    levels[currentLevelIndex]
 
   const [waterLevel, setWaterLevel] =
     useState(0)
@@ -116,7 +119,8 @@ function App() {
   // REFS
   // =====================================================
 
-  const waterLevelRef = useRef(0)
+  const waterLevelRef =
+    useRef(0)
 
   const waterReserveRef =
     useRef<number | null>(
@@ -129,6 +133,9 @@ function App() {
     )
 
   const evaporationTimeRef =
+    useRef(0)
+
+  const previousMudSplashesRef =
     useRef(0)
 
   // =====================================================
@@ -406,7 +413,7 @@ function App() {
           isActive: false,
         }
 
-    // =====================================================
+  // =====================================================
   // WORLD 11 — WARRIORS
   // =====================================================
 
@@ -463,8 +470,8 @@ function App() {
           warriorProgress: 0,
           isActive: false,
         }
-  
-    // =====================================================
+
+  // =====================================================
   // WORLD 12 — SURVIVORS
   // =====================================================
 
@@ -541,6 +548,79 @@ function App() {
   const currentFlowSpeed =
     baseFlowSpeed *
     obstacleEffect.flowMultiplier
+
+  // =====================================================
+  // WORLD 13 — MUD
+  // =====================================================
+
+  const hasMud =
+    currentLevel.mudMode !==
+    undefined
+
+  const mudMode =
+    currentLevel.mudMode ??
+    'splash'
+
+  const mudTriggerTimes =
+    currentLevel.mudTriggerTimes ??
+    []
+
+  const mudCoverage =
+    currentLevel.mudCoverage ??
+    0
+
+  const mudDuration =
+    currentLevel.mudDuration ??
+    0
+
+  const mudMegaSplash =
+    currentLevel.mudMegaSplash ??
+    false
+
+  const mudInterference =
+    hasMud
+      ? getMudInterference({
+          mode: mudMode,
+          elapsedTime,
+          triggerTimes:
+            mudTriggerTimes,
+          coverage:
+            mudCoverage,
+          duration:
+            mudDuration,
+        })
+      : {
+          triggeredSplashes: 0,
+          visibleSplashes: 0,
+          coverage: 0,
+          intensity: 0,
+          isActive: false,
+        }
+
+  // =====================================================
+  // WORLD 13 — MUD SOUND
+  // =====================================================
+
+  useEffect(() => {
+    if (!hasMud) {
+      previousMudSplashesRef.current =
+        0
+      return
+    }
+
+    if (
+      mudInterference.triggeredSplashes >
+      previousMudSplashesRef.current
+    ) {
+      playMudSplatSound()
+    }
+
+    previousMudSplashesRef.current =
+      mudInterference.triggeredSplashes
+  }, [
+    hasMud,
+    mudInterference.triggeredSplashes,
+  ])
 
   // =====================================================
   // ATTEMPT RESULT HELPERS
@@ -755,9 +835,7 @@ function App() {
         const amountToAdd =
           effectiveSpeed / 100
 
-        if (
-          !hasWaterReserve
-        ) {
+        if (!hasWaterReserve) {
           const nextWater =
             currentWater +
             amountToAdd
@@ -807,9 +885,7 @@ function App() {
           nextReserve,
         )
 
-        if (
-          nextReserve <= 0
-        ) {
+        if (nextReserve <= 0) {
           setIsFilling(false)
 
           window.setTimeout(
@@ -849,9 +925,8 @@ function App() {
     result,
   ])
 
-    // =====================================================
-  // GLOBAL ELAPSED-TIME CLOCK
-  // Worlds 3, 6, 7 and 8 use elapsed time
+  // =====================================================
+  // GLOBAL GAME CLOCK
   // =====================================================
 
   useEffect(() => {
@@ -874,11 +949,10 @@ function App() {
         )
       }, 50)
 
-    return () => {
+    return () =>
       window.clearInterval(
         timerInterval,
       )
-    }
   }, [
     timerStarted,
     result,
@@ -895,93 +969,35 @@ function App() {
   useEffect(() => {
     if (
       !hasTimeLimit ||
-      !timerStarted ||
-      result !== 'waiting' ||
       timeLeft === null ||
-      timeLeft > 0
+      timeLeft > 0 ||
+      result !== 'waiting' ||
+      levelSucceeded ||
+      levelFailed
     ) {
       return
     }
 
     setTimerStarted(false)
     setIsFilling(false)
+    setIsInertiaActive(false)
+    setInertiaTimeLeft(0)
+    setIsEvaporating(false)
+    setEvaporationTimeLeft(0)
 
-    if (
-      isInertiaActive ||
-      isEvaporating
-    ) {
-      return
-    }
+    setResult('TOO LOW')
 
-    startEvaporationOrFinish(
-      waterLevelRef.current,
-    )
+    registerFailure()
   }, [
     hasTimeLimit,
-    timerStarted,
     timeLeft,
     result,
-    isInertiaActive,
-    isEvaporating,
+    levelSucceeded,
+    levelFailed,
   ])
 
   // =====================================================
-  // WORLD 5 — COOLING
-  // =====================================================
-
-  useEffect(() => {
-    if (
-      !hasEnvironment ||
-      currentLevel.temperatureMode !==
-        'cooling' ||
-      currentTemperature === null ||
-      result !== 'waiting' ||
-      worldComplete ||
-      gameComplete
-    ) {
-      return
-    }
-
-    const coolingInterval =
-      window.setInterval(() => {
-        setCurrentTemperature(
-          (temperature) => {
-            if (
-              temperature === null
-            ) {
-              return null
-            }
-
-            const nextTemperature =
-              Math.max(
-                temperature - 0.25,
-                25,
-              )
-
-            temperatureRef.current =
-              nextTemperature
-
-            return nextTemperature
-          },
-        )
-      }, 100)
-
-    return () => {
-      window.clearInterval(
-        coolingInterval,
-      )
-    }
-  }, [
-    hasEnvironment,
-    currentLevel.temperatureMode,
-    currentTemperature,
-    result,
-    worldComplete,
-    gameComplete,
-  ])
-
-  // =====================================================
-  // WORLD 4 — INERTIA WATER FLOW
+  // WORLD 4 — INERTIA
   // =====================================================
 
   useEffect(() => {
@@ -989,8 +1005,6 @@ function App() {
       !isInertiaActive ||
       inertiaTimeLeft <= 0 ||
       result !== 'waiting' ||
-      worldComplete ||
-      gameComplete ||
       levelSucceeded ||
       levelFailed
     ) {
@@ -1002,19 +1016,16 @@ function App() {
         const currentWater =
           waterLevelRef.current
 
-        const inertiaProgress =
-          currentLevel.inertia > 0
-            ? Math.max(
-                inertiaTimeLeft /
-                  currentLevel.inertia,
-                0,
-              )
-            : 0
-
-        const normalInertiaSpeed =
-          currentLevel.fillSpeed *
-          0.55 *
-          inertiaProgress
+        const normalFlowSpeed =
+          getFlowSpeed({
+            baseSpeed:
+              currentLevel.fillSpeed,
+            flowType:
+              currentLevel.flowType,
+            waterLevel:
+              currentWater,
+            elapsedTime,
+          })
 
         const liveObstacleEffect =
           hasObstacles
@@ -1038,123 +1049,53 @@ function App() {
                   false,
               }
 
-        const inertiaSpeed =
-          normalInertiaSpeed *
+        const effectiveSpeed =
+          normalFlowSpeed *
           liveObstacleEffect.flowMultiplier
 
         const amountToAdd =
-          inertiaSpeed / 100
+          effectiveSpeed / 100
 
-        if (
-          !hasWaterReserve
-        ) {
-          const nextWater =
-            currentWater +
-            amountToAdd
+        let actualAmount =
+          amountToAdd
 
-          waterLevelRef.current =
-            nextWater
+        if (hasWaterReserve) {
+          const currentReserve =
+            waterReserveRef.current ??
+            0
 
-          setWaterLevel(
-            nextWater,
+          actualAmount =
+            Math.min(
+              amountToAdd,
+              currentReserve,
+            )
+
+          const nextReserve =
+            Math.max(
+              currentReserve -
+                actualAmount,
+              0,
+            )
+
+          waterReserveRef.current =
+            nextReserve
+
+          setWaterReserve(
+            nextReserve,
           )
-
-          return
         }
-
-        const currentReserve =
-          waterReserveRef.current ??
-          0
-
-        const actualAmount =
-          Math.min(
-            amountToAdd,
-            currentReserve,
-          )
 
         const nextWater =
           currentWater +
           actualAmount
 
-        const nextReserve =
-          Math.max(
-            currentReserve -
-              actualAmount,
-            0,
-          )
-
         waterLevelRef.current =
           nextWater
-
-        waterReserveRef.current =
-          nextReserve
 
         setWaterLevel(
           nextWater,
         )
 
-        setWaterReserve(
-          nextReserve,
-        )
-
-        if (
-          nextReserve <= 0
-        ) {
-          setIsInertiaActive(
-            false,
-          )
-
-          setInertiaTimeLeft(0)
-
-          window.setTimeout(
-            () => {
-              startEvaporationOrFinish(
-                nextWater,
-              )
-            },
-            0,
-          )
-        }
-      }, 10)
-
-    return () => {
-      window.clearInterval(
-        interval,
-      )
-    }
-  }, [
-    isInertiaActive,
-    inertiaTimeLeft,
-    currentLevel.inertia,
-    currentLevel.fillSpeed,
-    hasWaterReserve,
-    hasObstacles,
-    obstacleMode,
-    obstacleStrength,
-    obstaclePositions,
-    obstacleMovementSpeed,
-    elapsedTime,
-    result,
-    worldComplete,
-    gameComplete,
-    levelSucceeded,
-    levelFailed,
-  ])
-
-  // =====================================================
-  // WORLD 4 — INERTIA COUNTDOWN
-  // =====================================================
-
-  useEffect(() => {
-    if (
-      !isInertiaActive ||
-      result !== 'waiting'
-    ) {
-      return
-    }
-
-    const timer =
-      window.setInterval(() => {
         setInertiaTimeLeft(
           (currentTime) =>
             Math.max(
@@ -1166,23 +1107,34 @@ function App() {
 
     return () => {
       window.clearInterval(
-        timer,
+        interval,
       )
     }
   }, [
     isInertiaActive,
+    inertiaTimeLeft,
+    currentLevel.fillSpeed,
+    currentLevel.flowType,
+    elapsedTime,
+    hasWaterReserve,
+    hasObstacles,
+    obstacleMode,
+    obstacleStrength,
+    obstaclePositions,
+    obstacleMovementSpeed,
     result,
+    levelSucceeded,
+    levelFailed,
   ])
 
   // =====================================================
-  // WORLD 4 — END INERTIA
+  // FINISH INERTIA
   // =====================================================
 
   useEffect(() => {
     if (
       !isInertiaActive ||
-      inertiaTimeLeft > 0 ||
-      result !== 'waiting'
+      inertiaTimeLeft > 0
     ) {
       return
     }
@@ -1195,43 +1147,47 @@ function App() {
   }, [
     isInertiaActive,
     inertiaTimeLeft,
-    result,
   ])
 
   // =====================================================
-  // WORLD 5 — EVAPORATION WATER LOSS
+  // WORLD 5 — EVAPORATION
   // =====================================================
 
   useEffect(() => {
     if (
       !isEvaporating ||
       evaporationTimeLeft <= 0 ||
-      result !== 'waiting'
+      result !== 'waiting' ||
+      levelSucceeded ||
+      levelFailed
     ) {
       return
     }
 
     const interval =
       window.setInterval(() => {
-        const temperature =
+        const currentWater =
+          waterLevelRef.current
+
+        const currentTemp =
           temperatureRef.current ??
           initialTemperature
 
-        const evaporationRate =
+        const liveRate =
           getEvaporationRate({
             baseRate:
               evaporationBaseRate,
             currentTemperature:
-              temperature,
+              currentTemp,
             initialTemperature,
           })
 
         const amountToRemove =
-          evaporationRate / 100
+          liveRate / 100
 
         const nextWater =
           Math.max(
-            waterLevelRef.current -
+            currentWater -
               amountToRemove,
             0,
           )
@@ -1241,6 +1197,33 @@ function App() {
 
         setWaterLevel(
           nextWater,
+        )
+
+        const nextTemperature =
+          Math.max(
+            currentTemp - 0.03,
+            0,
+          )
+
+        temperatureRef.current =
+          nextTemperature
+
+        setCurrentTemperature(
+          nextTemperature,
+        )
+
+        const nextTime =
+          Math.max(
+            evaporationTimeRef.current -
+              0.01,
+            0,
+          )
+
+        evaporationTimeRef.current =
+          nextTime
+
+        setEvaporationTimeLeft(
+          nextTime,
         )
       }, 10)
 
@@ -1252,60 +1235,21 @@ function App() {
   }, [
     isEvaporating,
     evaporationTimeLeft,
-    result,
     evaporationBaseRate,
     initialTemperature,
-  ])
-
-  // =====================================================
-  // WORLD 5 — EVAPORATION COUNTDOWN
-  // =====================================================
-
-  useEffect(() => {
-    if (
-      !isEvaporating ||
-      result !== 'waiting'
-    ) {
-      return
-    }
-
-    const interval =
-      window.setInterval(() => {
-        setEvaporationTimeLeft(
-          (currentTime) => {
-            const nextTime =
-              Math.max(
-                currentTime - 0.01,
-                0,
-              )
-
-            evaporationTimeRef.current =
-              nextTime
-
-            return nextTime
-          },
-        )
-      }, 10)
-
-    return () => {
-      window.clearInterval(
-        interval,
-      )
-    }
-  }, [
-    isEvaporating,
     result,
+    levelSucceeded,
+    levelFailed,
   ])
 
   // =====================================================
-  // WORLD 5 — END EVAPORATION
+  // FINISH EVAPORATION
   // =====================================================
 
   useEffect(() => {
     if (
       !isEvaporating ||
-      evaporationTimeLeft > 0 ||
-      result !== 'waiting'
+      evaporationTimeLeft > 0
     ) {
       return
     }
@@ -1318,19 +1262,19 @@ function App() {
   }, [
     isEvaporating,
     evaporationTimeLeft,
-    result,
   ])
 
   // =====================================================
-  // PLAYER INPUT — HOLD
+  // POINTER DOWN — START FILLING
   // =====================================================
 
   const pointerDown = () => {
     if (
       result !== 'waiting' ||
+      levelSucceeded ||
+      levelFailed ||
       worldComplete ||
       gameComplete ||
-      attemptsLeft <= 0 ||
       isInertiaActive ||
       isEvaporating
     ) {
@@ -1339,48 +1283,44 @@ function App() {
 
     if (
       hasWaterReserve &&
-      (waterReserveRef.current ??
-        0) <= 0
+      (waterReserveRef.current ?? 0) <= 0
     ) {
-      startEvaporationOrFinish(
-        waterLevelRef.current,
-      )
-
       return
     }
+
+    setIsFilling(true)
 
     if (!timerStarted) {
       setTimerStarted(true)
     }
-
-    setIsFilling(true)
   }
 
   // =====================================================
-  // PLAYER INPUT — RELEASE
+  // POINTER UP — RELEASE
   // =====================================================
 
   const pointerUp = () => {
     if (
       !isFilling ||
-      result !== 'waiting' ||
-      worldComplete ||
-      gameComplete
+      result !== 'waiting'
     ) {
       return
     }
 
     setIsFilling(false)
 
+    // The global clock freezes when the player releases.
     setTimerStarted(false)
 
-    if (hasInertia) {
+    if (
+      hasInertia &&
+      currentLevel.inertia > 0
+    ) {
       setInertiaTimeLeft(
         currentLevel.inertia,
       )
 
       setIsInertiaActive(true)
-
       return
     }
 
@@ -1394,42 +1334,41 @@ function App() {
   // =====================================================
 
   const resetAttemptState = () => {
-    setIsFilling(false)
-
     setWaterLevel(0)
     waterLevelRef.current = 0
+
+    setIsFilling(false)
 
     setResult('waiting')
 
     setElapsedTime(0)
     setTimerStarted(false)
 
-    appliedFrogOffsetRef.current =
-      0
-
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
     setIsEvaporating(false)
     setEvaporationTimeLeft(0)
-
-    evaporationTimeRef.current =
-      0
-
-    const resetTemperature =
-      currentLevel.temperature ??
-      null
+    evaporationTimeRef.current = 0
 
     setCurrentTemperature(
-      resetTemperature,
+      currentLevel.temperature ??
+        null,
     )
 
     temperatureRef.current =
-      resetTemperature
+      currentLevel.temperature ??
+      null
+
+    appliedFrogOffsetRef.current =
+      0
+
+    previousMudSplashesRef.current =
+      0
   }
 
   // =====================================================
-  // TRY AGAIN
+  // RETRY LEVEL
   // =====================================================
 
   const retryLevel = () => {
@@ -1441,81 +1380,107 @@ function App() {
   }
 
   // =====================================================
-  // RESTART LEVEL
-  // =====================================================
-
-  const restartLevel = () => {
-    resetAttemptState()
-
-    setAttemptsLeft(
-      currentLevel.attempts,
-    )
-
-    setWaterReserve(
-      currentLevel.waterReserve,
-    )
-
-    waterReserveRef.current =
-      currentLevel.waterReserve
-  }
-
-  // =====================================================
-  // LOAD A LEVEL
+  // LOAD LEVEL
   // =====================================================
 
   const loadLevel = (
-    newLevelIndex: number,
+    levelIndex: number,
   ) => {
-    const newLevel =
-      levels[newLevelIndex]
+    const level =
+      levels[levelIndex]
 
     setCurrentLevelIndex(
-      newLevelIndex,
+      levelIndex,
     )
-
-    setIsFilling(false)
 
     setWaterLevel(0)
     waterLevelRef.current = 0
 
+    setIsFilling(false)
     setResult('waiting')
+
+    setAttemptsLeft(
+      level.attempts,
+    )
 
     setElapsedTime(0)
     setTimerStarted(false)
 
-    appliedFrogOffsetRef.current =
-      0
+    setWaterReserve(
+      level.waterReserve,
+    )
+
+    waterReserveRef.current =
+      level.waterReserve
 
     setIsInertiaActive(false)
     setInertiaTimeLeft(0)
 
-    setIsEvaporating(false)
-    setEvaporationTimeLeft(0)
-
-    evaporationTimeRef.current =
-      0
-
-    setAttemptsLeft(
-      newLevel.attempts,
-    )
-
-    setWaterReserve(
-      newLevel.waterReserve,
-    )
-
-    waterReserveRef.current =
-      newLevel.waterReserve
-
-    const newTemperature =
-      newLevel.temperature ??
-      null
-
     setCurrentTemperature(
-      newTemperature,
+      level.temperature ?? null,
     )
 
     temperatureRef.current =
-      newTemperature
+      level.temperature ?? null
+
+    setIsEvaporating(false)
+    setEvaporationTimeLeft(0)
+    evaporationTimeRef.current = 0
+
+    appliedFrogOffsetRef.current =
+      0
+
+    previousMudSplashesRef.current =
+      0
+
+    setWorldComplete(false)
+  }
+
+  // =====================================================
+  // RESTART LEVEL
+  // =====================================================
+
+  const restartLevel = () => {
+    loadLevel(currentLevelIndex)
+  }
+
+  // =====================================================
+  // NEXT LEVEL / WORLD
+  // =====================================================
+
+  const goToNextLevel = () => {
+    if (
+      currentLevelIndex >=
+      levels.length - 1
+    ) {
+      setGameComplete(true)
+      setWorldComplete(false)
+      return
+    }
+
+    if (isLastLevelOfWorld) {
+      setWorldComplete(true)
+      return
+    }
+
+    loadLevel(
+      currentLevelIndex + 1,
+    )
+  }
+
+  const goToNextWorld = () => {
+    if (
+      currentLevelIndex >=
+      levels.length - 1
+    ) {
+      setGameComplete(true)
+      setWorldComplete(false)
+      return
+    }
+
+    loadLevel(
+      currentLevelIndex + 1,
+    )
   }
 
   // =====================================================
@@ -1526,150 +1491,41 @@ function App() {
     world: number,
     levelId: number,
   ) => {
-    const newLevelIndex =
+    const targetIndex =
       levels.findIndex(
         (level) =>
           level.world === world &&
           level.id === levelId,
       )
 
-    if (newLevelIndex === -1) {
+    if (targetIndex === -1) {
       return
     }
-
-    setWorldComplete(false)
-    setGameComplete(false)
-
-    loadLevel(newLevelIndex)
 
     setDevWorld(world)
     setDevMenuOpen(false)
-  }
-
-  // =====================================================
-  // NEXT LEVEL
-  // =====================================================
-
-  const nextLevel = () => {
-    const newLevelIndex =
-      currentLevelIndex + 1
-
-    const newLevel =
-      levels[newLevelIndex]
-
-    if (!newLevel) {
-      setIsFilling(false)
-      setIsInertiaActive(false)
-      setIsEvaporating(false)
-
-      setGameComplete(true)
-
-      return
-    }
-
-    if (
-      newLevel.world !==
-      currentLevel.world
-    ) {
-      setIsFilling(false)
-      setIsInertiaActive(false)
-      setIsEvaporating(false)
-
-      setWorldComplete(true)
-
-      return
-    }
-
-    loadLevel(
-      newLevelIndex,
-    )
-  }
-
-  // =====================================================
-  // NEXT WORLD
-  // =====================================================
-
-  const startNextWorld = () => {
-    const newLevelIndex =
-      currentLevelIndex + 1
-
-    const newLevel =
-      levels[newLevelIndex]
-
-    if (!newLevel) {
-      setWorldComplete(false)
-      setGameComplete(true)
-
-      return
-    }
-
-    loadLevel(
-      newLevelIndex,
-    )
-
-    setWorldComplete(false)
-  }
-
-  // =====================================================
-  // RESTART GAME
-  // =====================================================
-
-  const restartGame = () => {
-    loadLevel(0)
-
-    setWorldComplete(false)
     setGameComplete(false)
+    setWorldComplete(false)
+
+    loadLevel(targetIndex)
   }
 
-    // =====================================================
-  // DISPLAYED / VISUAL VALUES
+  // =====================================================
+  // DISPLAY VALUES
   // =====================================================
 
   const displayedLevel =
     Math.round(waterLevel)
 
-  const visualWaterLevel =
-    getVisualWaterLevel(
-      waterLevel,
-      currentLevel.containerShape,
-    )
-
-  const realTargetMinimum =
-    currentLevel.target -
-    currentLevel.tolerance
-
-  const realTargetMaximum =
-    currentLevel.target +
-    currentLevel.tolerance
-
-  const visualTargetMinimum =
-    getVisualWaterLevel(
-      realTargetMinimum,
-      currentLevel.containerShape,
-    )
-
-  const visualTargetMaximum =
-    getVisualWaterLevel(
-      realTargetMaximum,
-      currentLevel.containerShape,
-    )
-
-  const visualTargetHeight =
-    visualTargetMaximum -
-    visualTargetMinimum
+  const displayedReserve =
+    waterReserve === null
+      ? 0
+      : Math.round(waterReserve)
 
   const displayedTime =
     timeLeft === null
-      ? null
+      ? '—'
       : timeLeft.toFixed(1)
-
-  const displayedReserve =
-    waterReserve === null
-      ? null
-      : Math.max(
-          waterReserve,
-          0,
-        ).toFixed(0)
 
   const displayedTemperature =
     currentTemperature === null
@@ -1679,7 +1535,50 @@ function App() {
         )
 
   // =====================================================
-  // WORLDS 7 + 8 + 11 + 12 — FINAL GLASS TRANSFORM
+  // VISUAL WATER LEVEL
+  // =====================================================
+
+  const visualWaterLevel =
+    getVisualWaterLevel(
+      waterLevel,
+      currentLevel.containerShape,
+    )
+
+  const targetMinimum =
+    Math.max(
+      currentLevel.target -
+        currentLevel.tolerance,
+      0,
+    )
+
+  const targetMaximum =
+    Math.min(
+      currentLevel.target +
+        currentLevel.tolerance,
+      100,
+    )
+
+  const visualTargetMinimum =
+    getVisualWaterLevel(
+      targetMinimum,
+      currentLevel.containerShape,
+    )
+
+  const visualTargetMaximum =
+    getVisualWaterLevel(
+      targetMaximum,
+      currentLevel.containerShape,
+    )
+
+  const visualTargetHeight =
+    Math.max(
+      visualTargetMaximum -
+        visualTargetMinimum,
+      0,
+    )
+
+  // =====================================================
+  // FINAL GLASS TRANSFORM
   // =====================================================
 
   const finalGlassX =
@@ -1701,16 +1600,9 @@ function App() {
     survivorInterference.glassRotation
 
   const hasGlassMovement =
-    hasMotion ||
-    frogInterference.glassOffsetX !== 0 ||
-    frogInterference.glassOffsetY !== 0 ||
-    frogInterference.glassRotation !== 0 ||
-    warriorInterference.glassOffsetX !== 0 ||
-    warriorInterference.glassOffsetY !== 0 ||
-    warriorInterference.glassRotation !== 0 ||
-    survivorInterference.glassOffsetX !== 0 ||
-    survivorInterference.glassOffsetY !== 0 ||
-    survivorInterference.glassRotation !== 0
+    finalGlassX !== 0 ||
+    finalGlassY !== 0 ||
+    finalGlassRotation !== 0
 
   // =====================================================
   // GAME COMPLETE SCREEN
@@ -1718,8 +1610,8 @@ function App() {
 
   if (gameComplete) {
     return (
-      <main className="game">
-        <section className="game-card world-complete">
+      <main className="app">
+        <section className="game-card">
           <p className="eyebrow">
             ALL WORLDS COMPLETE
           </p>
@@ -1729,19 +1621,23 @@ function App() {
           </h1>
 
           <p className="game-subtitle">
-            GAME COMPLETE!
+            You mastered every drop.
           </p>
 
-          <p className="level-instruction">
-            You mastered every available challenge.
-          </p>
+          <ResultFeedback
+            result="PERFECT"
+            levelFailed={false}
+          />
 
           <button
             className="fill-button"
             type="button"
-            onClick={restartGame}
+            onClick={() => {
+              setGameComplete(false)
+              loadLevel(0)
+            }}
           >
-            REPLAY GAME
+            PLAY AGAIN
           </button>
         </section>
       </main>
@@ -1753,52 +1649,33 @@ function App() {
   // =====================================================
 
   if (worldComplete) {
-    const worldMasteryTitle =
-      currentLevel.world === 1
-        ? 'CALIBRATION MASTERED!'
-        : currentLevel.world === 2
-          ? 'PERCEPTION MASTERED!'
-          : currentLevel.world === 3
-            ? 'PRESSURE MASTERED!'
-            : currentLevel.world === 4
-              ? 'CONTROL MASTERED!'
-              : currentLevel.world === 5
-                ? 'ENVIRONMENT MASTERED!'
-                : currentLevel.world === 6
-                  ? 'OBSTACLES MASTERED!'
-                  : currentLevel.world === 7
-                    ? 'MOTION MASTERED!'
-                    : currentLevel.world === 8
-                      ? 'FROG INVASION SURVIVED!'
-                      : 'WORLD MASTERED!'
-
     return (
-      <main className="game">
-        <section className="game-card world-complete">
+      <main className="app">
+        <section className="game-card">
           <p className="eyebrow">
-            WORLD {currentLevel.world} COMPLETE
+            WORLD {currentLevel.world}
           </p>
 
           <h1 className="game-title">
-            {worldMasteryTitle}
+            WORLD COMPLETE!
           </h1>
 
           <p className="game-subtitle">
-            You completed World{' '}
-            {currentLevel.world}.
+            You survived every level
+            in this world.
           </p>
 
-          <p className="level-instruction">
-            A new challenge is waiting for you.
-          </p>
+          <ResultFeedback
+            result="PERFECT"
+            levelFailed={false}
+          />
 
           <button
             className="fill-button"
             type="button"
-            onClick={startNextWorld}
+            onClick={goToNextWorld}
           >
-            START WORLD{' '}
-            {nextLevelConfig?.world}
+            NEXT WORLD
           </button>
         </section>
       </main>
@@ -1811,58 +1688,53 @@ function App() {
 
   if (levelSucceeded) {
     return (
-      <main className="game">
-        <section className="game-card result-screen">
+      <main className="app">
+        <section className="game-card">
           <p className="eyebrow">
-            WORLD {currentLevel.world} • LEVEL{' '}
-            {currentLevel.id}
+            WORLD {currentLevel.world} •
+            LEVEL {currentLevel.id}
           </p>
 
           <h1 className="game-title">
-            DON'T OVERFLOW!
+            {result === 'PERFECT'
+              ? 'PERFECT!'
+              : 'SUCCESS!'}
           </h1>
+
+          <p className="game-subtitle">
+            {currentLevel.name}
+          </p>
 
           <ResultFeedback
             result={result}
             levelFailed={false}
           />
 
-          <div className="success-details">
-            <p className="game-subtitle">
-              LEVEL {currentLevel.id} COMPLETE
-            </p>
+          <div className="debug-state">
+            <span>
+              final waterLevel:{' '}
+              {displayedLevel}
+            </span>
 
-            <p className="level-instruction">
-              You stopped at {displayedLevel}%.
-              {' '}
-              Target: {currentLevel.target}% ±
-              {currentLevel.tolerance}%.
-            </p>
+            <span>
+              target:{' '}
+              {currentLevel.target}%
+            </span>
+
+            <span>
+              result: {result}
+            </span>
           </div>
-
-          {hasWaterReserve &&
-            displayedReserve !== null && (
-              <p className="reserve-result">
-                Water remaining:{' '}
-                {displayedReserve}%
-              </p>
-            )}
 
           <button
             className="fill-button"
             type="button"
-            onClick={nextLevel}
+            onClick={goToNextLevel}
           >
             {isLastLevelOfWorld
               ? 'COMPLETE WORLD'
               : 'NEXT LEVEL'}
           </button>
-
-          <p className="hint">
-            {result === 'PERFECT'
-              ? 'Bullseye! You hit the exact target.'
-              : 'Target reached! Ready for the next challenge.'}
-          </p>
         </section>
       </main>
     )
@@ -1874,26 +1746,25 @@ function App() {
 
   if (levelFailed) {
     return (
-      <main className="game">
-        <section className="game-card result-screen">
+      <main className="app">
+        <section className="game-card">
           <p className="eyebrow">
-            WORLD {currentLevel.world} • LEVEL{' '}
-            {currentLevel.id}
+            WORLD {currentLevel.world} •
+            LEVEL {currentLevel.id}
           </p>
 
           <h1 className="game-title">
-            DON'T OVERFLOW!
+            GAME OVER
           </h1>
+
+          <p className="game-subtitle">
+            No attempts remaining.
+          </p>
 
           <ResultFeedback
             result={result}
             levelFailed={true}
           />
-
-          <div className="attempts-counter">
-            ATTEMPTS 0/
-            {currentLevel.attempts}
-          </div>
 
           <button
             className="fill-button"
@@ -1902,14 +1773,6 @@ function App() {
           >
             RESTART LEVEL
           </button>
-
-          <p className="hint">
-            Restart this level with{' '}
-            {currentLevel.attempts} new attempts
-            {hasWaterReserve
-              ? ' and a full water reserve.'
-              : '.'}
-          </p>
         </section>
       </main>
     )
@@ -1920,11 +1783,10 @@ function App() {
   // =====================================================
 
   return (
-    <main className="game">
-
-            {/* =====================================================
+    <main className="app">
+      {/* =================================================
           DEV MENU
-          ===================================================== */}
+          ================================================= */}
 
       <div className="dev-menu">
         <button
@@ -1932,20 +1794,21 @@ function App() {
           type="button"
           onClick={() =>
             setDevMenuOpen(
-              (isOpen) => !isOpen,
+              (open) => !open,
             )
           }
         >
-          ☰ DEV
+          DEV
         </button>
 
         {devMenuOpen && (
           <div className="dev-menu-panel">
             <div className="dev-menu-header">
-              <strong>DEV NAVIGATION</strong>
+              <span>
+                LEVEL SELECT
+              </span>
 
               <button
-                className="dev-menu-close"
                 type="button"
                 onClick={() =>
                   setDevMenuOpen(false)
@@ -1955,64 +1818,63 @@ function App() {
               </button>
             </div>
 
-            <p className="dev-menu-label">
-              WORLD
-            </p>
-
-            <div className="dev-world-grid">
+            <div className="dev-world-selector">
               {Array.from(
-                { length: 12 },
-                (_, index) => index + 1,
+                {
+                  length: 15,
+                },
+                (_, index) =>
+                  index + 1,
               ).map((world) => (
                 <button
                   key={world}
                   type="button"
                   className={
                     devWorld === world
-                      ? 'dev-world-button dev-world-button-active'
-                      : 'dev-world-button'
+                      ? 'dev-world-active'
+                      : ''
                   }
                   onClick={() =>
                     setDevWorld(world)
                   }
                 >
-                  {world}
+                  W{world}
                 </button>
               ))}
             </div>
 
-            <p className="dev-menu-label">
-              WORLD {devWorld} — LEVEL
-            </p>
-
-            <div className="dev-level-grid">
-              {[1, 2, 3, 4, 5].map(
-                (levelId) => (
+            <div className="dev-level-selector">
+              {levels
+                .filter(
+                  (level) =>
+                    level.world ===
+                    devWorld,
+                )
+                .map((level) => (
                   <button
-                    key={levelId}
+                    key={`${level.world}-${level.id}`}
                     type="button"
-                    className="dev-level-button"
                     onClick={() =>
                       jumpToDevLevel(
-                        devWorld,
-                        levelId,
+                        level.world,
+                        level.id,
                       )
                     }
                   >
-                    {levelId}
+                    {level.world}.
+                    {level.id}
                   </button>
-                ),
-              )}
+                ))}
             </div>
-
-            <p className="dev-menu-note">
-              Development navigation only
-            </p>
           </div>
         )}
       </div>
 
-            {hasSurvivors &&
+      {/* =================================================
+          WORLD 12 — BLACKOUT
+          ================================================= */}
+
+      {hasSurvivors &&
         survivorInterference.isBlackout && (
           <div
             className="survivor-blackout"
@@ -2025,10 +1887,31 @@ function App() {
         )}
 
       <section className="game-card">
+        {/* ===============================================
+            WORLD 13 — MUD
+            =============================================== */}
 
-        {/* =================================================
+        {hasMud &&
+          mudInterference.isActive && (
+            <MudField
+              splashCount={
+                mudInterference.visibleSplashes
+              }
+              coverage={
+                mudInterference.coverage
+              }
+              intensity={
+                mudInterference.intensity
+              }
+              megaSplash={
+                mudMegaSplash
+              }
+            />
+          )}
+
+        {/* ===============================================
             LEVEL HEADER
-            ================================================= */}
+            =============================================== */}
 
         <p className="eyebrow">
           WORLD {currentLevel.world} • LEVEL{' '}
@@ -2054,9 +1937,9 @@ function App() {
           </div>
         </div>
 
-        {/* =================================================
+        {/* ===============================================
             WORLD 3 — TIMER
-            ================================================= */}
+            =============================================== */}
 
         {hasTimeLimit && (
           <div
@@ -2081,9 +1964,9 @@ function App() {
           </div>
         )}
 
-        {/* =================================================
+        {/* ===============================================
             WORLD 4 — WATER RESERVE
-            ================================================= */}
+            =============================================== */}
 
         {hasWaterReserve &&
           waterReserve !== null &&
@@ -2111,9 +1994,9 @@ function App() {
             </div>
           )}
 
-        {/* =================================================
+        {/* ===============================================
             WORLD 5 — TEMPERATURE
-            ================================================= */}
+            =============================================== */}
 
         {hasEnvironment &&
           displayedTemperature !== null && (
@@ -2160,9 +2043,9 @@ function App() {
             </div>
           )}
 
-        {/* =================================================
-            WORLD 6 — OBSTACLE INFORMATION
-            ================================================= */}
+        {/* ===============================================
+            WORLD 6 — OBSTACLES
+            =============================================== */}
 
         {hasObstacles && (
           <div
@@ -2195,9 +2078,9 @@ function App() {
           </div>
         )}
 
-        {/* =================================================
-            WORLD 7 — MOTION INFORMATION
-            ================================================= */}
+        {/* ===============================================
+            WORLD 7 — MOTION
+            =============================================== */}
 
         {hasMotion && (
           <div className="motion-panel">
@@ -2218,9 +2101,9 @@ function App() {
           </div>
         )}
 
-        {/* =================================================
-            WORLD 8 — FROG INFORMATION
-            ================================================= */}
+        {/* ===============================================
+            WORLD 8 — FROGS
+            =============================================== */}
 
         {hasFrogs && (
           <div className="motion-panel">
@@ -2242,9 +2125,9 @@ function App() {
           </div>
         )}
 
-        {/* =================================================
+        {/* ===============================================
             LIVE STATUS
-            ================================================= */}
+            =============================================== */}
 
         {isInertiaActive && (
           <div className="inertia-status">
@@ -2266,9 +2149,9 @@ function App() {
             </div>
           )}
 
-        {/* =================================================
+        {/* ===============================================
             GLASS / CONTAINER
-            ================================================= */}
+            =============================================== */}
 
         <div className="container">
           <div
@@ -2277,27 +2160,27 @@ function App() {
                 ? 'glass-motion'
                 : ''
             }`}
-           style={{
-            ...(hasGlassMovement
-              ? {
-                  transform: `translate(${finalGlassX}px, ${finalGlassY}px) rotate(${finalGlassRotation}deg)`,
-              }
-            : {}),
+            style={{
+              ...(hasGlassMovement
+                ? {
+                    transform: `translate(${finalGlassX}px, ${finalGlassY}px) rotate(${finalGlassRotation}deg)`,
+                  }
+                : {}),
 
-            opacity:
-              warriorInterference.isGlassHidden
-                ? 0
-                : 1,
+              opacity:
+                warriorInterference.isGlassHidden
+                  ? 0
+                  : 1,
 
-            transition:
-              warriorInterference.isGlassHidden
-                ? 'opacity 0.12s ease'
-                : undefined,
-            }} 
+              transition:
+                warriorInterference.isGlassHidden
+                  ? 'opacity 0.12s ease'
+                  : undefined,
+            }}
           >
-            {/* =============================================
+            {/* ===========================================
                 WATER
-                ============================================= */}
+                =========================================== */}
 
             <div
               className="water"
@@ -2309,9 +2192,9 @@ function App() {
               }}
             />
 
-            {/* =============================================
+            {/* ===========================================
                 TARGET ZONE
-                ============================================= */}
+                =========================================== */}
 
             {currentLevel.showTargetZone && (
               <div
@@ -2327,9 +2210,9 @@ function App() {
               </div>
             )}
 
-            {/* =============================================
+            {/* ===========================================
                 WORLD 6 — OBSTACLES
-                ============================================= */}
+                =========================================== */}
 
             {hasObstacles && (
               <ObstacleField
@@ -2340,7 +2223,8 @@ function App() {
                   obstacleEffect.isBlockingFlow
                 }
                 moving={
-                  obstacleMode === 'moving'
+                  obstacleMode ===
+                  'moving'
                 }
                 blindSpotSize={
                   blindSpotSize
@@ -2348,11 +2232,11 @@ function App() {
               />
             )}
 
-            {/* =============================================
+            {/* ===========================================
                 WORLD 8 — FROG INVASION
-                ============================================= */}
+                =========================================== */}
 
-                        {hasFrogs && (
+            {hasFrogs && (
               <FrogField
                 frogCount={
                   frogInterference.frogsInGlass
@@ -2362,8 +2246,11 @@ function App() {
                 }
               />
             )}
-
           </div>
+
+          {/* =============================================
+              WORLD 11 — WARRIORS
+              ============================================= */}
 
           {hasWarriors && (
             <WarriorField
@@ -2385,12 +2272,11 @@ function App() {
               }
             />
           )}
-
         </div>
 
-        {/* =================================================
+        {/* ===============================================
             PERCENTAGE
-            ================================================= */}
+            =============================================== */}
 
         {currentLevel.showPercentage && (
           <p className="percentage">
@@ -2398,9 +2284,9 @@ function App() {
           </p>
         )}
 
-        {/* =================================================
+        {/* ===============================================
             RESULT
-            ================================================= */}
+            =============================================== */}
 
         {result !== 'waiting' && (
           <p className="result">
@@ -2408,9 +2294,9 @@ function App() {
           </p>
         )}
 
-        {/* =================================================
+        {/* ===============================================
             MAIN ACTION BUTTON
-            ================================================= */}
+            =============================================== */}
 
         {result === 'waiting' ? (
           <button
@@ -2420,9 +2306,15 @@ function App() {
               isInertiaActive ||
               isEvaporating
             }
-            onPointerDown={pointerDown}
-            onPointerUp={pointerUp}
-            onPointerCancel={pointerUp}
+            onPointerDown={
+              pointerDown
+            }
+            onPointerUp={
+              pointerUp
+            }
+            onPointerCancel={
+              pointerUp
+            }
           >
             {isInertiaActive
               ? 'WATER STILL FLOWING...'
@@ -2434,15 +2326,17 @@ function App() {
           <button
             className="fill-button"
             type="button"
-            onClick={retryLevel}
+            onClick={
+              retryLevel
+            }
           >
             TRY AGAIN
           </button>
         )}
 
-        {/* =================================================
+        {/* ===============================================
             PLAYER HINT
-            ================================================= */}
+            =============================================== */}
 
         <p className="hint">
           {isInertiaActive
@@ -2451,10 +2345,13 @@ function App() {
               ? 'Wait for evaporation to finish before the final result.'
               : result === 'waiting'
                 ? hasFrogs
-                  ? frogMode === 'in-out'
-                    ? frogInterference.frogsInGlass > 0
+                  ? frogMode ===
+                    'in-out'
+                    ? frogInterference.frogsInGlass >
+                      0
                       ? 'The frog is inside • Remember that it can jump back out'
-                      : frogInterference.triggeredEvents >= 2
+                      : frogInterference.triggeredEvents >=
+                          2
                         ? 'The frog escaped • The water level dropped again'
                         : 'Keep pouring • A frog is about to interfere'
                     : frogInterference.isActive
@@ -2463,9 +2360,11 @@ function App() {
                   : hasObstacles
                     ? obstacleEffect.isBlockingFlow
                       ? 'Obstacle contact • The water flow is currently disrupted'
-                      : blindSpotSize > 0
+                      : blindSpotSize >
+                          0
                         ? 'Obstacles alter the flow • Hidden areas force you to estimate the level'
-                        : obstacleMode === 'moving'
+                        : obstacleMode ===
+                            'moving'
                           ? 'The barrier moves • Its position changes the flow in real time'
                           : 'Obstacles alter the flow • Adapt your timing'
                     : hasEnvironment
@@ -2483,17 +2382,19 @@ function App() {
                 : 'Try again before you run out of attempts.'}
         </p>
 
-        {/* =================================================
+        {/* ===============================================
             DEBUG / OBSERVABLE GAME STATE
-            ================================================= */}
+            =============================================== */}
 
         <div className="debug-state">
           <span>
-            world: {currentLevel.world}
+            world:{' '}
+            {currentLevel.world}
           </span>
 
           <span>
-            level: {currentLevel.id}
+            level:{' '}
+            {currentLevel.id}
           </span>
 
           <span>
@@ -2541,17 +2442,24 @@ function App() {
 
           <span>
             normalFlowSpeed:{' '}
-            {baseFlowSpeed.toFixed(1)}
+            {baseFlowSpeed.toFixed(
+              1,
+            )}
           </span>
 
           <span>
             effectiveSpeed:{' '}
-            {currentFlowSpeed.toFixed(1)}
+            {currentFlowSpeed.toFixed(
+              1,
+            )}
           </span>
 
           <span>
             elapsedTime:{' '}
-            {elapsedTime.toFixed(2)}s
+            {elapsedTime.toFixed(
+              2,
+            )}
+            s
           </span>
 
           <span>
@@ -2564,7 +2472,9 @@ function App() {
             waterReserve:{' '}
             {waterReserve === null
               ? 'none'
-              : waterReserve.toFixed(1)}
+              : waterReserve.toFixed(
+                  1,
+                )}
           </span>
 
           <span>
@@ -2581,15 +2491,20 @@ function App() {
 
           <span>
             temperature:{' '}
-            {currentTemperature === null
+            {currentTemperature ===
+            null
               ? 'none'
-              : `${currentTemperature.toFixed(1)}°C`}
+              : `${currentTemperature.toFixed(
+                  1,
+                )}°C`}
           </span>
 
           <span>
             evaporationRate:{' '}
             {hasEnvironment
-              ? `${currentEvaporationRate.toFixed(2)}%/s`
+              ? `${currentEvaporationRate.toFixed(
+                  2,
+                )}%/s`
               : 'none'}
           </span>
 
@@ -2610,14 +2525,18 @@ function App() {
           <span>
             obstacleStrength:{' '}
             {hasObstacles
-              ? obstacleStrength.toFixed(2)
+              ? obstacleStrength.toFixed(
+                  2,
+                )
               : 'none'}
           </span>
 
           <span>
             obstacleMultiplier:{' '}
             {hasObstacles
-              ? obstacleEffect.flowMultiplier.toFixed(2)
+              ? obstacleEffect.flowMultiplier.toFixed(
+                  2,
+                )
               : 'none'}
           </span>
 
@@ -2633,8 +2552,12 @@ function App() {
             {hasObstacles
               ? obstacleEffect.activePositions
                   .map(
-                    (position) =>
-                      position.toFixed(1),
+                    (
+                      position,
+                    ) =>
+                      position.toFixed(
+                        1,
+                      ),
                   )
                   .join(', ')
               : 'none'}
@@ -2664,7 +2587,9 @@ function App() {
           <span>
             motionSpeed:{' '}
             {hasMotion
-              ? motionSpeed.toFixed(1)
+              ? motionSpeed.toFixed(
+                  1,
+                )
               : 'none'}
           </span>
 
@@ -2692,7 +2617,9 @@ function App() {
           <span>
             frogWaterOffset:{' '}
             {hasFrogs
-              ? frogInterference.waterOffset.toFixed(1)
+              ? frogInterference.waterOffset.toFixed(
+                  1,
+                )
               : 'none'}
           </span>
 
@@ -2704,12 +2631,82 @@ function App() {
           </span>
 
           <span>
-            isFilling:{' '}
-            {String(isFilling)}
+            warriorMode:{' '}
+            {hasWarriors
+              ? warriorMode
+              : 'none'}
           </span>
 
           <span>
-            result: {result}
+            warriorEvents:{' '}
+            {hasWarriors
+              ? `${warriorInterference.triggeredEvents}/${warriorTriggerTimes.length}`
+              : 'none'}
+          </span>
+
+          <span>
+            survivorMode:{' '}
+            {hasSurvivors
+              ? survivorMode
+              : 'none'}
+          </span>
+
+          <span>
+            survivorEvents:{' '}
+            {hasSurvivors
+              ? `${survivorInterference.triggeredEvents}/${survivorTriggerTimes.length}`
+              : 'none'}
+          </span>
+
+          <span>
+            survivorPressure:{' '}
+            {hasSurvivors
+              ? survivorInterference.flowMultiplier.toFixed(
+                  2,
+                )
+              : 'none'}
+          </span>
+
+          <span>
+            mudMode:{' '}
+            {hasMud
+              ? mudMode
+              : 'none'}
+          </span>
+
+          <span>
+            mudSplashes:{' '}
+            {hasMud
+              ? `${mudInterference.triggeredSplashes}/${mudTriggerTimes.length}`
+              : 'none'}
+          </span>
+
+          <span>
+            mudCoverage:{' '}
+            {hasMud
+              ? `${mudInterference.coverage.toFixed(
+                  1,
+                )}%`
+              : 'none'}
+          </span>
+
+          <span>
+            mudMegaSplash:{' '}
+            {String(
+              mudMegaSplash,
+            )}
+          </span>
+
+          <span>
+            isFilling:{' '}
+            {String(
+              isFilling,
+            )}
+          </span>
+
+          <span>
+            result:{' '}
+            {result}
           </span>
         </div>
       </section>

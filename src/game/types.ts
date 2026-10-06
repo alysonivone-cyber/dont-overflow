@@ -81,6 +81,13 @@ export type SurvivorMode =
   | 'critical'
   | 'survival'
 
+  export type MudMode =
+  | 'splash'
+  | 'multiple'
+  | 'rain'
+  | 'blind'
+  | 'disaster'
+
 // =====================================================
 // LEVEL CONFIGURATION
 // =====================================================
@@ -219,4 +226,23 @@ export interface LevelConfig {
 
   // Duration, in seconds, of temporary visibility loss.
   survivorHideDuration?: number
+
+  // -----------------------------------------------------
+  // World 13 — Mud
+  // -----------------------------------------------------
+
+  // Type of mud interference used by the level.
+  mudMode?: MudMode
+
+  // Times, in seconds, when mud splashes are triggered.
+  mudTriggerTimes?: number[]
+
+  // Base percentage of the screen affected by mud.
+  mudCoverage?: number
+
+  // Duration, in seconds, used by mud effects.
+  mudDuration?: number
+
+  // Makes the final mud splash dramatically cover the glass.
+  mudMegaSplash?: boolean
 }
