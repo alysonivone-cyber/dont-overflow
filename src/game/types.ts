@@ -67,6 +67,20 @@ export type FrogMode =
   | 'invasion'
   | 'apocalypse'
 
+  export type WarriorMode =
+  | 'crossing'
+  | 'push'
+  | 'steal'
+  | 'obstruction'
+  | 'war-zone'
+
+export type SurvivorMode =
+  | 'aftershock'
+  | 'pressure'
+  | 'blackout'
+  | 'critical'
+  | 'survival'
+
 // =====================================================
 // LEVEL CONFIGURATION
 // =====================================================
@@ -169,4 +183,40 @@ export interface LevelConfig {
 
   // Optional glass shake caused by the frogs.
   frogShakeStrength?: number
+
+  // -----------------------------------------------------
+  // World 11 — Warriors
+  // -----------------------------------------------------
+
+  warriorMode?: WarriorMode
+
+  // Times, in seconds, when warrior events are triggered.
+  warriorTriggerTimes?: number[]
+
+  // Strength of sudden glass displacement.
+  warriorPushStrength?: number
+
+  // Duration, in seconds, during which the glass can disappear.
+  warriorHideDuration?: number
+
+  // Percentage of the glass visually obstructed.
+  warriorObstruction?: number
+
+  // -----------------------------------------------------
+  // World 12 — Survivors
+  // -----------------------------------------------------
+
+  survivorMode?: SurvivorMode
+
+  // Times, in seconds, when survival events are triggered.
+  survivorTriggerTimes?: number[]
+
+  // Strength of survival-induced glass shaking.
+  survivorShakeStrength?: number
+
+  // Percentage of the glass hidden by survival events.
+  survivorObstruction?: number
+
+  // Duration, in seconds, of temporary visibility loss.
+  survivorHideDuration?: number
 }

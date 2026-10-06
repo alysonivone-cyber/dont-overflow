@@ -9,12 +9,15 @@ import { getEvaporationRate } from './game/getEvaporationRate'
 import { getObstacleEffect } from './game/getObstacleEffect'
 import { getContainerMotion } from './game/getContainerMotion'
 import { getAnimalInterference } from './game/getAnimalInterference'
+import { getWarriorInterference } from './game/getWarriorInterference'
+import { getSurvivorInterference } from './game/getSurvivorInterference'
 
 import type { GameResult } from './game/types'
 
 import ResultFeedback from './components/ResultFeedback'
 import ObstacleField from './components/ObstacleField'
 import FrogField from './components/FrogField'
+import WarriorField from './components/WarriorField'
 
 import {
   playSuccessSound,
@@ -23,6 +26,17 @@ import {
 } from './game/soundManager'
 
 function App() {
+
+  // =====================================================
+  // DEV MENU
+  // =====================================================
+
+  const [devMenuOpen, setDevMenuOpen] =
+    useState(false)
+
+  const [devWorld, setDevWorld] =
+    useState(1)
+
   // =====================================================
   // CORE GAME STATE
   // =====================================================
@@ -392,6 +406,124 @@ function App() {
           isActive: false,
         }
 
+    // =====================================================
+  // WORLD 11 — WARRIORS
+  // =====================================================
+
+  const hasWarriors =
+    currentLevel.warriorMode !==
+    undefined
+
+  const warriorMode =
+    currentLevel.warriorMode ??
+    'crossing'
+
+  const warriorTriggerTimes =
+    currentLevel.warriorTriggerTimes ??
+    []
+
+  const warriorPushStrength =
+    currentLevel.warriorPushStrength ??
+    0
+
+  const warriorHideDuration =
+    currentLevel.warriorHideDuration ??
+    0
+
+  const warriorObstruction =
+    currentLevel.warriorObstruction ??
+    0
+
+  const warriorInterference =
+    hasWarriors
+      ? getWarriorInterference({
+          mode: warriorMode,
+          elapsedTime,
+          triggerTimes:
+            warriorTriggerTimes,
+          pushStrength:
+            warriorPushStrength,
+          hideDuration:
+            warriorHideDuration,
+          obstruction:
+            warriorObstruction,
+        })
+      : {
+          triggeredEvents: 0,
+
+          glassOffsetX: 0,
+          glassOffsetY: 0,
+          glassRotation: 0,
+
+          visualObstruction: 0,
+
+          isGlassHidden: false,
+          isWarriorVisible: false,
+
+          warriorProgress: 0,
+          isActive: false,
+        }
+  
+    // =====================================================
+  // WORLD 12 — SURVIVORS
+  // =====================================================
+
+  const hasSurvivors =
+    currentLevel.survivorMode !==
+    undefined
+
+  const survivorMode =
+    currentLevel.survivorMode ??
+    'aftershock'
+
+  const survivorTriggerTimes =
+    currentLevel.survivorTriggerTimes ??
+    []
+
+  const survivorShakeStrength =
+    currentLevel.survivorShakeStrength ??
+    0
+
+  const survivorBlackoutDuration =
+    currentLevel.survivorHideDuration ??
+    0
+
+  const survivorPressureStrength =
+    currentLevel.survivorObstruction ??
+    0
+
+  const survivorInterference =
+    hasSurvivors
+      ? getSurvivorInterference({
+          mode: survivorMode,
+          elapsedTime,
+          triggerTimes:
+            survivorTriggerTimes,
+          shakeStrength:
+            survivorShakeStrength,
+          blackoutDuration:
+            survivorBlackoutDuration,
+          pressureStrength:
+            survivorPressureStrength,
+        })
+      : {
+          triggeredEvents: 0,
+
+          glassOffsetX: 0,
+          glassOffsetY: 0,
+          glassRotation: 0,
+
+          flowMultiplier: 1,
+
+          blackoutOpacity: 0,
+
+          isShaking: false,
+          isBlackout: false,
+          isPressureActive: false,
+
+          isActive: false,
+        }
+
   // =====================================================
   // CURRENT FLOW SPEED
   // =====================================================
@@ -617,7 +749,8 @@ function App() {
 
         const effectiveSpeed =
           normalFlowSpeed *
-          liveObstacleEffect.flowMultiplier
+          liveObstacleEffect.flowMultiplier *
+          survivorInterference.flowMultiplier
 
         const amountToAdd =
           effectiveSpeed / 100
@@ -708,6 +841,7 @@ function App() {
     obstacleStrength,
     obstaclePositions,
     obstacleMovementSpeed,
+    survivorInterference.flowMultiplier,
     worldComplete,
     gameComplete,
     levelSucceeded,
@@ -1238,13 +1372,7 @@ function App() {
 
     setIsFilling(false)
 
-    if (
-      hasTimeLimit ||
-      hasMotion ||
-      hasFrogs
-    ) {
-      setTimerStarted(false)
-    }
+    setTimerStarted(false)
 
     if (hasInertia) {
       setInertiaTimeLeft(
@@ -1391,6 +1519,34 @@ function App() {
   }
 
   // =====================================================
+  // DEV MENU — JUMP TO LEVEL
+  // =====================================================
+
+  const jumpToDevLevel = (
+    world: number,
+    levelId: number,
+  ) => {
+    const newLevelIndex =
+      levels.findIndex(
+        (level) =>
+          level.world === world &&
+          level.id === levelId,
+      )
+
+    if (newLevelIndex === -1) {
+      return
+    }
+
+    setWorldComplete(false)
+    setGameComplete(false)
+
+    loadLevel(newLevelIndex)
+
+    setDevWorld(world)
+    setDevMenuOpen(false)
+  }
+
+  // =====================================================
   // NEXT LEVEL
   // =====================================================
 
@@ -1523,26 +1679,38 @@ function App() {
         )
 
   // =====================================================
-  // WORLDS 7 + 8 — FINAL GLASS TRANSFORM
+  // WORLDS 7 + 8 + 11 + 12 — FINAL GLASS TRANSFORM
   // =====================================================
 
   const finalGlassX =
     containerMotion.x +
-    frogInterference.glassOffsetX
+    frogInterference.glassOffsetX +
+    warriorInterference.glassOffsetX +
+    survivorInterference.glassOffsetX
 
   const finalGlassY =
     containerMotion.y +
-    frogInterference.glassOffsetY
+    frogInterference.glassOffsetY +
+    warriorInterference.glassOffsetY +
+    survivorInterference.glassOffsetY
 
   const finalGlassRotation =
     containerMotion.rotation +
-    frogInterference.glassRotation
+    frogInterference.glassRotation +
+    warriorInterference.glassRotation +
+    survivorInterference.glassRotation
 
   const hasGlassMovement =
     hasMotion ||
     frogInterference.glassOffsetX !== 0 ||
     frogInterference.glassOffsetY !== 0 ||
-    frogInterference.glassRotation !== 0
+    frogInterference.glassRotation !== 0 ||
+    warriorInterference.glassOffsetX !== 0 ||
+    warriorInterference.glassOffsetY !== 0 ||
+    warriorInterference.glassRotation !== 0 ||
+    survivorInterference.glassOffsetX !== 0 ||
+    survivorInterference.glassOffsetY !== 0 ||
+    survivorInterference.glassRotation !== 0
 
   // =====================================================
   // GAME COMPLETE SCREEN
@@ -1753,7 +1921,111 @@ function App() {
 
   return (
     <main className="game">
+
+            {/* =====================================================
+          DEV MENU
+          ===================================================== */}
+
+      <div className="dev-menu">
+        <button
+          className="dev-menu-toggle"
+          type="button"
+          onClick={() =>
+            setDevMenuOpen(
+              (isOpen) => !isOpen,
+            )
+          }
+        >
+          ☰ DEV
+        </button>
+
+        {devMenuOpen && (
+          <div className="dev-menu-panel">
+            <div className="dev-menu-header">
+              <strong>DEV NAVIGATION</strong>
+
+              <button
+                className="dev-menu-close"
+                type="button"
+                onClick={() =>
+                  setDevMenuOpen(false)
+                }
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="dev-menu-label">
+              WORLD
+            </p>
+
+            <div className="dev-world-grid">
+              {Array.from(
+                { length: 12 },
+                (_, index) => index + 1,
+              ).map((world) => (
+                <button
+                  key={world}
+                  type="button"
+                  className={
+                    devWorld === world
+                      ? 'dev-world-button dev-world-button-active'
+                      : 'dev-world-button'
+                  }
+                  onClick={() =>
+                    setDevWorld(world)
+                  }
+                >
+                  {world}
+                </button>
+              ))}
+            </div>
+
+            <p className="dev-menu-label">
+              WORLD {devWorld} — LEVEL
+            </p>
+
+            <div className="dev-level-grid">
+              {[1, 2, 3, 4, 5].map(
+                (levelId) => (
+                  <button
+                    key={levelId}
+                    type="button"
+                    className="dev-level-button"
+                    onClick={() =>
+                      jumpToDevLevel(
+                        devWorld,
+                        levelId,
+                      )
+                    }
+                  >
+                    {levelId}
+                  </button>
+                ),
+              )}
+            </div>
+
+            <p className="dev-menu-note">
+              Development navigation only
+            </p>
+          </div>
+        )}
+      </div>
+
+            {hasSurvivors &&
+        survivorInterference.isBlackout && (
+          <div
+            className="survivor-blackout"
+            style={{
+              opacity:
+                survivorInterference.blackoutOpacity,
+            }}
+            aria-hidden="true"
+          />
+        )}
+
       <section className="game-card">
+
         {/* =================================================
             LEVEL HEADER
             ================================================= */}
@@ -2005,13 +2277,23 @@ function App() {
                 ? 'glass-motion'
                 : ''
             }`}
-            style={
-              hasGlassMovement
-                ? {
-                    transform: `translate(${finalGlassX}px, ${finalGlassY}px) rotate(${finalGlassRotation}deg)`,
-                  }
-                : undefined
-            }
+           style={{
+            ...(hasGlassMovement
+              ? {
+                  transform: `translate(${finalGlassX}px, ${finalGlassY}px) rotate(${finalGlassRotation}deg)`,
+              }
+            : {}),
+
+            opacity:
+              warriorInterference.isGlassHidden
+                ? 0
+                : 1,
+
+            transition:
+              warriorInterference.isGlassHidden
+                ? 'opacity 0.12s ease'
+                : undefined,
+            }} 
           >
             {/* =============================================
                 WATER
@@ -2070,7 +2352,7 @@ function App() {
                 WORLD 8 — FROG INVASION
                 ============================================= */}
 
-            {hasFrogs && (
+                        {hasFrogs && (
               <FrogField
                 frogCount={
                   frogInterference.frogsInGlass
@@ -2080,7 +2362,30 @@ function App() {
                 }
               />
             )}
+
           </div>
+
+          {hasWarriors && (
+            <WarriorField
+              mode={warriorMode}
+              triggeredEvents={
+                warriorInterference.triggeredEvents
+              }
+              visible={
+                warriorInterference.isWarriorVisible
+              }
+              progress={
+                warriorInterference.warriorProgress
+              }
+              obstruction={
+                warriorInterference.visualObstruction
+              }
+              glassHidden={
+                warriorInterference.isGlassHidden
+              }
+            />
+          )}
+
         </div>
 
         {/* =================================================

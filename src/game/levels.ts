@@ -1142,4 +1142,710 @@ export const levels: LevelConfig[] = [
     frogObstruction: 55,
     frogShakeStrength: 12,
   },
+  // =====================================================
+  // WORLD 9 — CHAOS
+  // =====================================================
+
+  {
+    id: 1,
+    world: 9,
+    name: 'Unstable Flow',
+    instruction:
+      'The flow changes while the glass moves. Track both rhythms and choose your moment.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 36,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    motionMode: 'horizontal',
+    motionAmplitude: 18,
+    motionSpeed: 2.2,
+  },
+
+  {
+    id: 2,
+    world: 9,
+    name: 'Hot Mess',
+    instruction:
+      'Heat changes the final level while an obstacle disrupts the flow. Anticipate both effects.',
+
+    target: 68,
+    tolerance: 3,
+
+    fillSpeed: 35,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    temperature: 78,
+    temperatureMode: 'fixed',
+    evaporationRate: 3.5,
+    evaporationDuration: 1.4,
+
+    obstacleMode: 'fixed',
+    obstacleStrength: 0.45,
+    obstaclePositions: [48],
+    obstacleMovementSpeed: 0,
+    blindSpotSize: 0,
+  },
+
+  {
+    id: 3,
+    world: 9,
+    name: 'Frog on the Move',
+    instruction:
+      'The glass moves while frogs invade it. Adapt to movement and sudden water displacement.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 36,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    motionMode: 'pendulum',
+    motionAmplitude: 20,
+    motionSpeed: 2.5,
+
+    frogMode: 'double',
+    frogTriggerTimes: [0.9, 1.6],
+    frogDisplacement: 5,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+  },
+
+  {
+    id: 4,
+    world: 9,
+    name: 'Limited Chaos',
+    instruction:
+      'Your reserve is limited and part of the glass is hidden. Control every drop through the disruption.',
+
+    target: 70,
+    tolerance: 2,
+
+    fillSpeed: 38,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 155,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.3,
+
+    obstacleMode: 'blind',
+    obstacleStrength: 0.5,
+    obstaclePositions: [50],
+    obstacleMovementSpeed: 0,
+    blindSpotSize: 30,
+  },
+
+  {
+    id: 5,
+    world: 9,
+    name: 'Total Chaos',
+    instruction:
+      'Movement, unstable flow, momentum and frogs collide. Master the chaos without numerical feedback.',
+
+    target: 74,
+    tolerance: 2,
+
+    fillSpeed: 39,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.4,
+
+    motionMode: 'combined',
+    motionAmplitude: 24,
+    motionSpeed: 3.1,
+
+    frogMode: 'invasion',
+    frogTriggerTimes: [0.7, 1.25, 1.8],
+    frogDisplacement: 3,
+    frogExitDisplacement: 0,
+    frogObstruction: 35,
+    frogShakeStrength: 0,
+  },
+
+    // =====================================================
+  // WORLD 10 — MASTERY
+  // =====================================================
+
+  {
+    id: 1,
+    world: 10,
+    name: 'Precision Under Pressure',
+    instruction:
+      'The clock is running and the flow accelerates. Stay calm and release with precision.',
+
+    target: 70,
+    tolerance: 2,
+
+    fillSpeed: 31,
+    flowType: 'accelerating',
+
+    attempts: 3,
+    timeLimit: 3.5,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+  },
+
+  {
+    id: 2,
+    world: 10,
+    name: 'Resource Mastery',
+    instruction:
+      'Limited water, momentum and evaporation combine. Plan where the level will finally settle.',
+
+    target: 68,
+    tolerance: 2,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: 155,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.35,
+
+    temperature: 82,
+    temperatureMode: 'fixed',
+    evaporationRate: 3.5,
+    evaporationDuration: 1.4,
+  },
+
+  {
+    id: 3,
+    world: 10,
+    name: 'Moving Hazard',
+    instruction:
+      'A moving barrier disrupts a changing flow while the container moves. Read the entire system.',
+
+    target: 72,
+    tolerance: 2,
+
+    fillSpeed: 36,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    obstacleMode: 'moving',
+    obstacleStrength: 0.5,
+    obstaclePositions: [52],
+    obstacleMovementSpeed: 3.4,
+    blindSpotSize: 0,
+
+    motionMode: 'horizontal',
+    motionAmplitude: 20,
+    motionSpeed: 2.5,
+  },
+
+  {
+    id: 4,
+    world: 10,
+    name: 'Blind Mastery',
+    instruction:
+      'Numbers are gone. Follow the moving glass and anticipate the frogs by sight and timing alone.',
+
+    target: 70,
+    tolerance: 2,
+
+    fillSpeed: 36,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.25,
+
+    motionMode: 'pendulum',
+    motionAmplitude: 20,
+    motionSpeed: 2.6,
+
+    frogMode: 'in-out',
+    frogTriggerTimes: [0.9, 1.65],
+    frogDisplacement: 8,
+    frogExitDisplacement: 8,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+  },
+
+  {
+    id: 5,
+    world: 10,
+    name: 'Final Examination',
+    instruction:
+      'Everything you learned matters now. Control the flow, conserve water and survive every disruption.',
+
+    target: 72,
+    tolerance: 2,
+
+    fillSpeed: 37,
+    flowType: 'variable',
+
+    attempts: 3,
+    timeLimit: 4,
+    waterReserve: 165,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.35,
+
+    obstacleMode: 'moving',
+    obstacleStrength: 0.45,
+    obstaclePositions: [50],
+    obstacleMovementSpeed: 3,
+    blindSpotSize: 18,
+
+    motionMode: 'combined',
+    motionAmplitude: 20,
+    motionSpeed: 2.8,
+
+    frogMode: 'double',
+    frogTriggerTimes: [0.85, 1.55],
+    frogDisplacement: 4,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+  },
+   // =====================================================
+  // WORLD 11 — WARRIORS
+  // =====================================================
+
+  {
+    id: 1,
+    world: 11,
+    name: 'Incoming!',
+    instruction:
+      'A warrior crosses your field of vision. Keep filling and release at the right moment.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    warriorMode: 'crossing',
+    warriorTriggerTimes: [0.8],
+    warriorPushStrength: 0,
+    warriorHideDuration: 0,
+    warriorObstruction: 38,
+  },
+
+  {
+    id: 2,
+    world: 11,
+    name: 'Glass Push',
+    instruction:
+      'The warrior can suddenly push the glass. Keep control when your reference point moves.',
+
+    target: 68,
+    tolerance: 3,
+
+    fillSpeed: 35,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    warriorMode: 'push',
+    warriorTriggerTimes: [0.85, 1.55],
+    warriorPushStrength: 28,
+    warriorHideDuration: 0,
+    warriorObstruction: 0,
+  },
+
+  {
+    id: 3,
+    world: 11,
+    name: 'Thief!',
+    instruction:
+      'The warrior steals the glass, but the water keeps flowing. Decide when to release without seeing it.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 35,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    warriorMode: 'steal',
+    warriorTriggerTimes: [0.9],
+    warriorPushStrength: 0,
+    warriorHideDuration: 1.15,
+    warriorObstruction: 0,
+  },
+
+  {
+    id: 4,
+    world: 11,
+    name: "Can't See!",
+    instruction:
+      'A warrior blocks the critical part of the glass. Estimate the level from the information you saw before.',
+
+    target: 70,
+    tolerance: 2,
+
+    fillSpeed: 36,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.2,
+
+    warriorMode: 'obstruction',
+    warriorTriggerTimes: [0.8],
+    warriorPushStrength: 0,
+    warriorHideDuration: 1.5,
+    warriorObstruction: 58,
+  },
+
+  {
+  id: 5,
+  world: 11,
+  name: 'War Zone',
+  instruction:
+    'Crossing, pushing, stealing and obstruction arrive in sequence. Stay calm and adapt to each attack.',
+
+  target: 72,
+  tolerance: 3,
+
+  fillSpeed: 34,
+  flowType: 'constant',
+
+  attempts: 3,
+  timeLimit: null,
+  waterReserve: null,
+
+  showPercentage: false,
+  showTargetZone: true,
+
+  containerShape: 'straight',
+
+  inertia: 0.15,
+
+  warriorMode: 'war-zone',
+  warriorTriggerTimes: [
+    0.65,
+    1.25,
+    1.85,
+    2.45,
+  ],
+
+  warriorPushStrength: 20,
+  warriorHideDuration: 0.45,
+  warriorObstruction: 38,
+},
+
+  // =====================================================
+  // WORLD 12 — SURVIVORS
+  // =====================================================
+
+  {
+    id: 1,
+    world: 12,
+    name: 'Aftershock',
+    instruction:
+      'Sudden aftershocks shake the glass. Keep your timing steady when your visual reference starts moving.',
+
+    target: 70,
+    tolerance: 4,
+
+    fillSpeed: 34,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    survivorMode: 'aftershock',
+    survivorTriggerTimes: [
+      0.85,
+      1.65,
+    ],
+    survivorShakeStrength: 12,
+    survivorHideDuration: 0,
+    survivorObstruction: 0,
+  },
+
+    {
+    id: 2,
+    world: 12,
+    name: 'Pressure',
+    instruction:
+      'Pressure surges accelerate the flow while frogs and warriors invade the scene. Keep control through the panic.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 32,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: true,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    // SURVIVORS — strong pressure bursts
+    survivorMode: 'pressure',
+    survivorTriggerTimes: [
+      0.65,
+      1.45,
+    ],
+    survivorShakeStrength: 0,
+    survivorHideDuration: 0,
+    survivorObstruction: 0.85,
+
+    // FROGS — water displacement
+    frogMode: 'double',
+    frogTriggerTimes: [
+      0.9,
+      1.65,
+    ],
+    frogDisplacement: 4,
+    frogExitDisplacement: 0,
+    frogObstruction: 0,
+    frogShakeStrength: 0,
+
+    // WARRIORS — visual interference
+    warriorMode: 'crossing',
+    warriorTriggerTimes: [
+      0.75,
+      1.55,
+    ],
+    warriorPushStrength: 0,
+    warriorHideDuration: 0,
+    warriorObstruction: 28,
+  },
+
+  {
+    id: 3,
+    world: 12,
+    name: 'Blackout',
+    instruction:
+      'The lights fail while the water keeps flowing. Remember what you saw and decide when to release in the dark.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0,
+
+    survivorMode: 'blackout',
+    survivorTriggerTimes: [
+      0.9,
+      1.8,
+    ],
+    survivorShakeStrength: 0,
+    survivorHideDuration: 0.75,
+    survivorObstruction: 0,
+  },
+
+  {
+    id: 4,
+    world: 12,
+    name: 'Critical Condition',
+    instruction:
+      'Aftershocks, pressure surges and blackouts strike in sequence. Identify each threat and adapt your timing.',
+
+    target: 70,
+    tolerance: 3,
+
+    fillSpeed: 32,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.1,
+
+    survivorMode: 'critical',
+    survivorTriggerTimes: [
+      0.65,
+      1.35,
+      2.05,
+    ],
+    survivorShakeStrength: 10,
+    survivorHideDuration: 0.65,
+    survivorObstruction: 0.35,
+  },
+
+  {
+    id: 5,
+    world: 12,
+    name: 'Survivor',
+    instruction:
+      'Everything is unstable. Survive the shocks, pressure and darkness, then release at the only moment that matters.',
+
+    target: 72,
+    tolerance: 3,
+
+    fillSpeed: 33,
+    flowType: 'constant',
+
+    attempts: 3,
+    timeLimit: null,
+    waterReserve: null,
+
+    showPercentage: false,
+    showTargetZone: true,
+
+    containerShape: 'straight',
+
+    inertia: 0.15,
+
+    survivorMode: 'survival',
+    survivorTriggerTimes: [
+      0.55,
+      1.15,
+      1.75,
+      2.35,
+    ],
+    survivorShakeStrength: 12,
+    survivorHideDuration: 0.6,
+    survivorObstruction: 0.4,
+  },
 ]
