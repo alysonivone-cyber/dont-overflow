@@ -1,6 +1,7 @@
 # DON'T OVERFLOW! — Roadmap
+> **Note de version :** Les sections 1 à 16 présentent la roadmap initiale définie lors du Rendu 1, à partir du Proof of Concept (POC). Les sections 17 à 23 documentent les fonctionnalités effectivement réalisées, la validation technique et la publication du Rendu 2. Les propositions historiques ne constituent pas toutes des fonctionnalités implémentées.
 
-## 1. État actuel — POC
+## 1. État initial — POC (Rendu 1)
 
 La première version du projet correspond à un POC fonctionnel centré sur la validation de la mécanique principale.
 
@@ -294,7 +295,7 @@ Ces fonctionnalités ne constituent pas des exigences du MVP initial.
 
 Elles représentent des possibilités d'évolution si la boucle enrichie est validée lors de futurs tests utilisateurs.
 
-## 15. Ordre de développement envisagé
+## 15. Ordre de développement initialement envisagé — Rendu 1
 
 L'ordre de développement proposé est :
 
@@ -360,3 +361,170 @@ Le principe retenu reste :
 **valider d'abord → enrichir ensuite**
 
 Chaque nouvelle fonctionnalité devra soit répondre à un problème identifié lors de l'observation du prototype ou de futurs tests utilisateurs, soit augmenter directement la profondeur, la lisibilité ou la satisfaction de la boucle principale.
+
+---
+
+## 17. Bilan de la roadmap — Rendu 2
+
+La roadmap du Rendu 1 définissait les étapes envisagées pour transformer le Proof of Concept (POC) en un jeu de précision plus complet.
+
+Le Rendu 2 marque l'aboutissement d'une grande partie de cette vision, avec la réalisation de **15 mondes et 75 niveaux jouables**.
+
+Les sections précédentes conservent la planification initiale. Les sections suivantes présentent le bilan du développement et les perspectives d'évolution.
+
+## 18. Fonctionnalités réalisées
+
+### 18.1 Progression et niveaux
+
+Le jeu comprend désormais :
+
+- 15 mondes ;
+- 5 niveaux par monde ;
+- 75 niveaux jouables ;
+- des objectifs adaptés aux différents défis ;
+- une progression structurée ;
+- une sauvegarde locale de l'avancement.
+
+Cette organisation concrétise l'objectif initial de transformer une interaction unique en une expérience progressive.
+
+### 18.2 Précision et objectifs
+
+La mécanique de précision du POC a été conservée et enrichie.
+
+Les niveaux peuvent proposer différentes cibles, tolérances et contraintes, nécessitant une adaptation du timing du joueur.
+
+### 18.3 Ressources et pression
+
+Le jeu introduit des contraintes liées aux ressources et au déroulement des tentatives.
+
+Selon le niveau, le joueur doit notamment tenir compte :
+
+- du nombre de tentatives ;
+- de l'eau disponible ;
+- du temps ;
+- des conditions particulières du défi.
+
+### 18.4 Vitesse, inertie et évaporation
+
+Les comportements du remplissage ont été enrichis avec plusieurs mécaniques :
+
+- débit constant ;
+- accélération ou variation du débit ;
+- inertie après le relâchement ;
+- effets liés à la température ;
+- évaporation.
+
+Ces variations introduisent une dimension d'anticipation supplémentaire.
+
+### 18.5 Obstacles et événements
+
+Des événements et obstacles viennent modifier les conditions de certains niveaux.
+
+Le joueur doit adapter son comportement aux perturbations rencontrées.
+
+### 18.6 Interface et direction artistique
+
+Le Rendu 2 développe une identité visuelle complète autour de Cappy, le personnage principal.
+
+Les améliorations comprennent :
+
+- une interface graphique enrichie ;
+- des écrans d'accueil et de progression ;
+- une navigation entre les mondes et les niveaux ;
+- des illustrations du personnage ;
+- des animations de réussite et d'échec ;
+- des effets visuels ;
+- des effets sonores et une ambiance musicale ;
+- des séquences audiovisuelles ;
+- une conclusion de l'aventure.
+
+## 19. Évolution de l'architecture technique
+
+Le POC initial reposait sur une architecture volontairement simple.
+
+Au cours du développement, le projet a progressivement été organisé en composants React et modules TypeScript spécialisés.
+
+Cette évolution a permis de mieux séparer les responsabilités liées :
+
+- à l'affichage ;
+- aux interactions ;
+- aux paramètres des niveaux ;
+- aux calculs des mécaniques ;
+- à l'évaluation des résultats ;
+- à la progression du joueur ;
+- aux effets sonores.
+
+La modularisation a accompagné l'augmentation de la complexité du jeu, conformément au principe défini dans la roadmap initiale.
+
+## 20. Validation technique du Rendu 2
+
+Avant la publication, le projet a fait l'objet de plusieurs vérifications.
+
+Les résultats obtenus comprennent :
+
+- 14 fichiers de tests automatisés validés ;
+- 120 tests réussis ;
+- aucune erreur ni avertissement détecté par le lint ;
+- une compilation de production réussie ;
+- une vérification manuelle des 75 niveaux et de la conclusion du jeu.
+
+Ces vérifications ont permis de stabiliser la version destinée au Rendu 2.
+
+Elles ne remplacent pas une campagne formelle de tests utilisateurs, qui pourrait constituer une étape supplémentaire.
+
+## 21. Versionnement et publication
+
+Le développement du projet est suivi avec Git.
+
+Le code source est hébergé sur GitHub :
+
+https://github.com/alysonivone-cyber/dont-overflow
+
+Le Rendu 2 a été enregistré dans le commit :
+
+`1a4c5f5`
+
+La version est également identifiée par le tag :
+
+`rendu-2`
+
+Le jeu est publié sur Vercel :
+
+https://dont-overflow.vercel.app
+
+Cette publication permet d'accéder au jeu depuis un navigateur sans installation locale.
+
+## 22. Fonctionnalités et améliorations envisageables après le Rendu 2
+
+Bien que le jeu comprenne désormais 75 niveaux, plusieurs évolutions restent envisageables.
+
+Elles ne constituent pas des fonctionnalités promises ou nécessaires pour le Rendu 2.
+
+Parmi les pistes possibles :
+
+- de nouveaux mondes ou niveaux ;
+- un mode infini ;
+- des défis supplémentaires ;
+- un système de records personnels plus développé ;
+- des statistiques de performance ;
+- de nouvelles familles de récipients ;
+- de nouveaux obstacles ;
+- des améliorations d'accessibilité ;
+- des tests utilisateurs plus approfondis ;
+- des optimisations supplémentaires pour différents appareils.
+
+Ces possibilités pourront être étudiées ultérieurement selon les retours des joueurs et les objectifs du projet.
+
+## 23. Synthèse de la roadmap
+
+Le développement de DON'T OVERFLOW! a suivi une évolution progressive :
+
+**POC fonctionnel → enrichissement des mécaniques → création des niveaux → développement de l'identité visuelle → tests et stabilisation → publication.**
+
+Le Rendu 1 a permis de valider le concept et la mécanique fondamentale.
+
+Le Rendu 2 concrétise cette base avec un jeu complet de 75 niveaux, une identité graphique, un système de progression et une version accessible en ligne.
+
+Le projet illustre ainsi le principe retenu dès sa conception :
+
+**Valider d'abord → enrichir ensuite.**

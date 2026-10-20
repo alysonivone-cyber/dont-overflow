@@ -1,4 +1,5 @@
 # DON'T OVERFLOW! — Règles du jeu
+> **Note de version :** Les sections 1 à 11 présentent les règles et les pistes d'évolution définies lors du Rendu 1. Les sections 12 à 19 documentent les règles et les mécaniques du jeu réalisé pour le Rendu 2. Les valeurs du POC ne constituent pas des paramètres universels applicables aux 75 niveaux.
 
 ## 1. Principe général
 
@@ -178,3 +179,133 @@ Les futures règles devront respecter le principe central de DON'T OVERFLOW! :
 **une interaction simple, des contraintes progressivement plus exigeantes**
 
 L'objectif du MVP n'est donc pas de remplacer la mécanique validée par le POC, mais d'augmenter progressivement sa profondeur.
+
+## 12. Évolution du POC vers le Rendu 2
+
+Le Rendu 1 a permis de valider la mécanique fondamentale de DON'T OVERFLOW! : maintenir une commande pour remplir un récipient, observer la progression de l'eau et relâcher au moment approprié.
+
+Le Rendu 2 transforme ce prototype en un jeu complet comprenant **15 mondes et 75 niveaux jouables**.
+
+La mécanique centrale est conservée, mais les contraintes et les objectifs évoluent progressivement au cours de la partie.
+
+Les sections 1 à 11 conservent les règles du POC et les évolutions envisagées lors du Rendu 1. Elles constituent une référence historique et ne doivent pas être interprétées comme des paramètres universels ou des fonctionnalités nécessairement présentes dans les 75 niveaux du Rendu 2.
+
+## 13. Organisation du jeu final
+
+Le jeu est organisé en 15 mondes comprenant chacun 5 niveaux.
+
+Chaque niveau possède ses propres paramètres de difficulté et peut introduire de nouvelles contraintes ou combiner des mécaniques déjà rencontrées.
+
+La progression permet au joueur de découvrir les règles progressivement, avant d'affronter des situations plus complexes.
+
+Le jeu conserve un principe de conception central :
+
+**Une interaction simple, des défis progressivement plus exigeants.**
+
+## 14. Objectifs et évaluation
+
+Contrairement au POC, où la zone cible était fixée entre 70 % et 80 %, les objectifs du Rendu 2 peuvent varier selon les niveaux.
+
+Un niveau peut notamment définir :
+
+- une valeur cible ou une zone de réussite ;
+- une tolérance de précision ;
+- une vitesse et un comportement de remplissage ;
+- des contraintes de temps ;
+- une quantité d'eau disponible ;
+- des mécaniques particulières influençant le résultat.
+
+La réussite est évaluée selon les règles propres au niveau en cours.
+
+Le joueur doit donc adapter son timing et sa stratégie aux conditions présentées.
+
+## 15. Mécaniques de gameplay
+
+Le Rendu 2 enrichit la mécanique initiale avec plusieurs familles de contraintes.
+
+### 15.1 Variation du débit
+
+Le débit de remplissage peut être constant, progressif ou variable selon le niveau.
+
+Certains événements ou obstacles peuvent également influencer la vitesse de remplissage.
+
+### 15.2 Inertie
+
+Certains niveaux introduisent une inertie après le relâchement de la commande.
+
+Le joueur doit anticiper cette quantité d'eau supplémentaire afin d'atteindre son objectif.
+
+### 15.3 Température et évaporation
+
+Certains niveaux intègrent des effets liés à la température et à l'évaporation.
+
+Ces mécaniques peuvent modifier le niveau d'eau après le remplissage et nécessitent une anticipation supplémentaire.
+
+### 15.4 Gestion des ressources
+
+Certains défis introduisent des contraintes liées à l'eau disponible ou au nombre de tentatives.
+
+Ces contraintes encouragent le joueur à gérer ses ressources et à limiter les erreurs.
+
+### 15.5 Obstacles et événements
+
+Des obstacles ou événements spécifiques peuvent modifier les conditions habituelles d'une tentative.
+
+Le joueur doit alors adapter son comportement aux particularités du niveau.
+
+### 15.6 Perception et informations visuelles
+
+La difficulté peut également dépendre de la représentation du récipient et des informations disponibles à l'écran.
+
+Le joueur ne peut donc pas toujours se reposer uniquement sur un pourcentage affiché.
+
+## 16. Progression et sauvegarde
+
+Le Rendu 2 comprend un système de progression permettant de suivre l'avancement du joueur à travers les mondes et les niveaux.
+
+La progression est sauvegardée localement dans le navigateur.
+
+Le joueur peut ainsi retrouver son avancement lors d'une prochaine session, sous réserve de conserver les données locales du navigateur.
+
+La progression est également représentée par un système d'étoiles associé aux performances réalisées dans les niveaux. Les écrans de sélection permettent de visualiser les étoiles obtenues, les niveaux terminés et les niveaux encore verrouillés. Ces informations contribuent à rendre l'avancement du joueur lisible et encouragent la rejouabilité.
+
+## 17. Feedback et expérience joueur
+
+Le Rendu 2 enrichit les résultats des tentatives avec une interface plus expressive.
+
+Le jeu comprend notamment :
+
+- des retours visuels associés aux résultats ;
+- des effets sonores et une ambiance musicale ;
+- des animations de réussite et d'échec ;
+- des écrans de progression ;
+- des interventions du personnage Cappy ;
+- une séquence de conclusion.
+
+Ces éléments accompagnent la progression du joueur et renforcent l'identité du jeu.
+
+## 18. Validation du Rendu 2
+
+La version finale a été vérifiée par des tests techniques et des essais manuels.
+
+Les vérifications ont notamment porté sur :
+
+- le fonctionnement des interactions ;
+- les différentes mécaniques de gameplay ;
+- la progression à travers les 75 niveaux ;
+- la sauvegarde de progression ;
+- les animations et les effets sonores ;
+- le fonctionnement de la conclusion du jeu ;
+- la compilation de production.
+
+Le projet est versionné avec Git et publié en ligne avec Vercel.
+
+La version du Rendu 2 est identifiée par le tag Git `rendu-2`.
+
+## 19. Synthèse
+
+DON'T OVERFLOW! est passé d'un prototype validant une interaction unique à un jeu complet reposant sur une progression de 75 niveaux.
+
+Le Rendu 2 conserve les fondements du POC tout en développant la précision, l'anticipation, la gestion des ressources et l'adaptation à différentes contraintes.
+
+**Le principe reste inchangé : maintenir, observer, anticiper et relâcher au bon moment.**

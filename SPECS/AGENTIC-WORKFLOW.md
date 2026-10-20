@@ -1,4 +1,5 @@
 # DON'T OVERFLOW! — Workflow d'utilisation de l'IA
+> **Note de version :** Les sections 1 à 12 documentent le workflow initial du Proof of Concept (Rendu 1). Les sections 13 à 20 présentent son application au développement et à la validation du jeu complet pour le Rendu 2.
 
 ## 1. Rôle de l'IA dans le projet
 
@@ -253,7 +254,7 @@ Pour cette raison, le développement reste piloté par les spécifications et pa
 
 L'IA constitue une aide à la conception, à l'implémentation et à l'itération, et non une source automatique de vérité.
 
-## 11. Workflow retenu pour le MVP
+## 11. Workflow envisagé pour le MVP au Rendu 1
 
 Le même processus sera conservé pour le développement du MVP :
 
@@ -323,3 +324,172 @@ Vérifier le build et la cohérence du projet
 
 **GIT**  
 Versionner une version précise et traçable
+
+---
+
+## 13. Évolution du workflow — Rendu 2
+
+Le Rendu 1 a permis de définir et de valider un workflow de développement assisté par intelligence artificielle.
+
+Ce workflow reposait sur une séparation claire des responsabilités :
+
+- **Humain** : définition des intentions, des règles, des priorités et validation des résultats.
+- **Spécifications** : formalisation du comportement attendu.
+- **IA** : assistance à la conception, à l'implémentation et à la résolution de problèmes.
+- **Exécution** : observation du comportement réel dans l'environnement de développement.
+- **Vérification** : comparaison entre le résultat obtenu et les objectifs définis.
+- **Git** : conservation d'un historique traçable des versions.
+
+Le Rendu 2 a conservé cette méthode tout en l'appliquant à un projet plus complexe, comprenant 15 mondes et 75 niveaux jouables.
+
+Les sections 1 à 12 documentent le workflow du POC. Les sections suivantes présentent son application au développement du jeu final.
+
+## 14. Décomposition du développement en tâches ciblées
+
+Le développement du Rendu 2 n'a pas reposé sur la génération d'une application complète en une seule demande.
+
+Les évolutions ont été abordées progressivement, en distinguant notamment :
+
+- la configuration des niveaux ;
+- les objectifs et tolérances ;
+- les variations du débit ;
+- les contraintes de temps et de ressources ;
+- les mécaniques d'inertie et d'évaporation ;
+- les obstacles et événements ;
+- les composants d'interface ;
+- la progression du joueur ;
+- les effets visuels et sonores ;
+- les tests et la stabilisation.
+
+Cette décomposition a permis de travailler sur des problèmes identifiables et de limiter les modifications simultanées.
+
+L'IA a été utilisée pour proposer des solutions, expliquer certaines erreurs, aider à structurer les fonctions et accompagner les vérifications.
+
+Les propositions ont été intégrées et évaluées dans le projet réel.
+
+## 15. Pilotage humain des décisions
+
+Le développeur est resté responsable des décisions importantes du projet.
+
+Ces décisions comprennent notamment :
+
+- la direction générale du jeu ;
+- la progression des 15 mondes ;
+- les mécaniques retenues ;
+- les objectifs des niveaux ;
+- la difficulté recherchée ;
+- l'identité visuelle ;
+- le personnage Cappy ;
+- les ajustements issus des essais ;
+- la validation des versions.
+
+Les suggestions de l'IA ne constituent pas automatiquement des décisions de conception.
+
+Une proposition peut être acceptée, adaptée, reportée ou rejetée selon sa cohérence avec le jeu.
+
+Le workflow distingue donc :
+
+**Proposition de l'IA → décision humaine → implémentation → vérification.**
+
+## 16. Vérification progressive des mécaniques
+
+L'augmentation du nombre de mécaniques a rendu les vérifications plus importantes.
+
+Chaque fonctionnalité devait être confrontée à son comportement réel.
+
+La validation pouvait notamment porter sur :
+
+- la vitesse de remplissage ;
+- l'arrêt au relâchement ;
+- les effets d'inertie ;
+- les variations du niveau d'eau ;
+- les contraintes temporelles ;
+- les ressources disponibles ;
+- l'évaluation de la réussite ;
+- le passage au niveau suivant ;
+- la sauvegarde de progression.
+
+Lorsqu'un comportement ne correspondait pas au résultat attendu, la correction était limitée autant que possible à la partie concernée.
+
+Cette méthode a permis de conserver les fonctionnalités déjà validées tout en développant de nouveaux défis.
+
+## 17. Tests automatisés et validation manuelle
+
+Le Rendu 2 a été accompagné d'une démarche de vérification technique.
+
+Les derniers résultats validés avant la publication comprennent :
+
+- **14 fichiers de tests automatisés validés** ;
+- **120 tests réussis** ;
+- **aucune erreur ni avertissement détecté par le lint** ;
+- **une compilation de production réussie**.
+
+Les commandes utilisées sont :
+
+```powershell
+npm.cmd run test
+npm.cmd run lint
+npm.cmd run build
+```
+
+La validation technique a été complétée par une vérification manuelle des **75 niveaux** et de la conclusion du jeu.
+
+Cette vérification était nécessaire pour observer des aspects qui ne sont pas entièrement couverts par les tests automatisés, notamment le ressenti des interactions, les animations et la progression.
+
+Les tests automatisés et manuels constituent ainsi deux méthodes complémentaires.
+
+## 18. Stabilisation et gestion des risques
+
+À l'approche du Rendu 2, la priorité a progressivement évolué.
+
+Pendant le développement, l'objectif principal était d'enrichir le jeu.
+
+Après la validation des niveaux et de la conclusion, la priorité est devenue la stabilité.
+
+Le principe retenu a été de ne pas multiplier les modifications du gameplay lorsque les fonctionnalités principales étaient déjà opérationnelles.
+
+Cette décision permet de limiter le risque d'introduire de nouveaux défauts avant la remise.
+
+La documentation a ensuite été actualisée séparément du code, afin de refléter l'évolution du projet sans modifier le fonctionnement de la version validée.
+
+## 19. Versionnement et livraison
+
+Le projet utilise Git pour conserver l'historique des modifications.
+
+Le code source est hébergé sur GitHub :
+
+https://github.com/alysonivone-cyber/dont-overflow
+
+La version validée pour le Rendu 2 correspond au commit :
+
+`1a4c5f5`
+
+Elle est identifiée par le tag :
+
+`rendu-2`
+
+Le jeu a été publié sur Vercel :
+
+https://dont-overflow.vercel.app
+
+Cette organisation permet de distinguer la version du jeu validée pour le rendu des éventuelles modifications documentaires ultérieures.
+
+## 20. Bilan de l'utilisation de l'IA
+
+Le développement de DON'T OVERFLOW! montre comment l'intelligence artificielle peut accompagner un projet logiciel tout en conservant un pilotage humain.
+
+Le Rendu 1 a permis de définir un workflow fondé sur des spécifications explicites et une validation par l'exécution.
+
+Le Rendu 2 a appliqué ce workflow à un jeu complet, avec des mécaniques variées, une progression de 75 niveaux et une interface enrichie.
+
+L'IA a contribué à accélérer certaines tâches de développement, de structuration, de débogage, de test et de documentation.
+
+Cependant, les propositions n'ont pas été considérées comme automatiquement correctes.
+
+La validation a reposé sur l'exécution réelle, les tests et les décisions du développeur.
+
+Le principe retenu reste :
+
+**Intention humaine → spécifications → assistance IA → implémentation → tests → corrections → validation → versionnement.**
+
+L'IA est ainsi utilisée comme un outil d'assistance au développement, et non comme un substitut au raisonnement, à la conception ou à la vérification humaine.

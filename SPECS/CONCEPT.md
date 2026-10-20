@@ -1,4 +1,5 @@
 # DON'T OVERFLOW! — Concept
+> **Note de version :** Les sections 1 à 8 présentent le concept initial et les pistes d'évolution définies lors du Rendu 1. Les sections 9 à 16 documentent le jeu effectivement réalisé pour le Rendu 2. Certaines fonctionnalités envisagées dans la vision initiale du MVP ne doivent donc pas être interprétées comme des fonctionnalités nécessairement implémentées.
 
 ## 1. Intention
 
@@ -234,3 +235,170 @@ Le principe de développement reste donc :
 **valider d'abord → enrichir ensuite**
 
 Les nouvelles fonctionnalités devront renforcer la boucle centrale plutôt que la remplacer.
+
+---
+
+## 9. Évolution du concept — Rendu 2
+
+Le Rendu 1 de DON'T OVERFLOW! reposait sur un Proof of Concept (POC) destiné à valider une mécanique de précision : maintenir une commande pour remplir un récipient, puis la relâcher au bon moment.
+
+Le Rendu 2 concrétise cette vision sous la forme d'un jeu complet comprenant **15 mondes et 75 niveaux jouables**.
+
+Le projet conserve son interaction principale, mais développe progressivement de nouvelles contraintes, de nouveaux comportements du liquide et des situations demandant davantage d'anticipation.
+
+Les sections précédentes conservent la trace des intentions et des fonctionnalités envisagées au Rendu 1. La présente section documente leur évolution vers le jeu livré au Rendu 2.
+
+## 10. Identité et expérience du jeu final
+
+DON'T OVERFLOW! est un jeu de précision et d'anticipation dont l'objectif est de contrôler le remplissage d'un récipient tout en respectant les conditions propres à chaque niveau.
+
+L'expérience repose sur trois principes :
+
+1. **Accessibilité** — une commande principale simple à comprendre.
+2. **Progression** — une difficulté qui évolue à travers différents mondes.
+3. **Adaptation** — des mécaniques qui obligent le joueur à anticiper et à ajuster ses décisions.
+
+L'univers du jeu adopte une direction artistique colorée et ludique, incarnée par **Cappy, un capybara qui accompagne le joueur tout au long de l'aventure**.
+
+Cappy intervient dans les écrans d'accueil, les retours visuels et les moments importants de la progression.
+
+Le personnage contribue à donner une identité reconnaissable au projet, au-delà de sa mécanique de remplissage.
+
+## 11. Structure et progression
+
+Le jeu final est organisé en **15 mondes de 5 niveaux**, soit un total de 75 niveaux.
+
+Chaque monde introduit ou développe des contraintes de gameplay.
+
+La progression vise à familiariser le joueur avec les mécaniques avant de lui proposer des situations plus exigeantes.
+
+Les niveaux avancés peuvent combiner plusieurs contraintes, ce qui permet d'augmenter la difficulté sans multiplier les commandes principales.
+
+Cette organisation transforme la boucle initiale du POC en une aventure structurée, avec un début, une progression et une conclusion.
+
+## 12. Enrichissement de la mécanique principale
+
+Le Rendu 2 conserve le principe :
+
+**Observer → maintenir → remplir → anticiper → relâcher → obtenir un résultat.**
+
+Cependant, le joueur ne doit plus uniquement arrêter une montée d'eau à vitesse constante.
+
+Selon le niveau, il peut devoir composer avec :
+
+- des objectifs et des tolérances de précision variables ;
+- des débits constants, progressifs ou variables ;
+- des contraintes temporelles ;
+- une quantité d'eau disponible limitée ;
+- des tentatives limitées ;
+- une inertie après le relâchement ;
+- des variations de température et des phénomènes d'évaporation ;
+- des obstacles ou événements perturbant le remplissage ;
+- des différences de perception du niveau d'eau ;
+- des combinaisons de plusieurs contraintes.
+
+L'intérêt du jeu repose ainsi sur la capacité du joueur à comprendre les conditions d'un niveau et à adapter son timing.
+
+## 13. Progression du joueur et rejouabilité
+
+Le jeu comprend un système de progression permettant de suivre les niveaux terminés.
+
+La progression est conservée localement dans le navigateur, permettant au joueur de retrouver son avancement lors d'une prochaine session sur le même site et avec les mêmes données de navigation.
+
+La rejouabilité repose sur la recherche de précision, la maîtrise des mécaniques et la possibilité de retenter les défis.
+
+Le jeu propose également une conclusion destinée à récompenser l'accomplissement de l'aventure.
+
+## 14. Direction artistique et expérience utilisateur
+
+Le Rendu 2 enrichit l'interface initiale du POC avec une identité visuelle complète.
+
+Cette identité comprend notamment :
+
+- un univers graphique coloré et accessible ;
+- le personnage Cappy et ses différentes expressions ;
+- une présentation structurée des mondes et des niveaux ;
+- des animations de réussite et d'échec ;
+- des effets visuels associés aux mécaniques ;
+- des effets sonores et une ambiance musicale ;
+- des séquences animées accompagnant certains moments du jeu.
+
+Ces éléments visent à renforcer la compréhension des actions, à rendre les résultats plus expressifs et à encourager la progression.
+
+La direction artistique n'est donc pas uniquement décorative : elle participe à l'expérience du joueur.
+
+## 15. Réalisation technique et publication
+
+Le jeu a été développé avec React, TypeScript, Vite et CSS.
+
+Le projet utilise une architecture organisée en composants et modules spécialisés pour séparer progressivement les responsabilités de l'interface et de la logique du jeu.
+
+La version finale a été vérifiée à l'aide de tests automatisés, d'une analyse statique du code, d'une compilation de production et de tests manuels du gameplay.
+
+Le code source est versionné avec Git et hébergé sur GitHub.
+
+Le Rendu 2 est identifié par le tag Git `rendu-2`.
+
+Le jeu est également publié sur Vercel à l'adresse :
+
+https://dont-overflow.vercel.app
+
+## 16. Bilan de l'évolution du concept
+
+Le Rendu 1 avait pour objectif de démontrer qu'une interaction simple pouvait produire un défi de précision compréhensible et rejouable.
+
+Le Rendu 2 démontre que cette même interaction peut servir de fondation à un jeu plus complet, reposant sur une progression structurée et des mécaniques variées.
+
+La conception du jeu a ainsi suivi le principe défini dès le POC :
+
+**Valider d'abord → enrichir ensuite.**
+
+DON'T OVERFLOW! conserve donc son identité initiale tout en concrétisant une grande partie de la vision décrite dans les spécifications du Rendu 1.
+
+## 17. Storytelling et parcours narratif de Cappy — Rendu 2
+
+Au-delà de sa mécanique de précision, DON'T OVERFLOW! propose une aventure narrative portée par Cappy, le capybara qui incarne l'identité du jeu.
+
+### 17.1 Introduction de l'aventure
+
+Une séquence narrative présente Cappy au début du jeu et introduit son aventure.
+
+Cette introduction permet de donner une dimension personnelle à l'expérience et de créer un lien entre le joueur et le personnage.
+
+### 17.2 Une progression à travers 15 mondes
+
+Le joueur accompagne Cappy à travers 15 mondes et 75 niveaux.
+
+Chaque monde représente une nouvelle étape de l'aventure, avec des contraintes de gameplay qui deviennent progressivement plus complexes.
+
+La progression ludique et la présence récurrente de Cappy contribuent à donner une continuité à l'expérience.
+
+### 17.3 La célébration finale
+
+Lorsque le joueur termine le dernier niveau, une célébration apparaît.
+
+Cappy est représenté sur un podium, portant une médaille et tenant un trophée.
+
+Cette scène récompense l'accomplissement des 75 niveaux et marque la fin des défis de gameplay.
+
+### 17.4 Le voyage de retour
+
+L'histoire se poursuit après le podium.
+
+Cappy prend le train, muni de son billet, afin de retrouver sa famille.
+
+À son arrivée, il retrouve ses proches et partage avec eux un grand câlin.
+
+Cette séquence apporte une conclusion émotionnelle à son aventure.
+
+### 17.5 La signification de la conclusion
+
+Le jeu se termine sur le message :
+
+**« YOU DIDN'T OVERFLOW. YOU MADE IT HOME. »**
+
+Cette phrase établit un lien entre la réussite du joueur et le retour de Cappy auprès de sa famille.
+
+Le jeu propose ainsi deux formes d'accomplissement : la maîtrise des défis de précision et la conclusion du voyage du personnage.
+
+Le storytelling donne une identité narrative à DON'T OVERFLOW! et complète son expérience de gameplay.

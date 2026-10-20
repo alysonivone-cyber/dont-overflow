@@ -1,4 +1,5 @@
 # DON'T OVERFLOW! — Spécifications techniques
+> **Note de version :** Les sections 1 à 17 décrivent l'architecture du POC et les évolutions techniques envisagées lors du Rendu 1. Les sections 18 à 26 présentent l'organisation, les mécaniques, les validations et le déploiement du jeu réalisé pour le Rendu 2. Les extraits de code et exemples des premières sections sont conservés comme références historiques.
 
 ## 1. Stack technique
 
@@ -13,7 +14,7 @@ Le POC est développé avec :
 
 Cette stack permet de construire rapidement une interface interactive tout en conservant une structure suffisamment claire pour faire évoluer le prototype vers un MVP.
 
-## 2. Structure actuelle du projet
+## 2. Structure initiale du POC — Rendu 1
 
 La logique principale du POC est volontairement concentrée dans peu de fichiers :
 
@@ -29,7 +30,7 @@ Cette structure est volontairement simple pour le Rendu 1.
 
 Une séparation en plusieurs composants pourra être introduite lorsque la complexité du projet le justifiera.
 
-## 3. États React
+## 3. États React du POC — Rendu 1
 
 Le jeu repose sur trois états principaux :
 
@@ -364,3 +365,206 @@ Le principe retenu reste :
 **structure minimale pour le POC → modularisation progressive pour le MVP**
 
 Le code doit évoluer en fonction des besoins réellement validés plutôt que d'anticiper une architecture complexe avant qu'elle soit nécessaire.
+
+---
+
+## 18. Évolution de l'architecture — Rendu 2
+
+Le Rendu 1 reposait sur une architecture volontairement minimale, adaptée à la validation d'une mécanique unique.
+
+Le Rendu 2 transforme ce prototype en un jeu comprenant **15 mondes et 75 niveaux jouables**.
+
+Cette évolution a nécessité une organisation plus structurée du code, tout en conservant la stack technique initiale :
+
+- React ;
+- TypeScript ;
+- Vite ;
+- CSS ;
+- npm ;
+- Git.
+
+Les sections 1 à 17 décrivent l'architecture historique du POC et les évolutions envisagées à cette période.
+
+Les sections suivantes documentent les principaux choix techniques du Rendu 2.
+
+## 19. Organisation du projet final
+
+Le code du jeu est organisé autour de plusieurs répertoires et fichiers spécialisés.
+
+| Élément | Responsabilité principale |
+|---|---|
+| `src/App.tsx` | Orchestration générale du jeu et coordination des mécaniques |
+| `src/App.css` | Styles principaux de l'application |
+| `src/components/` | Composants réutilisables de l'interface |
+| `src/components/UI/` | Éléments d'interface liés aux contraintes et aux commandes |
+| `src/components/WorldSelection/` | Navigation et sélection des mondes et niveaux |
+| `src/game/levels.ts` | Configuration des niveaux |
+| `src/game/types.ts` | Définitions des types du jeu |
+| `src/game/evaluateResult.ts` | Évaluation des résultats |
+| `src/game/getFlowSpeed.ts` | Calcul des variations de débit |
+| `src/game/getEffectiveFlowSpeed.ts` | Calcul de la vitesse effective selon les contraintes |
+| `src/game/getEvaporationRate.ts` | Calcul de l'évaporation |
+| `src/game/playerProgress.ts` | Gestion de la progression |
+| `src/game/soundManager.ts` | Gestion des effets sonores |
+| `src/assets/` | Ressources graphiques et sonores importées |
+| `public/` | Ressources publiques, notamment audiovisuelles |
+| `SPECS/` | Documentation du projet |
+
+Cette organisation permet de distinguer progressivement la logique du jeu, sa configuration, son interface et ses ressources.
+
+## 20. Configuration et progression des niveaux
+
+Le jeu comprend 75 niveaux répartis en 15 mondes.
+
+Les paramètres des niveaux sont centralisés dans `src/game/levels.ts`.
+
+Les configurations permettent de définir les objectifs et les contraintes propres aux différents défis.
+
+Le moteur du jeu utilise ces paramètres afin d'adapter son comportement sans nécessiter une implémentation entièrement indépendante pour chaque niveau.
+
+La progression du joueur est gérée dans un module spécialisé.
+
+Les données de progression sont sauvegardées localement dans le navigateur, permettant de retrouver les niveaux terminés lors de sessions ultérieures sur la même origine.
+
+## 21. Gestion des interactions et du temps
+
+La mécanique centrale repose toujours sur le maintien et le relâchement d'une commande de remplissage.
+
+Cependant, le comportement du jeu dépend désormais de plusieurs conditions :
+
+- état de remplissage ;
+- niveau d'eau ;
+- temps écoulé ;
+- vitesse de remplissage ;
+- ressources disponibles ;
+- événements ou obstacles ;
+- conditions de réussite et d'échec.
+
+L'application utilise les états React pour piloter l'interface et des références React (`useRef`) pour suivre certaines valeurs utilisées dans les calculs temporels.
+
+Des effets React (`useEffect`) assurent notamment la mise à jour des mécaniques nécessitant des intervalles réguliers.
+
+Cette organisation permet de gérer des comportements tels que l'inertie et l'évaporation sans dépendre exclusivement des mises à jour de l'affichage.
+
+## 22. Modularisation des mécaniques
+
+Plusieurs calculs ont été isolés dans des fonctions spécialisées.
+
+Cette approche facilite leur compréhension, leur réutilisation et leur vérification.
+
+Les modules couvrent notamment :
+
+- le calcul du débit ;
+- les effets des obstacles ;
+- les interférences de certaines mécaniques ;
+- l'évaporation ;
+- la représentation visuelle du niveau d'eau ;
+- l'évaluation des résultats ;
+- la progression du joueur.
+
+Les fonctions spécialisées peuvent être testées indépendamment des composants React.
+
+Cette séparation réduit la nécessité de vérifier l'ensemble de l'interface pour chaque modification d'un calcul.
+
+## 23. Interface et composants réutilisables
+
+Le Rendu 2 comprend plusieurs composants dédiés à l'expérience du joueur.
+
+Ils couvrent notamment :
+
+- l'écran d'accueil et les interventions de Cappy ;
+- la sélection des mondes et des niveaux ;
+- la représentation du récipient ;
+- les commandes de remplissage ;
+- les informations relatives aux objectifs ;
+- les contraintes de temps, de température et de ressources ;
+- les obstacles et événements ;
+- les résultats des tentatives ;
+- les animations de célébration ;
+- la conclusion de l'aventure.
+
+La réutilisation des composants permet de conserver une présentation cohérente à travers les différents mondes.
+
+## 24. Tests et validation technique
+
+Le Rendu 2 a fait l'objet de tests automatisés et de vérifications manuelles.
+
+Les commandes principales utilisées sont :
+
+```powershell
+npm.cmd run test
+npm.cmd run lint
+npm.cmd run build
+```
+
+Les derniers résultats validés avant la publication sont :
+
+| Vérification | Résultat |
+|---|---|
+| Tests automatisés | 120 tests réussis |
+| Fichiers de tests | 14 fichiers validés |
+| Analyse statique | 0 erreur, 0 avertissement |
+| Compilation TypeScript et Vite | Réussie |
+| Vérification manuelle | 75 niveaux et conclusion testés |
+
+Les tests automatisés vérifient notamment les fonctions de calcul et certains composants de l'interface.
+
+Les essais manuels complètent ces vérifications en contrôlant le déroulement du jeu.
+
+Ces résultats correspondent à la version testée pour le Rendu 2 et ne constituent pas une garantie d'absence totale de défauts.
+
+## 25. Versionnement et déploiement
+
+Le projet est versionné avec Git et hébergé sur GitHub.
+
+Dépôt :
+
+https://github.com/alysonivone-cyber/dont-overflow
+
+Le Rendu 2 correspond au commit :
+
+`1a4c5f5`
+
+Un tag Git permet d'identifier cette version :
+
+`rendu-2`
+
+Le jeu a été déployé sur Vercel à l'adresse :
+
+https://dont-overflow.vercel.app
+
+Le déploiement utilise la branche `main` du dépôt GitHub.
+
+La compilation de production est réalisée avec :
+
+```bash
+npm run build
+```
+
+Les fichiers générés dans `dist/` sont utilisés pour la publication.
+
+Les dossiers `node_modules/` et `dist/` restent exclus du versionnement Git.
+
+## 26. Bilan technique
+
+Le développement de DON'T OVERFLOW! illustre une évolution progressive de l'architecture.
+
+Le Rendu 1 privilégiait une structure simple afin de valider rapidement la mécanique de remplissage.
+
+Le Rendu 2 conserve cette base tout en introduisant :
+
+- une configuration de 75 niveaux ;
+- des composants React spécialisés ;
+- des fonctions de calcul indépendantes ;
+- des mécaniques temporelles et événementielles ;
+- une sauvegarde de progression ;
+- des tests automatisés ;
+- une compilation de production vérifiée ;
+- un versionnement Git ;
+- un déploiement web.
+
+Cette évolution respecte le principe technique formulé dès le Rendu 1 :
+
+**Structure minimale pour le POC → modularisation progressive pour le MVP.**
+
+L'objectif n'a pas été de multiplier les abstractions, mais d'organiser le projet au fur et à mesure de ses besoins fonctionnels.

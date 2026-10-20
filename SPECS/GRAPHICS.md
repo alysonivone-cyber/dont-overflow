@@ -1,4 +1,5 @@
 # DON'T OVERFLOW! — Direction graphique
+> **Note de version :** Les sections 1 à 16 documentent la direction graphique du POC (Rendu 1) et les évolutions initialement envisagées. Les sections 17 à 27 présentent l'identité visuelle, les interfaces et le storytelling effectivement réalisés pour le Rendu 2.
 
 ## 1. Objectif visuel
 
@@ -178,7 +179,7 @@ La priorité de cette version reste la validation de la mécanique :
 
 **observer → maintenir → relâcher → obtenir un résultat → recommencer**
 
-## 10. Direction graphique du MVP
+## 10. Direction graphique envisagée pour le MVP — Rendu 1
 
 Le MVP conservera la lisibilité du POC tout en développant une identité visuelle plus riche.
 
@@ -324,3 +325,322 @@ L'évolution visuelle de DON'T OVERFLOW! suivra le même principe que son évolu
 Le POC utilise une représentation minimale afin de valider la mécanique.
 
 Le MVP pourra ensuite enrichir cette représentation tout en conservant une règle essentielle : chaque élément graphique doit soit faciliter la compréhension, soit renforcer le challenge, soit améliorer le feedback donné au joueur.
+
+---
+
+## 17. Évolution de la direction graphique — Rendu 2
+
+Le Rendu 1 de DON'T OVERFLOW! reposait sur une interface volontairement minimaliste, destinée à valider la lisibilité de la mécanique de remplissage.
+
+Le Rendu 2 développe cette base en une identité graphique complète, adaptée à un jeu comprenant 15 mondes et 75 niveaux.
+
+Les sections 1 à 16 conservent la documentation historique du POC et les intentions graphiques formulées pour le MVP. Les sections suivantes présentent les choix visuels effectivement retenus pour le jeu final.
+
+Le principe graphique initial reste inchangé :
+
+**Lisibilité d'abord → enrichissement ensuite.**
+
+## 18. Identité visuelle du jeu final
+
+L'identité visuelle de DON'T OVERFLOW! repose sur un univers ludique, doux et coloré.
+
+La direction artistique privilégie :
+
+- une palette de couleurs pastel ;
+- des contrastes permettant d'identifier les actions principales ;
+- des formes arrondies et accueillantes ;
+- une présentation claire des objectifs ;
+- des animations accompagnant les actions et les résultats ;
+- un personnage central reconnaissable.
+
+L'interface conserve le récipient et le niveau d'eau comme éléments essentiels du gameplay, tout en les intégrant dans un univers graphique plus expressif.
+
+Contrairement au POC, le jeu final ne se limite plus à une carte centrale : il propose plusieurs écrans adaptés aux différentes étapes de l'expérience.
+
+## 19. Cappy — Identité du personnage
+
+Cappy est le capybara qui incarne l'univers de DON'T OVERFLOW!.
+
+Son apparence chaleureuse et expressive permet de créer un lien entre le joueur et l'expérience proposée.
+
+Cappy intervient notamment dans :
+
+- l'écran d'accueil ;
+- les messages et éléments d'accompagnement ;
+- les représentations de réussite et d'échec ;
+- les moments de célébration ;
+- la conclusion de l'aventure.
+
+Plusieurs illustrations ont été créées afin de représenter le personnage dans différentes situations.
+
+Cappy constitue ainsi un élément central de l'identité visuelle et contribue à distinguer DON'T OVERFLOW! d'un simple exercice de précision.
+
+## 20. Organisation visuelle des écrans
+
+Le Rendu 2 introduit plusieurs interfaces complémentaires.
+
+### 20.1 Écran d'accueil
+
+L'écran d'accueil présente le titre du jeu, son identité visuelle et Cappy.
+
+Il constitue le premier contact avec l'univers du jeu et invite le joueur à commencer l'aventure.
+
+### 20.2 Sélection des mondes et des niveaux
+
+L'interface de progression permet au joueur de visualiser l'organisation des 15 mondes et des 75 niveaux.
+
+Les éléments graphiques de navigation facilitent l'identification des niveaux et le suivi de la progression.
+
+### 20.3 Interface de jeu
+
+L'écran de jeu conserve une hiérarchie centrée sur le récipient.
+
+Selon le niveau, il présente les informations nécessaires à la compréhension du défi :
+
+- l'objectif à atteindre ;
+- le niveau d'eau ;
+- la commande de remplissage ;
+- les éventuelles ressources disponibles ;
+- les contraintes temporelles ;
+- les obstacles et événements ;
+- les indications propres à certaines mécaniques.
+
+Les informations affichées peuvent évoluer selon les règles du niveau afin de préserver la lisibilité.
+
+### 20.4 Écrans de résultat
+
+Les écrans de résultat présentent clairement l'issue d'une tentative.
+
+Les illustrations et les éléments de feedback renforcent la distinction entre réussite et échec.
+
+Le joueur peut ainsi comprendre le résultat obtenu et poursuivre ou recommencer selon la situation.
+
+### 20.5 Conclusion du jeu
+
+Le Rendu 2 comprend une séquence de conclusion accompagnant l'achèvement de l'aventure.
+
+Cette séquence donne une dimension narrative et visuelle à la progression du joueur.
+
+## 21. Représentation du récipient et de l'eau
+
+Le récipient reste le principal repère visuel du gameplay.
+
+Le niveau d'eau évolue en réponse aux actions du joueur et aux mécaniques du niveau.
+
+La représentation visuelle doit permettre de distinguer :
+
+- la quantité d'eau présente ;
+- la position de la cible, lorsqu'elle est visible ;
+- les changements liés au remplissage ;
+- les effets particuliers pouvant modifier le niveau d'eau.
+
+Les variations de forme ou de comportement visuel du récipient participent également à la difficulté de certains défis.
+
+L'objectif reste de rendre les informations essentielles compréhensibles sans surcharger l'écran.
+
+## 22. Feedback et animations
+
+Le jeu final enrichit les retours visuels du POC.
+
+Les animations accompagnent notamment :
+
+- les interactions de remplissage ;
+- les changements d'état ;
+- les événements particuliers ;
+- les réussites ;
+- les échecs ;
+- les célébrations ;
+- les transitions importantes de l'aventure.
+
+Les animations ont une double fonction : améliorer l'expressivité du jeu et aider le joueur à interpréter les conséquences de ses actions.
+
+Le feedback visuel doit rester suffisamment clair pour que le résultat d'une tentative puisse être compris même lorsque le son est désactivé.
+
+## 23. Univers sonore et audiovisuel
+
+L'expérience graphique est complétée par une identité sonore.
+
+Le jeu comprend notamment :
+
+- une ambiance musicale ;
+- des effets sonores liés au remplissage et aux résultats ;
+- des sons associés à certains obstacles ou événements ;
+- des séquences vidéo intégrées à l'expérience.
+
+Ces éléments contribuent à rendre l'univers de DON'T OVERFLOW! plus vivant.
+
+Ils ne remplacent cependant pas les indications visuelles nécessaires à la compréhension des règles.
+
+## 24. Cohérence graphique entre les mondes
+
+Les 15 mondes partagent une identité visuelle commune afin de préserver la continuité de l'expérience.
+
+La difficulté peut évoluer grâce aux contraintes de gameplay et à la quantité d'informations présentées au joueur, sans nécessiter une refonte complète de l'interface à chaque niveau.
+
+Les composants visuels réutilisables contribuent à maintenir une présentation cohérente.
+
+Cette approche permet de combiner variété des défis et familiarité des commandes.
+
+## 25. Bilan de l'évolution graphique
+
+Le POC du Rendu 1 privilégiait une interface minimale pour démontrer le fonctionnement du remplissage et de la zone cible.
+
+Le Rendu 2 conserve cette base, mais l'enrichit avec :
+
+- une identité graphique pastel ;
+- un personnage principal, Cappy ;
+- des interfaces de progression ;
+- des composants visuels adaptés aux mécaniques ;
+- des animations de résultat ;
+- des effets sonores ;
+- des séquences audiovisuelles ;
+- une conclusion visuelle de l'aventure.
+
+La direction artistique accompagne ainsi la transformation du prototype en un jeu complet.
+
+**Le graphisme reste au service du gameplay : il doit faciliter la compréhension, renforcer le feedback et donner une identité à l'expérience.**
+
+## 26. Captures d'écran du Rendu 2
+
+Les captures suivantes illustrent l'évolution de DON'T OVERFLOW! entre le Proof of Concept (POC) du Rendu 1 et la version complète du Rendu 2.
+
+Elles permettent de documenter l'identité graphique, les interfaces de gameplay, le système de progression et la conclusion narrative.
+
+### 26.1 Écran d'accueil
+
+![Écran d'accueil de DON'T OVERFLOW! avec Cappy](./assets/rendu2-accueil.png)
+
+L'écran d'accueil introduit l'identité visuelle du jeu à travers une palette pastel, une typographie expressive et une illustration de Cappy.
+
+Il présente également la structure de l'aventure, composée de 15 mondes et de 75 niveaux.
+
+### 26.2 Interface de gameplay
+
+![Interface de gameplay — Monde 6, niveau 1](./assets/rendu2-gameplay.png)
+
+Cette capture présente un niveau du monde 6, consacré aux obstacles.
+
+Elle montre notamment le récipient, la zone cible, les informations de débit, les tentatives disponibles et les indications propres à la mécanique du niveau.
+
+L'interface associe ainsi les éléments essentiels du remplissage aux informations nécessaires pour comprendre les contraintes.
+
+### 26.3 Sélection des mondes
+
+![Interface de sélection des mondes](./assets/rendu2-progression01.png)
+
+L'écran de sélection des mondes présente les différentes étapes de l'aventure sous forme de cartes colorées.
+
+Les icônes, les noms des mondes, les étoiles et les états de verrouillage permettent au joueur d'identifier sa progression.
+
+### 26.4 Progression à l'intérieur d'un monde
+
+![Sélection des niveaux du monde 6](./assets/rendu2-progression02.png)
+
+La sélection des niveaux présente une organisation détaillée de chaque monde.
+
+Les niveaux terminés, les niveaux disponibles et les niveaux verrouillés sont visuellement différenciés.
+
+Les titres et les étoiles contribuent à rendre la progression lisible.
+
+### 26.5 Podium et célébration finale
+
+![Célébration après les 75 niveaux](./assets/rendu2-celebration.png)
+
+Après la réussite du dernier niveau du monde 15, le joueur découvre une célébration finale.
+
+Cappy apparaît sur un podium avec une médaille et un trophée, accompagné de confettis et d'un message de félicitations.
+
+Cette séquence marque l'accomplissement des 75 niveaux.
+
+### 26.6 Épilogue — Retrouvailles familiales
+
+![Cappy retrouve sa famille](./assets/rendu2-epilogue.png)
+
+Après le podium, le jeu poursuit son storytelling avec une séquence narrative.
+
+Cappy prend le train, muni de son billet, pour retrouver sa famille.
+
+L'aventure se termine par des retrouvailles chaleureuses et un grand câlin familial.
+
+Cette scène apporte une conclusion émotionnelle au parcours du personnage.
+
+### 26.7 Écran de fin
+
+![Écran final de DON'T OVERFLOW!](./assets/rendu2-finjeu.png)
+
+Après l'épilogue, le jeu présente son écran final :
+
+**« YOU DIDN'T OVERFLOW. YOU MADE IT HOME. »**
+
+Cette phrase relie la mécanique principale du jeu à l'histoire de Cappy.
+
+Elle marque à la fois la réussite du joueur et le retour du personnage auprès de sa famille.
+
+Ces sept captures documentent les principales dimensions visuelles du Rendu 2 : identité, gameplay, navigation, progression, récompense et narration.
+
+---
+
+## 27. Storytelling et narration visuelle — Rendu 2
+
+### 27.1 Une aventure portée par Cappy
+
+DON'T OVERFLOW! est un jeu de précision qui intègre également une dimension narrative.
+
+Cappy, le capybara qui représente l'identité du jeu, accompagne le joueur tout au long de l'expérience.
+
+Le storytelling repose sur des illustrations, des animations et des séquences audiovisuelles qui donnent une continuité à l'aventure.
+
+### 27.2 Introduction narrative
+
+Au début du jeu, une séquence de storytelling présente la situation initiale de Cappy, ses difficultés et les motivations qui donnent un sens à son aventure.
+
+Cette introduction permet de créer un premier lien entre le joueur et le personnage avant les défis de remplissage.
+
+Elle complète l'écran d'accueil et participe à l'identité du jeu.
+
+### 27.3 Progression et accompagnement
+
+Le joueur traverse 15 mondes comprenant chacun 5 niveaux.
+
+Cappy reste présent dans l'univers graphique du jeu, notamment à travers les illustrations, les messages et les moments de célébration.
+
+Cette présence contribue à relier les différentes étapes de l'expérience.
+
+### 27.4 Podium final
+
+La réussite des 75 niveaux déclenche une célébration mettant Cappy à l'honneur.
+
+Le podium, la médaille, le trophée et les confettis symbolisent l'accomplissement des défis.
+
+Cette récompense conclut la progression ludique, mais pas encore l'histoire du personnage.
+
+### 27.5 Voyage en train et retrouvailles
+
+Après la célébration, Cappy entreprend un voyage en train pour retrouver sa famille.
+
+Son billet de train matérialise le départ vers cette dernière étape.
+
+À son arrivée, Cappy retrouve ses proches et partage avec eux un grand câlin.
+
+La narration se termine ainsi sur un moment de retrouvailles, distinct de la récompense obtenue sur le podium.
+
+### 27.6 Signification de l'écran final
+
+Le dernier écran affiche :
+
+**« YOU DIDN'T OVERFLOW. YOU MADE IT HOME. »**
+
+Cette formulation associe deux dimensions du jeu :
+
+- La réussite du joueur, qui a appris à contrôler le remplissage sans déborder.
+- L'accomplissement du voyage de Cappy, qui retrouve finalement sa famille.
+
+Le mot *home* donne une signification narrative à la conclusion.
+
+### 27.7 Rôle du storytelling dans l'expérience utilisateur
+
+La narration visuelle permet de donner une personnalité à Cappy, de créer une continuité entre les niveaux et de proposer une récompense émotionnelle au-delà de la réussite technique.
+
+Elle participe également à la cohérence de l'identité graphique.
+
+**DON'T OVERFLOW! associe une mécanique de précision à une aventure dont la conclusion repose sur les retrouvailles de Cappy avec sa famille.**
