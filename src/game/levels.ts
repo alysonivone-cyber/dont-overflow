@@ -266,18 +266,18 @@ export const levels: LevelConfig[] = [
   {
     id: 1,
     world: 3,
-    name: 'Against the Clock',
+    name: 'Panic Countdown',
     instruction:
-      'The clock is running. Reach the target before time runs out.',
+  'You have seconds to survive. Stay calm... if you can!',
 
     target: 65,
     tolerance: 5,
 
-    fillSpeed: 30,
-    flowType: 'constant',
+    fillSpeed: 34,
+    flowType: 'shock',
 
     attempts: 3,
-    timeLimit: 4,
+    timeLimit: 3,
     waterReserve: null,
 
     showPercentage: true,
@@ -291,14 +291,14 @@ export const levels: LevelConfig[] = [
   {
     id: 2,
     world: 3,
-    name: 'Speeding Up',
+    name: 'UNSTOPPABLE!',
     instruction:
-      'The flow accelerates as the container fills. Adapt your timing.',
+    'It starts gently... but the water has other plans!',
 
     target: 72,
     tolerance: 4,
 
-    fillSpeed: 28,
+    fillSpeed: 36,
     flowType: 'accelerating',
 
     attempts: 3,
@@ -2048,36 +2048,34 @@ export const levels: LevelConfig[] = [
   // =====================================================
 
   {
-    id: 1,
-    world: 14,
-    name: 'Swamp Glass',
-    instruction:
-      'Mud returns inside a deceptive glass. Read the shape carefully before the screen gets dirty.',
+  id: 1,
+  world: 14,
+  name: 'Swamp Glass',
+  instruction:
+    'Stay focused. The swamp is full of surprises!',
 
-    target: 70,
-    tolerance: 4,
+  target: 70,
+  tolerance: 4,
 
-    fillSpeed: 33,
-    flowType: 'constant',
+  fillSpeed: 33,
+  flowType: 'constant',
 
-    attempts: 3,
-    timeLimit: null,
-    waterReserve: null,
+  attempts: 3,
+  timeLimit: null,
+  waterReserve: null,
 
-    showPercentage: true,
-    showTargetZone: true,
+  showPercentage: true,
+  showTargetZone: true,
 
-    containerShape: 'wide',
+  containerShape: 'wide',
 
-    inertia: 0,
+  inertia: 0,
 
-    mudMode: 'splash',
-    mudTriggerTimes: [
-      0.85,
-    ],
-    mudCoverage: 18,
-    mudDuration: 1,
-  },
+  mudMode: 'splash',
+  mudTriggerTimes: [0.85],
+  mudCoverage: 35,
+  mudDuration: 1.5,
+},
 
   {
     id: 2,

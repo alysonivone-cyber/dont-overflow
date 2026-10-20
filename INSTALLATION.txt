@@ -1,0 +1,18 @@
+STEP 08 — DOCUMENTATION & BROWSER TITLE
+
+1. Make a backup of the current project first.
+2. Copy index.html to the project ROOT, replacing the existing index.html.
+3. Copy README.md to the project ROOT, replacing the old README.md if present.
+   Do NOT replace package.json, App.tsx, App.css, or any gameplay files.
+4. If your existing project has a favicon.svg in public/, keep it.
+   If it does not, tell us: the HTML favicon reference should be adjusted.
+5. Run in Windows PowerShell:
+   npm.cmd run test
+   npm.cmd run lint
+   npm.cmd run build
+   npm.cmd run dev
+6. In the browser, verify the tab title is:
+   DON'T OVERFLOW! | Cappy's Precision Adventure
+
+Note: package.json and package-lock.json are intentionally NOT included.
+Your local versions now contain the React Testing Library/jsdom installation and npm audit fix.

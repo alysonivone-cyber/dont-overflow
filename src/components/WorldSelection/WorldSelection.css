@@ -1,0 +1,209 @@
+
+.world-selection {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.world-selection-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.world-capybara {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fbe2ef;
+  font-size: 56px;
+}
+
+.world-capybara-message {
+  padding: 16px 22px;
+  border: 2px solid #f2c9dc;
+  border-radius: 20px;
+  background: #fff8fc;
+  text-align: center;
+}
+
+.world-capybara-message h2 {
+  margin: 0 0 8px;
+  color: #ad4f86;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.world-capybara-message p {
+  margin: 0;
+  color: #6d6070;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.world-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.world-selection-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 155px;
+  padding: 18px 12px;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  color: #52697d;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.world-selection-card:hover {
+  transform: translateY(-4px);
+  border-color: #e8a9c7;
+  box-shadow: 0 8px 20px rgba(173, 79, 134, 0.12);
+}
+
+.world-selection-card:focus-visible {
+  outline: 3px solid #ad4f86;
+  outline-offset: 3px;
+}
+
+.world-selection-icon {
+  font-size: 35px;
+}
+
+.world-selection-number {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.world-selection-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.world-selection-stars {
+  color: #bd8c3b;
+  font-size: 20px;
+  letter-spacing: 3px;
+}
+
+@media (max-width: 600px) {
+  .world-selection {
+    padding: 16px;
+  }
+
+  .world-selection-header {
+    gap: 10px;
+  }
+
+  .world-capybara {
+    width: 72px;
+    height: 72px;
+    font-size: 40px;
+  }
+
+  .world-capybara-message {
+    padding: 12px;
+  }
+
+  .world-capybara-message h2 {
+    font-size: 12px;
+  }
+
+  .world-capybara-message p {
+    font-size: 11px;
+  }
+
+  .world-selection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .world-selection-card {
+    min-height: 135px;
+    padding: 12px;
+  }
+}
+
+
+/* CAPYBARA WITH GLOBE */
+
+.world-capybara {
+  overflow: hidden;
+}
+
+.world-capybara-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.world-card-locked {
+  opacity: 0.55;
+  filter: grayscale(0.65);
+  cursor: not-allowed;
+}
+
+.world-card-locked:hover {
+  transform: none;
+}
+
+/* BACK BUTTON — PASTEL GREEN */
+
+.world-back-button {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 1000;
+
+  padding: 11px 22px;
+  border: 2px solid #9adbb9;
+  border-radius: 999px;
+
+  background: #c8f3dc;
+  color: #34785a;
+
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+
+  box-shadow: 0 5px 15px rgba(91, 175, 130, 0.18);
+  cursor: pointer;
+
+  transition: background 0.2s ease,
+              transform 0.2s ease;
+}
+
+.world-back-button:hover {
+  background: #ddf9e9;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .world-back-button {
+    top: 12px;
+    right: 12px;
+    padding: 9px 15px;
+    font-size: 12px;
+  }
+}

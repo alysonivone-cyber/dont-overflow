@@ -1,3 +1,4 @@
+
 import type { FlowType } from './types'
 
 interface GetFlowSpeedParams {
@@ -15,51 +16,89 @@ export function getFlowSpeed({
 }: GetFlowSpeedParams): number {
   switch (flowType) {
     // =====================================================
-    // CONSTANT
+    // CONSTANT — Unchanged
     // =====================================================
 
     case 'constant':
       return baseSpeed
 
     // =====================================================
-    // ACCELERATING
+    // ACCELERATING — Dramatic progressive acceleration
     // =====================================================
-    //
-    // The flow progressively becomes faster as
-    // the container fills.
-    //
-    // Example:
-    // baseSpeed = 30
-    //
-    // empty container  -> 30
-    // 50% full         -> 37.5
-    // 100% full        -> 45
-    //
+
     case 'accelerating': {
-      const acceleration =
-        1 + (waterLevel / 100) * 0.5
+  const progress = Math.max(
+    0,
+    Math.min(waterLevel / 100, 1),
+  )
 
-      return baseSpeed * acceleration
+  // WORLD 3.2 — SURPRISE ACCELERATION
+  // The player initially feels safe.
+  // Suddenly, the water becomes much faster.
+
+  if (baseSpeed === 36) {
+    if (progress < 0.30) {
+      return baseSpeed * 0.65
     }
 
+    if (progress < 0.48) {
+      return baseSpeed * 1.15
+    }
+
+    if (progress < 0.62) {
+      return baseSpeed * 2.5
+    }
+
+    return baseSpeed * 4
+  }
+
+  // Default acceleration for other levels.
+  const acceleration =
+    1 + 2 * progress * progress
+
+  return baseSpeed * acceleration
+}
+
     // =====================================================
-    // VARIABLE
+    // VARIABLE — Strong acceleration and deceleration
     // =====================================================
-    //
-    // The flow changes rhythm over time.
-    //
-    // Math.sin() gives us a smooth oscillation instead
-    // of completely random behaviour.
-    //
-    // This is important:
-    // the challenge remains difficult but predictable.
-    //
+
     case 'variable': {
-      const variation =
-        1 + Math.sin(elapsedTime * 4) * 0.35
+      // Predictable oscillation with dramatic changes.
+      // Speed ranges from 0.15x to 2.20x.
+      //
+      // 0.15x = very slow
+      // 2.20x = very fast
 
-      return baseSpeed * variation
+      const wave = Math.sin(elapsedTime * 3.5)
+
+      const normalizedWave = (wave + 1) / 2
+
+      const multiplier =
+        0.15 + normalizedWave * 2.05
+
+      return baseSpeed * multiplier
     }
+
+  // =====================================================
+// SHOCK — World 3.1 surprise acceleration
+// =====================================================
+
+case 'shock': {
+  if (elapsedTime < 0.8) {
+    return 5
+  }
+
+  if (elapsedTime < 1.2) {
+    return 20
+  }
+
+  if (elapsedTime < 1.6) {
+    return 160
+  }
+
+  return 220
+}
 
     default:
       return baseSpeed

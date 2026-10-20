@@ -1,8 +1,11 @@
+
 import frogAsset from '../assets/frog.png'
 
 interface FrogFieldProps {
   frogCount: number
   obstruction: number
+  isMartini?: boolean
+  isNarrowConical?: boolean
 }
 
 const frogPositions = [
@@ -28,10 +31,63 @@ const frogPositions = [
   },
 ]
 
+const martiniFrogPositions = [
+  {
+    left: '50%',
+    bottom: '12%',
+    rotation: '-8deg',
+  },
+  {
+    left: '50%',
+    bottom: '30%',
+    rotation: '8deg',
+  },
+  {
+    left: '38%',
+    bottom: '48%',
+    rotation: '-5deg',
+  },
+  {
+    left: '60%',
+    bottom: '64%',
+    rotation: '6deg',
+  },
+]
+
+// =====================================================
+// WORLD 14 - LEVEL 2: NARROW CONICAL GLASS
+// =====================================================
+
+const narrowConicalFrogPositions = [
+  {
+    left: '50%',
+    bottom: '12%',
+    rotation: '-8deg',
+  },
+  {
+    left: '50%',
+    bottom: '30%',
+    rotation: '8deg',
+  },
+  {
+    left: '45%',
+    bottom: '48%',
+    rotation: '-5deg',
+  },
+  {
+    left: '55%',
+    bottom: '64%',
+    rotation: '6deg',
+  },
+]
+
 function FrogField({
   frogCount,
   obstruction,
+  isMartini = false,
+  isNarrowConical = false,
 }: FrogFieldProps) {
+
   const visibleFrogs = Math.max(
     0,
     Math.min(frogCount, 4),
@@ -42,8 +98,11 @@ function FrogField({
       {Array.from({
         length: visibleFrogs,
       }).map((_, index) => {
-        const position =
-          frogPositions[index]
+        const position = isNarrowConical
+          ? narrowConicalFrogPositions[index]
+          : isMartini
+          ? martiniFrogPositions[index]
+          : frogPositions[index]
 
         return (
           <img
@@ -53,18 +112,24 @@ function FrogField({
             draggable={false}
             style={{
               position: 'absolute',
-              width: '70px',
-              height: '70px',
+              width: isNarrowConical ? '46px' : isMartini ? '48px' : '70px',
+              height: isNarrowConical ? '46px' : isMartini ? '48px' : '70px',
               objectFit: 'contain',
 
               left: position.left,
-              right: position.right,
+              right: 'right' in position
+                ? position.right
+                : undefined,
               bottom: position.bottom,
 
               zIndex: 50,
               opacity: 1,
 
-              transform: `rotate(${position.rotation})`,
+              transform: isNarrowConical
+                ? `translateX(-50%) rotate(${position.rotation})`
+                : isMartini
+                ? `translateX(-50%) rotate(${position.rotation})`
+                : `rotate(${position.rotation})`,
 
               pointerEvents: 'none',
               userSelect: 'none',

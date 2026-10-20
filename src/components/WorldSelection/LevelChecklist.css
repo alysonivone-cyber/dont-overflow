@@ -1,0 +1,150 @@
+
+.level-checklist {
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 28px;
+  border-radius: 24px;
+  background: #fffdfd;
+  box-shadow: 0 12px 35px rgba(173, 79, 134, 0.1);
+}
+
+.checklist-back {
+  margin-bottom: 22px;
+  padding: 9px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #fbe2ef;
+  color: #ad4f86;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.checklist-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.checklist-header-icon {
+  font-size: 48px;
+}
+
+.checklist-header h2 {
+  margin: 0 0 5px;
+  color: #ad4f86;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.checklist-header p {
+  margin: 0;
+  color: #71899c;
+  font-size: 14px;
+}
+
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #f2d6e3;
+  border-radius: 15px;
+  background: #fff8fc;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.checklist-item:hover {
+  transform: translateX(4px);
+}
+
+.checklist-box {
+  color: #ad4f86;
+  font-size: 27px;
+}
+
+.checklist-level-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checklist-level-number {
+  color: #71899c;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.checklist-level-name {
+  color: #ad4f86;
+  font-family: "Lucida Calligraphy", cursive;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.checklist-arrow {
+  color: #ad4f86;
+  font-size: 23px;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .level-checklist {
+    padding: 18px;
+  }
+
+  .checklist-level-name {
+    font-size: 13px;
+  }
+}
+
+
+/* CAPYBARA WITH CHECKLIST */
+
+.checklist-capybara-image {
+  width: 115px;
+  height: 115px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .checklist-capybara-image {
+    width: 85px;
+    height: 85px;
+  }
+}
+
+.checklist-item-locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checklist-item-locked:hover {
+  transform: none;
+}
+
+.checklist-level-stars {
+  display: block;
+  margin-top: 5px;
+  font-size: 13px;
+  color: #b58a45;
+  font-weight: 700;
+}

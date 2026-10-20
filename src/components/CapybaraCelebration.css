@@ -1,0 +1,266 @@
+
+.capy-celebration {
+  min-height: 100dvh;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #fff1f8,
+    #dff4ff
+  );
+  color: #65465e;
+}
+
+.capy-stage {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 30px 15px;
+}
+
+.capy-stage h1 {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  color: #ef76aa;
+}
+
+.capy-eyebrow {
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.capy-subtitle {
+  font-weight: 700;
+}
+
+.capy-scene {
+  position: relative;
+  height: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.capy-character {
+  position: relative;
+  z-index: 2;
+  width: min(75vw, 340px);
+  animation: capy-dance 0.7s
+    ease-in-out infinite alternate;
+}
+
+.capy-character img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+}
+
+.capy-phase-podium .capy-character {
+  animation: capy-podium-dance 0.9s
+    ease-in-out infinite alternate;
+}
+
+.capy-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.capy-confetti i {
+  position: absolute;
+  top: -10%;
+  width: 11px;
+  height: 18px;
+  border-radius: 3px;
+  animation: capy-fall linear infinite;
+}
+
+.capy-gold-medal {
+  position: absolute;
+  z-index: 3;
+  top: 20%;
+  right: 10%;
+  font-size: 5rem;
+  animation: capy-medal 1s ease-out both;
+}
+
+.capy-podium {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  animation: capy-podium-rise 1s both;
+}
+
+.capy-podium > div {
+  width: 95px;
+  display: grid;
+  place-items: center;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  border-radius: 10px 10px 0 0;
+}
+
+.capy-podium-side {
+  height: 65px;
+  background: #b5c8dc;
+}
+
+.capy-podium-side:last-child {
+  height: 45px;
+  background: #eab8a7;
+}
+
+.capy-podium-first {
+  height: 110px;
+  background: #ffd45f;
+}
+
+.capy-caption {
+  font-weight: 800;
+  margin: 15px 0;
+}
+
+.capy-replay {
+  border: none;
+  border-radius: 40px;
+  padding: 15px 30px;
+  background: #f4a4ca;
+  color: #603c58;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+@keyframes capy-dance {
+  from {
+    transform: rotate(-8deg)
+      translateY(0);
+  }
+
+  to {
+    transform: rotate(8deg)
+      translateY(-20px);
+  }
+}
+
+@keyframes capy-podium-dance {
+  from {
+    transform: rotate(-5deg)
+      translateY(-55px);
+  }
+
+  to {
+    transform: rotate(5deg)
+      translateY(-70px);
+  }
+}
+
+@keyframes capy-fall {
+  from {
+    transform: translateY(-10vh)
+      rotate(0deg);
+  }
+
+  to {
+    transform: translateY(120vh)
+      rotate(720deg);
+  }
+}
+
+@keyframes capy-medal {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes capy-podium-rise {
+  from {
+    opacity: 0;
+    translate: 0 150px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+
+/* MUSIC BUTTON */
+
+.capy-music-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 30px;
+  background: #ffffffdd;
+  color: #744b68;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(116, 75, 104, 0.15);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.capy-music-button:hover {
+  transform: scale(1.06);
+  background: #ffd8ec;
+}
+
+
+.capy-music-button {
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 10;
+  display: block;
+  margin: 12px auto 18px;
+  padding: 15px 32px;
+  border: none;
+  border-radius: 35px;
+  background: #ffd8ec;
+  color: #744b68;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(116, 75, 104, 0.15);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.capy-music-button:hover {
+  transform: scale(1.06);
+  background: #ffc2e1;
+}
+
+
+/* Reduce spacing below the capybara */
+
+.capy-scene {
+  margin-bottom: -65px;
+}
+
+.capy-music-button {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.capy-caption {
+  margin-top: 8px;
+  margin-bottom: 14px;
+}

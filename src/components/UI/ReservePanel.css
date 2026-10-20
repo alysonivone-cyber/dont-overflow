@@ -1,0 +1,51 @@
+.reserve-panel {
+  width: 100%;
+  max-width: 300px;
+  margin: 10px auto 0;
+  padding: 11px 13px;
+  border: 1px solid #d8e5ec;
+  border-radius: 10px;
+  background: #f6f9fb;
+}
+
+.reserve-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.reserve-label {
+  color: #6e8799;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+}
+
+.reserve-value {
+  color: #163a59;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.reserve-track {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dce8ee;
+}
+
+.reserve-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #18a999;
+  transition: width 0.08s linear;
+}
+
+@media (max-width: 600px) {
+  .reserve-panel {
+    max-width: 270px;
+  }
+}

@@ -17,6 +17,7 @@ export type FlowType =
   | 'constant'
   | 'accelerating'
   | 'variable'
+  | 'shock'
 
 // =====================================================
 // CONTAINER SHAPES

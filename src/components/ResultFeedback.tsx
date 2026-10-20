@@ -1,7 +1,7 @@
 import type { GameResult } from '../game/types'
 
-import capybaraSuccess from '../assets/capybara-success.png'
-import capybaraFailure from '../assets/capybara-failure.png'
+import capybaraSuccess from '../assets/capybaras/capybara-success.png'
+import capybaraFailure from '../assets/capybaras/capybara-failure.png'
 
 interface ResultFeedbackProps {
   result: GameResult

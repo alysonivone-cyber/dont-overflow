@@ -1,0 +1,129 @@
+.ui-showcase {
+  width: 100%;
+  min-height: 100vh;
+  padding: 32px clamp(20px, 6vw, 80px) 64px;
+  background: #f6f9fb;
+  color: #163a59;
+  text-align: left;
+}
+
+.ui-showcase-header,
+.ui-showcase-component {
+  width: 100%;
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.ui-showcase-back {
+  display: inline-block;
+  margin-bottom: 48px;
+  color: #56748b;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ui-showcase-back:hover {
+  color: #163a59;
+  text-decoration: underline;
+}
+
+.ui-showcase-back:focus-visible {
+  border-radius: 3px;
+  outline: 3px solid #18a999;
+  outline-offset: 4px;
+}
+
+.ui-showcase-eyebrow,
+.ui-showcase-component-category {
+  margin: 0;
+  color: #18a999;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+}
+
+.ui-showcase-title {
+  margin: 8px 0;
+  color: #163a59;
+  font-size: clamp(36px, 7vw, 56px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1.1;
+}
+
+.ui-showcase-description {
+  color: #56748b;
+  font-size: 16px;
+}
+
+.ui-showcase-component {
+  margin-top: 40px;
+  overflow: hidden;
+  border: 1px solid #d8e5ec;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(22 58 89 / 6%);
+}
+
+.ui-showcase-component-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e7eef2;
+}
+
+.ui-showcase-component-heading h2 {
+  margin: 5px 0 0;
+  color: #163a59;
+  font-size: 20px;
+}
+
+.ui-showcase-component-heading code {
+  font-size: 12px;
+}
+
+.ui-showcase-preview {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  padding: 32px 24px;
+  background-color: #fff;
+  background-image: linear-gradient(#eef3f6 1px, transparent 1px),
+    linear-gradient(90deg, #eef3f6 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.ui-showcase-preview .reserve-panel {
+  margin: 0;
+}
+
+.ui-showcase-component-description {
+  margin: 0;
+  padding: 16px 24px;
+  border-top: 1px solid #e7eef2;
+  color: #56748b;
+  font-size: 14px;
+}
+
+@media (max-width: 520px) {
+  .ui-showcase {
+    padding-top: 24px;
+  }
+
+  .ui-showcase-back {
+    margin-bottom: 36px;
+  }
+
+  .ui-showcase-component-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px;
+  }
+
+  .ui-showcase-component-description {
+    padding-inline: 18px;
+  }
+}

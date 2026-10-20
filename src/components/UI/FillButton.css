@@ -1,0 +1,14 @@
+/* =========================================
+   FILL BUTTON — BASE STABILITY
+   ========================================= */
+
+.fill-button {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transform: none;
+}
+
+.fill-button:hover,
+.fill-button:active {
+  transform: none;
+}

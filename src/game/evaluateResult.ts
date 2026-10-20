@@ -1,3 +1,4 @@
+
 import type { GameResult, LevelConfig } from './types'
 
 export function evaluateResult(
@@ -7,21 +8,21 @@ export function evaluateResult(
   const minimum = level.target - level.tolerance
   const maximum = level.target + level.tolerance
 
-  if (waterLevel < minimum) {
+  // Use the same rounded percentage as the player sees.
+  // Keep the original waterLevel for game physics.
+  const evaluatedLevel = Math.round(waterLevel)
+
+  if (evaluatedLevel < minimum) {
     return 'TOO LOW'
   }
 
-  if (waterLevel > maximum) {
+  if (evaluatedLevel > maximum) {
     return 'OVERFLOW'
   }
 
-  // Exactement la valeur cible après arrondi :
-  // réussite parfaite.
-  if (Math.round(waterLevel) === level.target) {
+  if (evaluatedLevel === level.target) {
     return 'PERFECT'
   }
 
-  // Dans la zone cible mais pas exactement au centre :
-  // le niveau est quand même réussi.
   return 'SUCCESS'
 }

@@ -1,0 +1,147 @@
+.status-indicator {
+  width: fit-content;
+  margin: 9px auto 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+/* WATER STILL FLOWING */
+
+.status-inertia {
+  border: 1px solid #18a999;
+  background: #eefaf8;
+  color: #148b7f;
+  animation: status-inertia-pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes status-inertia-pulse {
+  from {
+    opacity: 0.68;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+/* EVAPORATING */
+
+.status-evaporation {
+  border: 1px solid #e58a22;
+  background: #fff4e6;
+  color: #d97b13;
+  animation: status-evaporation-pulse 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes status-evaporation-pulse {
+  from {
+    opacity: 0.68;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+/* FLOW DISRUPTED */
+
+.status-obstacle {
+  border: 1px solid #e58a22;
+  background: #fff4e6;
+  color: #d97b13;
+  animation: status-obstacle-pulse 0.42s ease-in-out infinite alternate;
+}
+
+@keyframes status-inertia-pulse {
+  from {
+    opacity: 0.72;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes status-evaporation-pulse {
+  from {
+    opacity: 0.68;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes status-obstacle-pulse {
+  from {
+    opacity: 0.72;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.obstacle-status {
+  width: fit-content;
+
+  margin: 9px auto 0;
+  padding: 7px 12px;
+
+  border: 1px solid #e58a22;
+  border-radius: 999px;
+
+  background: #fff4e6;
+
+  color: #d97b13;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+
+  animation:
+    obstacle-pulse
+    0.42s ease-in-out
+    infinite alternate;
+}
+
+@keyframes obstacle-pulse {
+  from {
+    opacity: 0.72;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .obstacle-panel {
+    max-width: 270px;
+  }
+
+  .flow-obstacle {
+    left: 10%;
+    width: 80%;
+    height: 10px;
+  }
+
+  .blind-spot span {
+    font-size: 7px;
+  }
+}
