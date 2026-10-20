@@ -1,0 +1,22 @@
+{
+  "name": "DON'T OVERFLOW! — Cappy's Precision Adventure",
+  "short_name": "DON'T OVERFLOW!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#dff4fb",
+  "theme_color": "#dff4fb",
+  "icons": [
+  {
+    "src": "/cappy-192.png",
+    "sizes": "192x192",
+    "type": "image/png",
+    "purpose": "any"
+  },
+  {
+    "src": "/cappy-512.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any"
+  }
+]
+}
